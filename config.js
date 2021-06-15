@@ -1,6 +1,9 @@
 module.exports = new (require("./types/Config"))({
   prefixes: ["!"],
   clientToken: "",
+  blockedUsers: new Set([
+    
+  ]),
   messages: {
     timeout(message, command, timeout) {
       message.reply(`Bu komutu tekrardan ${(timeout / 1000).toFixed(2)} saniye içerisinde kullanabilirsin.`);
