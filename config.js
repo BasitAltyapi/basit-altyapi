@@ -1,6 +1,6 @@
 module.exports = new (require("./types/Config"))({
   prefixes: ["!"],
-  clientToken: "ODI0MjEwMTMyMzUwMDA5MzY2.YFsDgA.9WGNJaRZnIm8Q9q5wmY8hdM6pIw",
+  clientToken: "",
   // Kullanıcı idleri, kod içerisinden düzenlenebilir.
   blockedUsers: new Set([
 

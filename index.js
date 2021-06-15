@@ -9,17 +9,19 @@ const Command = require("./types/Command");
 const client = new Discord.Client(config.clientOptions);
 
 global.commands = new Discord.Collection();
+global.events = new Discord.Collection();
 global.config = config;
+global.client = client;
 
 console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
 (async () => {
   let commandsPath = path.resolve("./commands");
   await makeSureFolderExists(commandsPath);
-  await makeSureFolderExists(path.resolve("./events"));
+  let eventsPath = path.resolve("./events");
+  await makeSureFolderExists(eventsPath);
 
+  let loadStart = Date.now();
   let commandFiles = await readdirRecursive(commandsPath);
-
-  let commandLoadStart = Date.now();
 
   await chillout.forEach(commandFiles, (commandFile) => {
     let start = Date.now();
@@ -45,14 +47,45 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
     }
 
     global.commands.set(command.name, command);
-    if (typeof command.onLoad == "function") command.onLoad(client);
+    command.onLoad(client);
     console.info(`[BİLGİ] "${command.name}" adlı komut yüklendi. (${Date.now() - start}ms sürdü.)`);
   });
 
   if (global.commands.size) {
-    console.info(`[BİLGİ] ${global.commands.size} komut yüklendi. (${Date.now() - commandLoadStart}ms sürdü.)`);
+    console.info(`[BİLGİ] ${global.commands.size} komut yüklendi.`);
   } else {
-    console.warn(`[UYARI] Hiçbir komut yüklenmedi, herşey yolunda mı? (${Date.now() - commandLoadStart}ms sürdü.)`);
+    console.warn(`[UYARI] Hiçbir komut yüklenmedi, herşey yolunda mı?`);
+  }
+
+  let eventFiles = await readdirRecursive(eventsPath);
+  await chillout.forEach(eventFiles, async (eventFile) => {
+    let start = Date.now();
+    console.info(`[BİLGİ] "${eventFile}" event yükleniyor..`);
+
+    /** @type {import("./types/Event")} */
+    let event = require(eventFile);
+
+    if (typeof event.name != "string") event.name = path.basename(eventFile).slice(0, -3);
+
+    if (global.events.has(event.name)) {
+      console.warn(`[UYARI] "${event.name}" adlı bir event daha önceden zaten yüklenmiş. Atlanıyor.`);
+      return;
+    }
+
+    if (typeof event.onEvent != "function") {
+      console.error(`[HATA] "${event.name}" adlı event geçerli bir onEvent fonksiyonuna sahip değil! Atlanıyor.`);
+      return;
+    };
+
+    global.events.set(event.name, event);
+    event.onLoad(client);
+    console.info(`[BİLGİ] "${event.name}" adlı event yüklendi. (${Date.now() - start}ms sürdü.)`);
+  })
+
+  if (global.events.size) {
+    console.info(`[BİLGİ] ${global.events.size} event yüklendi.`);
+  } else {
+    console.warn(`[UYARI] Hiçbir event yüklenmedi, herşey yolunda mı?`);
   }
 
   client.on("message", async (message) => {
@@ -130,7 +163,35 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
     );
   })
 
-  commandLoadStart = 0;
+  {
+    /** @type {Map<string, (import("./types/Event"))[]>} */
+    let eventsMapped = global.events.array().reduce((all, cur) => {
+      if (!all.has(cur.eventName)) all.set(cur.eventName, []);
+      all.get(cur.eventName).push(cur);
+      return all;
+    }, new Map());
+
+    await chillout.forEach(
+      Array.from(eventsMapped.entries()),
+      /**
+       * @param {[string, (import("./types/Event"))[]>]} param0
+       */
+      ([eventName, events]) => {
+        console.info(`[BİLGİ] Event "${eventName}" için ${events.length} dinleyici yüklendi!`);
+        client.on(eventName, (...args) => {
+          chillout.forEach(events, (event) => {
+            event.onEvent(...args);
+          });
+        });
+      }
+    )
+  }
+
+  console.info(`[BİLGİ] Herşey ${Date.now() - loadStart}ms içerisinde yüklendi!`);
+
+  commandFiles = 0;
+  eventFiles = 0;
+  loadStart = 0;
 
   await client.login(config.clientToken);
   console.info("[BİLGİ] Discord'a bağlanıldı!", client.user.tag);

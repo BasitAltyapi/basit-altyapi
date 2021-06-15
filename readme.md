@@ -4,6 +4,8 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
 
 ## Yapılacaklar
 
+- ✅ Async ve aşırı hızlı.
+
 - ✅ Komut başına _değişken_ yavaşlatma desteği.
 - ✅ Komut başına bot gerekli yetki desteği.
 - ✅ Komut başına kullanıcı gerekli yetki desteği.
@@ -11,9 +13,10 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
 - ✅ Mantık hatası uyarı sistemleri.
 - ✅ Bottan kullanıcı yasaklama.
 - ✅ Komutlarda otomatik tamamlama.
-- ✅ Global değişkenlerde otomatik tamamlama.
+- ✅ Global değişkenlerde otomatik tamamlama. (commands, events, config, client)
 - ✅ İç içe klasör desteği.
 - ✅ Komut açıp kapama desteği.
-- ✅ Sadece geliştiricilerin kullanabildiği komut desteği.,
+- ✅ Sadece geliştiricilerin kullanabildiği komut desteği.
 
-- ⏳ Genel event desteği.
+- ✅ Genel event desteği.
+- ⏳ Event kapatabilme.
