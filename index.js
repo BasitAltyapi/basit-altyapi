@@ -83,6 +83,11 @@ global.config = config;
       (command) => {
         if (!command.aliases.some(i => i.toLowerCase() == lowerUsedAlias)) return;
         
+        if (command.disabled) {
+          config.messages.disabled(message, command);
+          return;
+        }
+
         if (command.guildOnly && command.perms.bot.length != 0 && !command.perms.bot.every(perm => message.guild.me.permissions.has(perm))) {
           config.messages.botPermsRequired(message, command, command.perms.bot);
           return;

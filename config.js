@@ -1,6 +1,6 @@
 module.exports = new (require("./types/Config"))({
   prefixes: ["!"],
-  clientToken: "ODI0MjEwMTMyMzUwMDA5MzY2.YFsDgA.sbAVndAq3g8-sbfT-eHg3LEyaCU",
+  clientToken: "",
   messages: {
     timeout(message, command, timeout) {
       message.reply(`Bu komutu tekrardan ${(timeout / 1000).toFixed(2)} saniye içerisinde kullanabilirsin.`);

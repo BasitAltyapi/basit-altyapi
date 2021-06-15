@@ -14,6 +14,8 @@ class Config {
   /** @type {{timeout(message: Discord.Message, command: Command, timeout: number): void, disabled(message: Discord.Message, command: Command): void, blocked(message: Discord.Message, command: Command): void, botPermsRequired(message: Discord.Message, command: Command, perms: string[]): void, userPermsRequired(message: Discord.Message, command: Command, perms: string[]): void}} */
   messages = {};
 
+  other = {};
+
   /**
    * @param {Config} arg 
    */
@@ -57,6 +59,8 @@ class Config {
       process.exit(-1);
     }
     this.messages = arg.messages;
+
+    this.other = arg.other || {};
   }
 }
 

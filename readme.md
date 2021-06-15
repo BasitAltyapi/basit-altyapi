@@ -12,5 +12,5 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
 - ⏳ Bottan kullanıcı yasaklama.
 - ✅ Komutlarda otomatik tamamlama.
 - ✅ İç içe klasör desteği.
-- ⏳ Komut açıp kapama desteği.
+- ✅ Komut açıp kapama desteği.
 - ⏳ Event desteği.

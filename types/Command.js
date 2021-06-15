@@ -22,6 +22,8 @@ class Command {
 
   desc = "Açıklama belirtilmemiş."
 
+  disabled = false;
+
   /**
    * @param {Command & {onCommand(())}} arg
    */
@@ -34,6 +36,7 @@ class Command {
     if (typeof arg.onLoad == "function") this.onLoad = arg.onLoad;
     this.guildOnly = Boolean(arg.guildOnly ?? true);
     if (typeof arg.desc == "string") this.desc = arg.desc;
+    this.disabled = Boolean(arg.disabled);
   }
 }
 
