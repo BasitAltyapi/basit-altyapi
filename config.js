@@ -1,9 +1,9 @@
 module.exports = new (require("./types/Config"))({
   prefixes: ["!", "ba!"],
-  clientToken: "BOT-TOKEN",
+  clientToken: "ODI0MjEwMTMyMzUwMDA5MzY2.YFsDgA.l6mAEBAdnKQuiM5hImDLCT9u5H4",
   // Kullanıcı idleri, kod içerisinden düzenlenebilir.
   blockedUsers: new Set([
-    
+
   ]),
   // Kullanıcı idleri
   developers: new Set([
@@ -19,6 +19,7 @@ module.exports = new (require("./types/Config"))({
     },
     blocked(message, command) {
       message.reply(`Bot kullanımından yasaklanmışsın.`)
+      message.react("❌");
     },
     botPermsRequired(message, command, perms) {
       message.reply(`Bu komutun çalışması için ${perms.join(", ")} yetkilerine ihtiyacım var.`)
@@ -29,6 +30,18 @@ module.exports = new (require("./types/Config"))({
     developerOnly(message, command) {
       message.reply(`Bu komutu sadece bot geliştiricileri kullanabilir.`)
     },
+    guildOnly(message, command) {
+      message.reply(`Bu komut sadece sunucularda kullanılabilir.`);
+    }
   },
-  other: {}
+  other: {},
+  onBeforeLoad(client) {
+
+  },
+  onAfterLoad(client) {
+
+  },
+  onReady(client) {
+
+  }
 })

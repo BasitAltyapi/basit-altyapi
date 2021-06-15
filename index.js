@@ -20,6 +20,8 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
   let eventsPath = path.resolve("./events");
   await makeSureFolderExists(eventsPath);
 
+  config.onBeforeLoad(client);
+
   let loadStart = Date.now();
   let commandFiles = await readdirRecursive(commandsPath);
 
@@ -126,6 +128,11 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
           return chillout.StopIteration;
         }
 
+        if (command.guildOnly && message.channel.type == "dm") {
+          config.messages.guildOnly(message, command);
+          return chillout.StopIteration;
+        }
+
         if (command.disabled) {
           config.messages.disabled(message, command);
           return chillout.StopIteration;
@@ -195,8 +202,11 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
   eventFiles = 0;
   loadStart = 0;
 
+  config.onAfterLoad(client);
+
   await client.login(config.clientToken);
   console.info("[BİLGİ] Discord'a bağlanıldı!", client.user.tag);
+  config.onReady(client);
 })();
 
 

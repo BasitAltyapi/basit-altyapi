@@ -11,7 +11,7 @@ class Config {
   /** @type {Discord.ClientOptions} */
   clientOptions = {};
 
-  /** @type {{timeout(message: Discord.Message, command: Command, timeout: number): void, disabled(message: Discord.Message, command: Command): void, blocked(message: Discord.Message, command: Command): void, botPermsRequired(message: Discord.Message, command: Command, perms: string[]): void, userPermsRequired(message: Discord.Message, command: Command, perms: string[]): void, developerOnly(message: Discord.Message, command: Command): void}} */
+  /** @type {{timeout(message: Discord.Message, command: Command, timeout: number): void, disabled(message: Discord.Message, command: Command): void, blocked(message: Discord.Message, command: Command): void, botPermsRequired(message: Discord.Message, command: Command, perms: string[]): void, userPermsRequired(message: Discord.Message, command: Command, perms: string[]): void, developerOnly(message: Discord.Message, command: Command): void, guildOnly(message: Discord.Message, command: Command): void}} */
   messages = {};
 
   /** @type {{[key: string|number]: any}} */
@@ -22,6 +22,15 @@ class Config {
 
   /** @type {Set<string>} */
   developers = new Set();
+
+  /** @type {(client:import("discord.js").Client)=>void} */
+  onBeforeLoad = () => { };
+
+  /** @type {(client:import("discord.js").Client)=>void} */
+  onAfterLoad = () => { };
+
+  /** @type {(client:import("discord.js").Client)=>void} */
+  onReady = () => { };
 
   /**
    * @param {Config} arg 
@@ -58,7 +67,8 @@ class Config {
       "blocked",
       "botPermsRequired",
       "userPermsRequired",
-      "developerOnly"
+      "developerOnly",
+      "guildOnly"
     ];
     let loadedMessageTypes = Object.keys(arg.messages || {});
     if (
@@ -81,6 +91,10 @@ class Config {
       Array.isArray(arg.developers) ||
       arg.developers instanceof Set
     ) this.developers = new Set([...arg.developers]);
+
+    if (typeof arg.onBeforeLoad == "function") this.onBeforeLoad = arg.onBeforeLoad;
+    if (typeof arg.onAfterLoad == "function") this.onAfterLoad = arg.onAfterLoad;
+    if (typeof arg.onReady == "function") this.onReady = arg.onReady;
   }
 }
 

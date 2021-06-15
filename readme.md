@@ -18,6 +18,7 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
 - ✅ Sadece geliştiricilerin kullanabildiği komut desteği.
 - ✅ Genel event desteği.
 - ✅ Event kapatabilme.
+- ✅ Gelişmiş config dosyası. Hiç `index.js` dosyasını modifiye etmenize gerek kalmıyor.
 
 ## Kullanımı
 

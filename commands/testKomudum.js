@@ -10,5 +10,5 @@ module.exports = new (require("../types/Command"))({
       
     }
   },
-  desc: "Test komutu her türlü şey olabilir."
+  desc: "Test komutu her türlü şey olabilir.",
 })
