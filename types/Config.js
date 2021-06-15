@@ -16,6 +16,9 @@ class Config {
 
   other = {};
 
+  /** @type {Set<string>} */
+  blockedUsers = new Set();
+
   /**
    * @param {Config} arg 
    */
@@ -59,8 +62,8 @@ class Config {
       process.exit(-1);
     }
     this.messages = arg.messages;
-
     this.other = arg.other || {};
+    if (Array.isArray(arg.blockedUsers) || arg.blockedUsers instanceof Set) this.blockedUsers = new Set([...arg.blockedUsers]);
   }
 }
 

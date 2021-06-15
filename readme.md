@@ -9,8 +9,9 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
 - ✅ Komut başına kullanıcı gerekli yetki desteği.
 - ✅ Özelleştirilebilir hata mesajları.
 - ✅ Mantık hatası uyarı sistemleri.
-- ⏳ Bottan kullanıcı yasaklama.
+- ✅ Bottan kullanıcı yasaklama.
 - ✅ Komutlarda otomatik tamamlama.
 - ✅ İç içe klasör desteği.
 - ✅ Komut açıp kapama desteği.
+- ⏳ Sadece geliştiricilerin kullanabildiği komut.
 - ⏳ Event desteği.

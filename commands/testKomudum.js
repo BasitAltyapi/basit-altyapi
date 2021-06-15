@@ -7,6 +7,7 @@ module.exports = new (require("../types/Command"))({
     } else {
       message.reply("Tamamdır! 50 saniye cooldown koyuyorum.");
       setCooldown(50000);
+      
     }
   },
   desc: "Test komutu her türlü şey olabilir."

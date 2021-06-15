@@ -24,6 +24,8 @@ class Command {
 
   disabled = false;
 
+  developerOnly = false;
+
   /**
    * @param {Command & {onCommand(())}} arg
    */

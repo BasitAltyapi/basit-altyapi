@@ -83,6 +83,11 @@ global.config = config;
       (command) => {
         if (!command.aliases.some(i => i.toLowerCase() == lowerUsedAlias)) return;
         
+        if (config.blockedUsers.has(message.author.id)) {
+          config.messages.blocked(message, command);
+          return;
+        }
+
         if (command.disabled) {
           config.messages.disabled(message, command);
           return;
@@ -93,7 +98,7 @@ global.config = config;
           return;
         }
 
-        if (command.guildOnly && command.perms.user.length != 0 && !command.perms.user.every(perm => message.guild.me.permissions.has(perm))) {
+        if (command.guildOnly && command.perms.user.length != 0 && !command.perms.user.every(perm => message.member.permissions.has(perm))) {
           config.messages.userPermsRequired(message, command, command.perms.user);
           return;
         }
