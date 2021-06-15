@@ -8,7 +8,7 @@ module.exports = new (require("../types/Command"))({
     let embed = new MessageEmbed();
     embed.setTitle(`${global.commands.size} komut`);
     global.commands.forEach((command) => {
-      embed.addField(`> ${command.name}`, `> Kısayollar: ${command.aliases.join(", ")}\n> Açıklama: ${command.desc}`, true);
+      embed.addField(`> ${command.name}`, `> Kısayollar: ${command.aliases.join(", ")}\n> Açıklama: ${command.desc}${command.developerOnly ? " (Sadece geliştiriciler için.)" : ""}`, true);
     });
     embed.setColor("RANDOM");
     embed.setFooter("Basit altyapı, Kıraç Armağan Önal tarafından.", message.client.user.avatarURL());

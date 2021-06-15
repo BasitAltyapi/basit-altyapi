@@ -29,7 +29,7 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
     /** @type {import("./types/Command")} */
     let command = require(commandFile);
 
-    if (typeof command.name != "string") command.name = path.basename(commandFile).slice(0,-3);
+    if (typeof command.name != "string") command.name = path.basename(commandFile).slice(0, -3).replace(/ /g, "");
     if (!command.aliases.includes(command.name)) command.aliases.unshift(command.name);
 
     if (global.commands.has(command.name)) {
@@ -65,7 +65,7 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
     /** @type {import("./types/Event")} */
     let event = require(eventFile);
 
-    if (typeof event.name != "string") event.name = path.basename(eventFile).slice(0, -3);
+    if (typeof event.name != "string") event.name = path.basename(eventFile).slice(0, -3).replace(/ /g, "");
 
     if (global.events.has(event.name)) {
       console.warn(`[UYARI] "${event.name}" adlı bir event daha önceden zaten yüklenmiş. Atlanıyor.`);
@@ -180,7 +180,9 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
         console.info(`[BİLGİ] Event "${eventName}" için ${events.length} dinleyici yüklendi!`);
         client.on(eventName, (...args) => {
           chillout.forEach(events, (event) => {
-            event.onEvent(...args);
+            if (!event.disabled) {
+              event.onEvent(...args);
+            }
           });
         });
       }

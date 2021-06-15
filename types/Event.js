@@ -20,6 +20,8 @@ class Event {
 
   }
 
+  disabled = false;
+
   /**
    * @param {Event} arg
    */
@@ -28,6 +30,7 @@ class Event {
     this.eventName = arg.eventName;
     this.onEvent = arg.onEvent;
     if (typeof arg.onLoad == "function") this.onLoad = arg.onLoad;
+    this.disabled = Boolean(arg.disabled);
   }
 }
 

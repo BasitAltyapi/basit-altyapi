@@ -16,5 +16,6 @@ module.exports = new (require("../types/Command"))({
     message.reply(komut.disabled ? "komut kapandı" : "komut açıldı");
 
   },
-  desc: "isteyen herkes bottaki bir komudu açıp kapayabilir"
+  desc: "komut aç kapa ha ha",
+  developerOnly: true
 })
