@@ -39,6 +39,7 @@ class Command {
     this.guildOnly = Boolean(arg.guildOnly ?? true);
     if (typeof arg.desc == "string") this.desc = arg.desc;
     this.disabled = Boolean(arg.disabled);
+    this.developerOnly = Boolean(arg.developerOnly);
   }
 }
 

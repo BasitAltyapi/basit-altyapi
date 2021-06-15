@@ -11,7 +11,9 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
 - ✅ Mantık hatası uyarı sistemleri.
 - ✅ Bottan kullanıcı yasaklama.
 - ✅ Komutlarda otomatik tamamlama.
+- ✅ Global değişkenlerde otomatik tamamlama.
 - ✅ İç içe klasör desteği.
 - ✅ Komut açıp kapama desteği.
-- ⏳ Sadece geliştiricilerin kullanabildiği komut.
-- ⏳ Event desteği.
+- ✅ Sadece geliştiricilerin kullanabildiği komut desteği.,
+
+- ⏳ Genel event desteği.

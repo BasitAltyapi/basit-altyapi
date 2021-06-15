@@ -11,7 +11,7 @@ const client = new Discord.Client(config.clientOptions);
 global.commands = new Discord.Collection();
 global.config = config;
 
-
+console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
 (async () => {
   let commandsPath = path.resolve("./commands");
   await makeSureFolderExists(commandsPath);
@@ -83,30 +83,35 @@ global.config = config;
       (command) => {
         if (!command.aliases.some(i => i.toLowerCase() == lowerUsedAlias)) return;
         
+        if (command.developerOnly && !config.developers.has(message.author.id)) {
+          config.messages.developerOnly(message, command);
+          return chillout.StopIteration;
+        }
+
         if (config.blockedUsers.has(message.author.id)) {
           config.messages.blocked(message, command);
-          return;
+          return chillout.StopIteration;
         }
 
         if (command.disabled) {
           config.messages.disabled(message, command);
-          return;
+          return chillout.StopIteration;
         }
 
         if (command.guildOnly && command.perms.bot.length != 0 && !command.perms.bot.every(perm => message.guild.me.permissions.has(perm))) {
           config.messages.botPermsRequired(message, command, command.perms.bot);
-          return;
+          return chillout.StopIteration;
         }
 
         if (command.guildOnly && command.perms.user.length != 0 && !command.perms.user.every(perm => message.member.permissions.has(perm))) {
           config.messages.userPermsRequired(message, command, command.perms.user);
-          return;
+          return chillout.StopIteration;
         }
 
         let userCooldown = command.coolDowns.get(message.author.id) || 0;
         if (Date.now() < userCooldown) {
           config.messages.timeout(message, command, userCooldown - Date.now());
-          return;
+          return chillout.StopIteration;
         }
 
         command.onCommand(message, {
@@ -127,7 +132,8 @@ global.config = config;
 
   commandLoadStart = 0;
 
-  client.login(config.clientToken);
+  await client.login(config.clientToken);
+  console.info("[BİLGİ] Discord'a bağlanıldı!", client.user.tag);
 })();
 
 

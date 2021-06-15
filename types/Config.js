@@ -11,13 +11,16 @@ class Config {
   /** @type {Discord.ClientOptions} */
   clientOptions = {};
 
-  /** @type {{timeout(message: Discord.Message, command: Command, timeout: number): void, disabled(message: Discord.Message, command: Command): void, blocked(message: Discord.Message, command: Command): void, botPermsRequired(message: Discord.Message, command: Command, perms: string[]): void, userPermsRequired(message: Discord.Message, command: Command, perms: string[]): void}} */
+  /** @type {{timeout(message: Discord.Message, command: Command, timeout: number): void, disabled(message: Discord.Message, command: Command): void, blocked(message: Discord.Message, command: Command): void, botPermsRequired(message: Discord.Message, command: Command, perms: string[]): void, userPermsRequired(message: Discord.Message, command: Command, perms: string[]): void, developerOnly(message: Discord.Message, command: Command): void}} */
   messages = {};
 
   other = {};
 
   /** @type {Set<string>} */
   blockedUsers = new Set();
+
+  /** @type {Set<string>} */
+  developers = new Set();
 
   /**
    * @param {Config} arg 
@@ -44,14 +47,17 @@ class Config {
       console.error("[HATA] Ayarlar dosayasında geçersiz bot tokeni girişi yapılmış.");
       process.exit(-1);
     };
+    
     this.clientToken = arg.clientToken;
     this.clientOptions = typeof arg.clientOptions == "object" ? arg.clientOptions : {};
+
     let messageTypes = [
       "timeout",
       "disabled",
       "blocked",
       "botPermsRequired",
-      "userPermsRequired"
+      "userPermsRequired",
+      "developerOnly"
     ];
     let loadedMessageTypes = Object.keys(arg.messages || {});
     if (
@@ -61,9 +67,19 @@ class Config {
       console.error("[HATA] Ayarlar dosyasında hata mesajları düzgün bir şekilde ayarlanmamış!");
       process.exit(-1);
     }
+
     this.messages = arg.messages;
     this.other = arg.other || {};
-    if (Array.isArray(arg.blockedUsers) || arg.blockedUsers instanceof Set) this.blockedUsers = new Set([...arg.blockedUsers]);
+
+    if (
+      Array.isArray(arg.blockedUsers) ||
+      arg.blockedUsers instanceof Set
+    ) this.blockedUsers = new Set([...arg.blockedUsers]);
+
+    if (
+      Array.isArray(arg.developers) ||
+      arg.developers instanceof Set
+    ) this.developers = new Set([...arg.developers]);
   }
 }
 

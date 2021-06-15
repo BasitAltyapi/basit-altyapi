@@ -1,8 +1,13 @@
 module.exports = new (require("./types/Config"))({
   prefixes: ["!"],
-  clientToken: "",
+  clientToken: "ODI0MjEwMTMyMzUwMDA5MzY2.YFsDgA.9WGNJaRZnIm8Q9q5wmY8hdM6pIw",
+  // Kullanıcı idleri, kod içerisinden düzenlenebilir.
   blockedUsers: new Set([
-    
+
+  ]),
+  // Kullanıcı idleri
+  developers: new Set([
+    "707309693449535599"
   ]),
   messages: {
     timeout(message, command, timeout) {
@@ -19,6 +24,9 @@ module.exports = new (require("./types/Config"))({
     },
     userPermsRequired(message, command, perms) {
       message.reply(`Bu komutu kullanabilmek için ${perms.join(", ")} yetkilerine ihtiyacın var.`)
+    },
+    developerOnly(message, command) {
+      message.reply(`Bu komutu sadece bot geliştiricileri kullanabilir.`)
     },
   }
 })
