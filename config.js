@@ -1,14 +1,15 @@
 module.exports = new (require("./types/Config"))({
-  prefixes: ["!"],
-  clientToken: "",
+  prefixes: ["!", "ba!"],
+  clientToken: "BOT-TOKEN",
   // Kullanıcı idleri, kod içerisinden düzenlenebilir.
   blockedUsers: new Set([
-
+    
   ]),
   // Kullanıcı idleri
   developers: new Set([
     "707309693449535599"
   ]),
+  clientOptions: {},
   messages: {
     timeout(message, command, timeout) {
       message.reply(`Bu komutu tekrardan ${(timeout / 1000).toFixed(2)} saniye içerisinde kullanabilirsin.`);
@@ -28,5 +29,6 @@ module.exports = new (require("./types/Config"))({
     developerOnly(message, command) {
       message.reply(`Bu komutu sadece bot geliştiricileri kullanabilir.`)
     },
-  }
+  },
+  other: {}
 })

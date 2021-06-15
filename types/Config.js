@@ -14,6 +14,7 @@ class Config {
   /** @type {{timeout(message: Discord.Message, command: Command, timeout: number): void, disabled(message: Discord.Message, command: Command): void, blocked(message: Discord.Message, command: Command): void, botPermsRequired(message: Discord.Message, command: Command, perms: string[]): void, userPermsRequired(message: Discord.Message, command: Command, perms: string[]): void, developerOnly(message: Discord.Message, command: Command): void}} */
   messages = {};
 
+  /** @type {{[key: string|number]: any}} */
   other = {};
 
   /** @type {Set<string>} */
