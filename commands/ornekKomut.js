@@ -47,7 +47,7 @@ module.exports = new (require("../types/Command"))({
   // Aliaslar boşluk içeremez.
   aliases: ["diğerKısaYol"],
   // Komut açıklaması, Opsiyonel.
-  desc: "komut aç kapa artema ha ha",
+  desc: "Örnek komut.",
   // Sadece bot geliştiricilerine özelmi değil mi?
   // Opsiyonel. Varsayılan olarak false.
   developerOnly: true,

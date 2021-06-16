@@ -138,6 +138,24 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
           return chillout.StopIteration;
         }
 
+        let userCooldown = command.coolDowns.get(message.author.id) || 0;
+        if (Date.now() < userCooldown) {
+          config.messages.timeout(message, command, userCooldown - Date.now());
+          return chillout.StopIteration;
+        }
+
+        function setCoolDown(duration = 0) {
+          if (typeof duration == "number" && duration > 0) {
+            return command.coolDowns.set(message.author.id, Date.now() + duration);
+          } else {
+            return command.coolDowns.delete(message.author.id);
+          }
+        }
+
+        if (command.coolDown > 0) {
+          setCoolDown(command.coolDown);
+        }
+
         if (command.guildOnly && command.perms.bot.length != 0 && !command.perms.bot.every(perm => message.guild.me.permissions.has(perm))) {
           config.messages.botPermsRequired(message, command, command.perms.bot);
           return chillout.StopIteration;
@@ -148,21 +166,9 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
           return chillout.StopIteration;
         }
 
-        let userCooldown = command.coolDowns.get(message.author.id) || 0;
-        if (Date.now() < userCooldown) {
-          config.messages.timeout(message, command, userCooldown - Date.now());
-          return chillout.StopIteration;
-        }
-
         command.onCommand(message, {
           args, plsargs, usedPrefix, usedAlias,
-          setCoolDown(duration = 0) {
-            if (typeof duration == "number" && duration > 0) {
-              return command.coolDowns.set(message.author.id, Date.now() + duration);
-            } else {
-              return command.coolDowns.delete(message.author.id);
-            }
-          }
+          setCoolDown
         })
 
         return chillout.StopIteration;
