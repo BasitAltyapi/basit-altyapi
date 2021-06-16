@@ -20,10 +20,17 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
 - ✅ Event kapatabilme.
 - ✅ Gelişmiş config dosyası. Hiç `index.js` dosyasını modifiye etmenize gerek kalmıyor.
 
-## Kullanımı
+## Kurlumu
 
-Botun genel ayarlarını, kullanıcı hata mesajlarını düzenlemek ve diğer olaylarda düzenleme yapmak için [`config.js`](./config.js) config dosyasını dikkatlice okuyup ona göre ayarlayabilirsiniz.
+### Gerekenler
+- Node.js; `v14.17.0` veya üstü. Ben `v14.17.0` versiyonunda test ettim. Node.js'in kendi sitesinden indirebilirsiniz.
+- Yarn; Yarn benim kullandığım paket yöneticisi npm'e göre 8-10 kat daha hızlı ve sorun çözücü. Kurmak için konsolunuza `npm install -g yarn` yazmanız yeterlidir.
 
-Komutlar için `commands` klasörünün içindeki [`ornekKomut.js`](./commands/ornekKomut.js) dosyasını dikkatlice okuyabilirsiniz.
+### Kurulum
+- Proje dosya konumuna gelip `yarn install` yazmanız yeterlidir.
+- Proje ayarlarını yaptıktan sonra `node index.js` yazarak projeyi başlatabilirsiniz.
 
-Olaylar için `events` klasörünün içindeki [`ornekOlay.js`](./events/ornekOlay.js) dosyasını dikkatlice okuyabilirsiniz.
+### Kullanımı
+- Botun genel ayarlarını, kullanıcı hata mesajlarını düzenlemek ve diğer olaylarda düzenleme yapmak için [`config.js`](./config.js) config dosyasını dikkatlice okuyup ona göre ayarlayabilirsiniz.
+- Komutlar için `commands` klasörünün içindeki [`ornekKomut.js`](./commands/ornekKomut.js) dosyasını dikkatlice okuyabilirsiniz.
+- Olaylar için `events` klasörünün içindeki [`ornekOlay.js`](./events/ornekOlay.js) dosyasını dikkatlice okuyabilirsiniz.
