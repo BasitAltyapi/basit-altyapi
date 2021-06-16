@@ -22,7 +22,7 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
 
 ## Kullanımı
 
-Oldukça basit aslında. `config.js` içerisinde botunuzun genel ayarlarını yapabilir ve hata mesajlarını düzenleyebilirsiniz.
+Oldukça basit aslında. [`config.js`](./config.js) içerisinde botunuzun genel ayarlarını yapabilir ve hata mesajlarını düzenleyebilirsiniz.
 
 Komutlar için `commands` klasörünün içindeki [`ornekKomut.js`](./commands/ornekKomut.js) dosyasını dikkatlice okuyabilirsiniz.
 
