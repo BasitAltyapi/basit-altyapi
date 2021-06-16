@@ -14,5 +14,6 @@ module.exports = new (require("../types/Command"))({
   perms: {
     bot: ["KICK_MEMBERS"],
     user: ["KICK_MEMBERS"]
-  }
+  },
+  desc: "Sunucudan kullanıcı atmanızı sağlar."
 })

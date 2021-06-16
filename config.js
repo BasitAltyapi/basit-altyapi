@@ -2,7 +2,7 @@ module.exports = new (require("./types/Config"))({
   // Liste haline bot için kullanılacak ön-ek/preifxler
   prefixes: ["!", "ba!"],
   // E tabi, bot tokeni buraya.
-  clientToken: "",
+  clientToken: "ODI0MjEwMTMyMzUwMDA5MzY2.YFsDgA.TJt2CQOX4Eg8V7_bZ1jkt68YNws",
   // Yasaklı kullanıcıların idleri.
   blockedUsers: new Set([
 
@@ -19,7 +19,6 @@ module.exports = new (require("./types/Config"))({
     coolDown(message, command, coolDown) {
       message.reply(`Bu komutu tekrardan ${(coolDown / 1000).toFixed(2)} saniye içerisinde kullanabilirsin.`).then(m=>m.delete({timeout: 5000}));
       message.react("⏳");
-      if (message.deletable) message.delete({ timeout: 5000 });
     },
     // Komut kapalı olduğunda
     disabled(message, command) {
@@ -60,5 +59,6 @@ module.exports = new (require("./types/Config"))({
   // Bot açıldıktan sonra kullanıma hazır olduktan sonra çalışan fonksiyon. Opsiyonel.
   onReady(client) {
     console.log("[CONFIG] Discord hesabına giriş yaptıktan sonra çalıştı.");
+    client.user.setActivity(`${this.prefixes[0]}help`, {type: "WATCHING"})
   }
 })
