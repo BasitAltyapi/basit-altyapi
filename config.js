@@ -1,47 +1,46 @@
 module.exports = new (require("./types/Config"))({
   prefixes: ["!", "ba!"],
   clientToken: "ODI0MjEwMTMyMzUwMDA5MzY2.YFsDgA.l6mAEBAdnKQuiM5hImDLCT9u5H4",
-  // Kullanıcı idleri, kod içerisinden düzenlenebilir.
   blockedUsers: new Set([
 
   ]),
-  // Kullanıcı idleri
   developers: new Set([
     "707309693449535599"
   ]),
   clientOptions: {},
   messages: {
     timeout(message, command, timeout) {
-      message.reply(`Bu komutu tekrardan ${(timeout / 1000).toFixed(2)} saniye içerisinde kullanabilirsin.`);
+      message.reply(`Bu komutu tekrardan ${(timeout / 1000).toFixed(2)} saniye içerisinde kullanabilirsin.`).then(m=>m.delete({timeout: 5000}));
+      message.react("⏳");
+      if (message.deletable) message.delete({ timeout: 5000 });
     },
     disabled(message, command) {
-      message.reply(`Bu komut kapatılmış.`)
+      message.react("⭕");
     },
     blocked(message, command) {
-      message.reply(`Bot kullanımından yasaklanmışsın.`)
-      message.react("❌");
+      message.react("💥");
     },
     botPermsRequired(message, command, perms) {
-      message.reply(`Bu komutun çalışması için ${perms.join(", ")} yetkilerine ihtiyacım var.`)
+      message.reply(`Bu komutun çalışması için ${perms.join(", ")} yetkilerine ihtiyacım var.`).then(m => m.delete({ timeout: 5000 }));
     },
     userPermsRequired(message, command, perms) {
-      message.reply(`Bu komutu kullanabilmek için ${perms.join(", ")} yetkilerine ihtiyacın var.`)
+      message.reply(`Bu komutu kullanabilmek için ${perms.join(", ")} yetkilerine ihtiyacın var.`).then(m => m.delete({ timeout: 5000 }));
     },
     developerOnly(message, command) {
-      message.reply(`Bu komutu sadece bot geliştiricileri kullanabilir.`)
+      message.reply(`Bu komutu sadece bot geliştiricileri kullanabilir.`).then(m => m.delete({ timeout: 5000 }));
     },
     guildOnly(message, command) {
-      message.reply(`Bu komut sadece sunucularda kullanılabilir.`);
+      message.reply(`Bu komut sadece sunucularda kullanılabilir.`).then(m => m.delete({ timeout: 5000 }));
     }
   },
   other: {},
   onBeforeLoad(client) {
-
+    console.log("[CONFIG] Yüklemeye başlamadan önce çalıştı.");
   },
   onAfterLoad(client) {
-
+    console.log("[CONFIG] Yükleme bittikten sonra çalıştı.");
   },
   onReady(client) {
-
+    console.log("[CONFIG] Discord hesabına giriş yaptıktan sonra çalıştı.");
   }
 })

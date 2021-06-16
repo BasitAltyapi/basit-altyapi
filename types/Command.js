@@ -9,25 +9,35 @@ class Command {
   /** @type {{bot: import("discord.js").PermissionString[], user: import("discord.js").PermissionString[]}} */
   perms = {bot: [], user: []};
 
-  /** @type {(message: import("discord.js").Message, other: {plsargs: import("plsargs/src/Result").Result, args: string[], setCooldown(duration:number): void, usedPrefix: string, usedAlias: string})=>void} */
+  /** @type {(message: import("discord.js").Message, other: {plsargs: import("plsargs/src/Result").Result, args: string[], setCoolDown(duration:number): void, usedPrefix: string, usedAlias: string})=>void} */
   onCommand = () => { };
   
   /** @type {(client: import("discord.js").Client)=>void} */
-  onLoad = ()=>{};
+  onLoad = () => { };
 
   /** @type {Map<string, number>} */
   coolDowns = new Map();
 
+  /** @type {boolean} */
   guildOnly = true;
 
-  desc = "Açıklama belirtilmemiş."
+  /** @type {string} */
+  desc = ""
 
+  /** @type {boolean} */
   disabled = false;
 
+  /** @type {boolean} */
   developerOnly = false;
 
+  /** @type {{[key: string|number]: any}} */
+  other = {};
+
+  /** @type {number} */
+  coolDown = 0;
+
   /**
-   * @param {Command & {onCommand(())}} arg
+   * @param {Command} arg
    */
   constructor(arg = {}) {
     this.name = arg.name;
@@ -40,6 +50,8 @@ class Command {
     if (typeof arg.desc == "string") this.desc = arg.desc;
     this.disabled = Boolean(arg.disabled);
     this.developerOnly = Boolean(arg.developerOnly);
+    if (typeof arg.other == "object") this.other = arg.other;
+    if (typeof arg.coolDown == "number") this.coolDown = arg.coolDown;
   }
 }
 

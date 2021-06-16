@@ -23,5 +23,7 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
 ## Kullanımı
 
 Oldukça basit aslında. `config.js` içerisinde botunuzun genel ayarlarını yapabilir ve hata mesajlarını düzenleyebilirsiniz.
-Komutlar içinde aynı şekilde örnek komutlar bulunmakta komutların yapabildikerini görmek için komutun parantezlerinin içine gelip ctrl+boşluk yaparak tüm desteklenen özellikleri görebilirsiniz.
-Eventlerdede örnek dosyalar var komutlarda olduğu gibi oradanda bakabilirsiniz.
+
+Komutlar için `commands` klasörünün içindeki `ornekKomut.js` dosyasını dikkatlice okuyabilirsiniz.
+
+Olaylar için `events` klasörünün içindeki `ornekOlay.js` dosyasını dikkatlice okuyabilirsiniz.

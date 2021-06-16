@@ -156,7 +156,7 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
 
         command.onCommand(message, {
           args, plsargs, usedPrefix, usedAlias,
-          setCooldown(duration = 0) {
+          setCoolDown(duration = 0) {
             if (typeof duration == "number" && duration > 0) {
               return command.coolDowns.set(message.author.id, Date.now() + duration);
             } else {
