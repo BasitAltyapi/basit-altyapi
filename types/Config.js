@@ -62,7 +62,7 @@ class Config {
     this.clientOptions = typeof arg.clientOptions == "object" ? arg.clientOptions : {};
 
     let messageTypes = [
-      "timeout",
+      "coolDown",
       "disabled",
       "blocked",
       "botPermsRequired",
