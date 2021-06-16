@@ -140,7 +140,7 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
 
         let userCooldown = command.coolDowns.get(message.author.id) || 0;
         if (Date.now() < userCooldown) {
-          config.messages.timeout(message, command, userCooldown - Date.now());
+          config.messages.coolDown(message, command, userCooldown - Date.now());
           return chillout.StopIteration;
         }
 
