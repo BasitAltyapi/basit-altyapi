@@ -28,7 +28,7 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
 
 ### Kurulum
 - Proje dosya konumuna gelip `yarn install` yazmanız yeterlidir.
-- Proje ayarlarını yaptıktan sonra `node index.js` yazarak projeyi başlatabilirsiniz.
+- Proje [kurulumunu yap](#kullanımı)tıktan sonra `node index.js` yazarak projeyi başlatabilirsiniz.
 
 ### Kullanımı
 - Botun genel ayarlarını, kullanıcı hata mesajlarını düzenlemek ve diğer olaylarda düzenleme yapmak için [`config.js`](./config.js) config dosyasını dikkatlice okuyup ona göre ayarlayabilirsiniz.
