@@ -24,6 +24,6 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
 
 Oldukça basit aslında. `config.js` içerisinde botunuzun genel ayarlarını yapabilir ve hata mesajlarını düzenleyebilirsiniz.
 
-Komutlar için `commands` klasörünün içindeki `ornekKomut.js` dosyasını dikkatlice okuyabilirsiniz.
+Komutlar için `commands` klasörünün içindeki [`ornekKomut.js`](./blob/main/commands/ornekKomut.js) dosyasını dikkatlice okuyabilirsiniz.
 
-Olaylar için `events` klasörünün içindeki `ornekOlay.js` dosyasını dikkatlice okuyabilirsiniz.
+Olaylar için `events` klasörünün içindeki [`ornekOlay.js`](./blob/main/events/ornekOlay.js) dosyasını dikkatlice okuyabilirsiniz.

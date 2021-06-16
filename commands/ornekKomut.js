@@ -1,4 +1,5 @@
 module.exports = new (require("../types/Command"))({
+  // onCommand fonksiyonu her komut kullanıldığında çağrılır.
   onCommand(message, other) {
     // Discord.JS Message objesi.
     message;
@@ -28,7 +29,6 @@ module.exports = new (require("../types/Command"))({
     // }
     other.plsargs;
 
-
     // Komut çalıştırılırken kullanılmış olan isim/yanisim.
     other.usedAlias;
 
@@ -38,6 +38,13 @@ module.exports = new (require("../types/Command"))({
     // Tek seferlik olarak coolDown değiştirmek için kullanılır.
     other.setCoolDown(5000);
 
+    message.reply("Merhaba!");
+  },
+  // Komut çalışmaya hazır olduğunda sadece bot açılırken bir
+  // kereliğine çağrılır. Opsiyonel.
+  onLoad(client) {
+    // Normal discord.js Client objesi
+    client;
   },
   // Komutun ismi. Opsiyonel, boş bırakıldığında dosya ismini alır.
   // Boşluk içeremez.

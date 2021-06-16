@@ -1,6 +1,6 @@
 module.exports = new (require("./types/Config"))({
   prefixes: ["!", "ba!"],
-  clientToken: "ODI0MjEwMTMyMzUwMDA5MzY2.YFsDgA.l6mAEBAdnKQuiM5hImDLCT9u5H4",
+  clientToken: "",
   blockedUsers: new Set([
 
   ]),
