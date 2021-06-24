@@ -4,7 +4,7 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
 
 ## Yapılacaklar
 
-- ✅ Async ve aşırı hızlı.
+- ✅ Async ve aşırı hızlı. `(Komut başına 1ms kadar sürüyor.)`
 - ✅ Komut başına _değişken_ yavaşlatma desteği.
 - ✅ Komut başına bot gerekli yetki desteği.
 - ✅ Komut başına kullanıcı gerekli yetki desteği.
