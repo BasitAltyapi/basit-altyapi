@@ -1,5 +1,5 @@
 module.exports = new (require("../types/Command"))({
-  aliases: ["at"],
+  aliases: [],
   async onCommand(msg, { args, usedPrefix, usedAlias }) {
     let targetMember = msg.mentions.members.first() || (isNaN(args[1]) ? null : await msg.guild.members.cache.get(args[1]));
     if (!targetMember) {
@@ -15,5 +15,8 @@ module.exports = new (require("../types/Command"))({
     bot: ["KICK_MEMBERS"],
     user: ["KICK_MEMBERS"]
   },
-  desc: "Sunucudan kullanıcı atmanızı sağlar."
+  desc: "Sunucudan kullanıcı atmanızı sağlar.",
+  other: {
+    usage: "{p}{alias} <etiket/id> [sebep]"
+  }
 })

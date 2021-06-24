@@ -16,5 +16,6 @@ module.exports = new (require("../types/Command"))({
     embed.setColor("#62CFF7");
     msg.channel.send(embed);
   },
-  coolDown: 2000
+  coolDown: 2000,
+  guildOnly: false
 })

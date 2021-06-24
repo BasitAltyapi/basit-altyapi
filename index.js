@@ -31,8 +31,18 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
     /** @type {import("./types/Command")} */
     let command = require(commandFile);
 
+    if (command?._type != "command") {
+      console.warn(`[UYARI] "${commandFile}" komut dosyası boş. Atlanıyor..`);
+      return;
+    }
+
     if (typeof command.name != "string") command.name = path.basename(commandFile).slice(0, -3).replace(/ /g, "");
-    if (!command.aliases.includes(command.name)) command.aliases.unshift(command.name);
+    if (!command.aliases.includes(command.name) && config.addCommandNameAsAlias) command.aliases.unshift(command.name);
+
+    if (command.aliases.length == 0) {
+      console.warn(`[UYARI] "${command.name}" adlı bir komut için hiç bir yanad(alias) tanımlanmamış. Atlanıyor..`);
+      return;
+    }
 
     if (global.commands.has(command.name)) {
       console.warn(`[UYARI] "${command.name}" adlı bir komut daha önceden zaten yüklenmiş. Atlanıyor.`)
@@ -66,6 +76,11 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
 
     /** @type {import("./types/Event")} */
     let event = require(eventFile);
+
+    if (event?._type != "event") {
+      console.warn(`[UYARI] "${eventFile}" event dosyası boş. Atlanıyor..`);
+      return;
+    }
 
     if (typeof event.name != "string") event.name = path.basename(eventFile).slice(0, -3).replace(/ /g, "");
 
@@ -108,6 +123,10 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
     if (!usedPrefix || !usedAlias) return;
     let lowerUsedAlias = usedAlias.toLowerCase();
     let args = content.trim().split(" ");
+    if (args[0] == usedPrefix) {
+      args.shift();
+      args[0] = `${usedPrefix}${usedAlias}`;
+    }
     let plsargs = plsParseArgs(args);
 
     chillout.forEach(
@@ -137,6 +156,8 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
           config.messages.disabled(message, command);
           return chillout.StopIteration;
         }
+
+        
 
         let userCooldown = command.coolDowns.get(message.author.id) || 0;
         if (Date.now() < userCooldown) {

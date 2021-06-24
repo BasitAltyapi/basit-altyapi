@@ -1,4 +1,7 @@
 class Event {
+
+  /** @private */
+  _type = "event";
   
   /** @type {string} */
   name = "";

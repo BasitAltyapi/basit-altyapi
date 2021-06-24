@@ -2,6 +2,10 @@ const Discord = require("discord.js");
 const Command = require("./Command");
 
 class Config {
+
+  /** @private */
+  _type = "config";
+
   /** @type {string[]} */
   prefixes = [];
 
@@ -17,6 +21,9 @@ class Config {
   /** @type {{[key: string|number]: any}} */
   other = {};
 
+  /** @type {Command} */
+  commandDefaults = {};
+
   /** @type {Set<string>} */
   blockedUsers = new Set();
 
@@ -31,6 +38,9 @@ class Config {
 
   /** @type {(client:import("discord.js").Client)=>void} */
   onReady = () => { };
+
+  /** @type {Boolean} */
+  addCommandNameAsAlias = true;
 
   /**
    * @param {Config} arg 
@@ -81,6 +91,22 @@ class Config {
 
     this.messages = arg.messages;
     this.other = arg.other || {};
+
+    this.addCommandNameAsAlias = Boolean(arg.addCommandNameAsAlias ?? true);
+
+    this.commandDefaults = typeof arg.commandDefaults == "object" ? arg.commandDefaults : {
+      aliases: [],
+      desc: "",
+      develoeOnly: false,
+      disabled: false,
+      coolDown: -1,
+      guildOnly: true,
+      other: {},
+      perms: {
+        bot: ["SEND_MESSAGES"],
+        user: []
+      }
+    };
 
     if (
       Array.isArray(arg.blockedUsers) ||

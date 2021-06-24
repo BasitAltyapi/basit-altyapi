@@ -1,4 +1,9 @@
+const { defaultify } = require("stuffs");
+
 class Command {
+
+  /** @private */
+  _type = "command";
   
   /** @type {string} */
   name = "";
@@ -42,16 +47,16 @@ class Command {
   constructor(arg = {}) {
     this.name = arg.name;
     this.aliases = Array.isArray(arg.aliases) ? arg.aliases : [];
-    this.perms.bot = Array.isArray(arg.perms?.bot) && arg.perms.bot.length != 0 ? arg.perms.bot : [];
-    this.perms.user = Array.isArray(arg.perms?.user) && arg.perms.user.length != 0 ? arg.perms.user : [];
+    this.perms.bot = Array.isArray(arg.perms?.bot) && arg.perms.bot.length != 0 ? arg.perms.bot : global.config.commandDefaults.perms.bot;
+    this.perms.user = Array.isArray(arg.perms?.user) && arg.perms.user.length != 0 ? arg.perms.user : global.config.commandDefaults.perms.user;
     this.onCommand = arg.onCommand;
     if (typeof arg.onLoad == "function") this.onLoad = arg.onLoad;
-    this.guildOnly = Boolean(arg.guildOnly ?? true);
-    if (typeof arg.desc == "string") this.desc = arg.desc;
-    this.disabled = Boolean(arg.disabled);
-    this.developerOnly = Boolean(arg.developerOnly);
-    if (typeof arg.other == "object") this.other = arg.other;
-    if (typeof arg.coolDown == "number") this.coolDown = arg.coolDown;
+    this.guildOnly = Boolean(arg.guildOnly ?? global.config.commandDefaults.guildOnly);
+    this.desc = arg.desc ?? global.config.commandDefaults.desc;
+    this.disabled = Boolean(arg.disabled ?? global.config.commandDefaults.disabled);
+    this.developerOnly = Boolean(arg.developerOnly ?? global.config.commandDefaults.developerOnly);
+    this.other = defaultify(typeof arg.other == "object" ? arg.other : {}, global.config.commandDefaults.other);
+    this.coolDown = typeof arg.coolDown == "number" ? arg.coolDown : global.config.commandDefaults.coolDown;
   }
 }
 

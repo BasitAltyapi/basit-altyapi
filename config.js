@@ -2,7 +2,7 @@ module.exports = new (require("./types/Config"))({
   // Liste haline bot için kullanılacak ön-ek/preifxler
   prefixes: ["!", "ba!"],
   // E tabi, bot tokeni buraya.
-  clientToken: "ODI0MjEwMTMyMzUwMDA5MzY2.YFsDgA.TJt2CQOX4Eg8V7_bZ1jkt68YNws",
+  clientToken: "hot",
   // Yasaklı kullanıcıların idleri.
   blockedUsers: new Set([
 
@@ -48,6 +48,26 @@ module.exports = new (require("./types/Config"))({
   // Diğer ayarlar. Bunun içine ne isterseniz koyabilirsiniz.
   // Ulaşmak için "global.config.other" objesini kullanabilirsiniz.
   other: {},
+  // Komut ismini otomatik olarak aliasların içine
+  // eklersin mi? Varsayılan true.
+  addCommandNameAsAlias: true,
+  // Her komutun varsayılan ayarları her anahtarın ne
+  // işe yaradığını merak ediyorsanız commands/ornekKomut.js'e
+  // bakabilirsiniz.
+  commandDefaults: {
+    desc: "",
+    develoeOnly: false,
+    disabled: false,
+    coolDown: 0,
+    guildOnly: true,
+    other: {
+      usage: "{p}{alias}"
+    },
+    perms: {
+      bot: ["SEND_MESSAGES"],
+      user: []
+    }
+  },
   // Bot ilk açıldığında daha hiçbirşey yüklenmeden önce çalışan fonksiyon. Opsiyonel.
   onBeforeLoad(client) {
     console.log("[CONFIG] Yüklemeye başlamadan önce çalıştı.");
