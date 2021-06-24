@@ -138,22 +138,22 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
         if (!command.aliases.some(i => i.toLowerCase() == lowerUsedAlias)) return;
         
         if (command.developerOnly && !config.developers.has(message.author.id)) {
-          config.messages.developerOnly(message, command);
+          config.userErrors.developerOnly(message, command);
           return chillout.StopIteration;
         }
 
         if (config.blockedUsers.has(message.author.id)) {
-          config.messages.blocked(message, command);
+          config.userErrors.blocked(message, command);
           return chillout.StopIteration;
         }
 
         if (command.guildOnly && message.channel.type == "dm") {
-          config.messages.guildOnly(message, command);
+          config.userErrors.guildOnly(message, command);
           return chillout.StopIteration;
         }
 
         if (command.disabled) {
-          config.messages.disabled(message, command);
+          config.userErrors.disabled(message, command);
           return chillout.StopIteration;
         }
 
@@ -161,7 +161,7 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
 
         let userCooldown = command.coolDowns.get(message.author.id) || 0;
         if (Date.now() < userCooldown) {
-          config.messages.coolDown(message, command, userCooldown - Date.now());
+          config.userErrors.coolDown(message, command, userCooldown - Date.now());
           return chillout.StopIteration;
         }
 
@@ -178,12 +178,12 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
         }
 
         if (command.guildOnly && command.perms.bot.length != 0 && !command.perms.bot.every(perm => message.guild.me.permissions.has(perm))) {
-          config.messages.botPermsRequired(message, command, command.perms.bot);
+          config.userErrors.botPermsRequired(message, command, command.perms.bot);
           return chillout.StopIteration;
         }
 
         if (command.guildOnly && command.perms.user.length != 0 && !command.perms.user.every(perm => message.member.permissions.has(perm))) {
-          config.messages.userPermsRequired(message, command, command.perms.user);
+          config.userErrors.userPermsRequired(message, command, command.perms.user);
           return chillout.StopIteration;
         }
 

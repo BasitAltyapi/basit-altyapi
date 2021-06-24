@@ -16,7 +16,7 @@ class Config {
   clientOptions = {};
 
   /** @type {{coolDown(message: Discord.Message, command: Command, timeout: number): void, disabled(message: Discord.Message, command: Command): void, blocked(message: Discord.Message, command: Command): void, botPermsRequired(message: Discord.Message, command: Command, perms: string[]): void, userPermsRequired(message: Discord.Message, command: Command, perms: string[]): void, developerOnly(message: Discord.Message, command: Command): void, guildOnly(message: Discord.Message, command: Command): void}} */
-  messages = {};
+  userErrors = {};
 
   /** @type {{[key: string|number]: any}} */
   other = {};
@@ -80,16 +80,16 @@ class Config {
       "developerOnly",
       "guildOnly"
     ];
-    let loadedMessageTypes = Object.keys(arg.messages || {});
+    let loadedMessageTypes = Object.keys(arg.userErrors || {});
     if (
       !messageTypes.every(i => loadedMessageTypes.some(j => j == i)) ||
-      Object.values(arg.messages || {}).some(i=>typeof i != "function")
+      Object.values(arg.userErrors || {}).some(i=>typeof i != "function")
     ) {
       console.error("[HATA] Ayarlar dosyasında hata mesajları düzgün bir şekilde ayarlanmamış!");
       process.exit(-1);
     }
 
-    this.messages = arg.messages;
+    this.userErrors = arg.userErrors;
     this.other = arg.other || {};
 
     this.addCommandNameAsAlias = Boolean(arg.addCommandNameAsAlias ?? true);

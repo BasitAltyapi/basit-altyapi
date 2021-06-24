@@ -14,7 +14,7 @@ module.exports = new (require("./types/Config"))({
   // Discord.js client ayarları.
   clientOptions: {},
   // Kullanıcı hatalarındaki uyarı mesajları/olayları.
-  messages: {
+  userErrors: {
     // Arka arkaya komut kullanma limiti aşıldığında.
     coolDown(message, command, coolDown) {
       message.reply(`Bu komutu tekrardan ${(coolDown / 1000).toFixed(2)} saniye içerisinde kullanabilirsin.`).then(m=>m.delete({timeout: 5000}));
