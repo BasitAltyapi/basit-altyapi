@@ -85,7 +85,7 @@ class Config {
       !messageTypes.every(i => loadedMessageTypes.some(j => j == i)) ||
       Object.values(arg.userErrors || {}).some(i=>typeof i != "function")
     ) {
-      console.error("[HATA] Ayarlar dosyasında hata mesajları düzgün bir şekilde ayarlanmamış!");
+      console.error("[HATA] Ayarlar dosyasında kullanıcı hataları (userErrors) kısmı düzgün bir şekilde ayarlanmamış!");
       process.exit(-1);
     }
 
