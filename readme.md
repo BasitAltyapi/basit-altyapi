@@ -39,3 +39,7 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
 ## Güncelleme
 
 - Güncelleme yaparken yapmanız gereken sadece `types klasörünü`, `index.js dosyası`, `package.json dosyasını` eskisi ile değiştirmek.
+
+## Yardım
+
+- Yardım için discord sunucuma katılıp, benden yardım alabirsiniz: http://armagan.rest/discord
