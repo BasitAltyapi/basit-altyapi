@@ -1,10 +1,10 @@
 # Basit Altyapı
 
-Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran discord bot altyapısı.
+Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran discord bot altyapısı. Sık sık güncelleme alıyor.
 
 ## Yapılacaklar
 
-- ✅ Async ve aşırı hızlı.
+- ✅ Async ve aşırı hızlı. `(Komut başına 1ms kadar sürüyor.)`
 - ✅ Komut başına _değişken_ yavaşlatma desteği.
 - ✅ Komut başına bot gerekli yetki desteği.
 - ✅ Komut başına kullanıcı gerekli yetki desteği.
@@ -35,3 +35,11 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
 - Botun genel ayarlarını, kullanıcı hata mesajlarını düzenlemek ve diğer olaylarda düzenleme yapmak için [`config.js`](./config.js) config dosyasını dikkatlice okuyup ona göre ayarlayabilirsiniz.
 - Komutlar için `commands` klasörünün içindeki [`ornekKomut.js`](./commands/ornekKomut.js) dosyasını dikkatlice okuyabilirsiniz.
 - Olaylar için `events` klasörünün içindeki [`ornekOlay.js`](./events/ornekOlay.js) dosyasını dikkatlice okuyabilirsiniz.
+
+## Güncelleme
+
+- Güncelleme yaparken yapmanız gereken sadece `types klasörünü`, `index.js dosyası`, `package.json dosyasını` eskisi ile değiştirmek.
+
+## Yardım
+
+- Yardım için discord sunucuma katılıp, benden yardım alabirsiniz: http://armagan.rest/discord
