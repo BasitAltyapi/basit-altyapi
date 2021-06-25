@@ -14,6 +14,7 @@ module.exports = new (require("../types/Command"))({
     embed.setAuthor(global.client.user.tag, global.client.user.avatarURL());
     embed.setTitle(`${args[1] || komut.aliases[0]} adlı komutun kullanımı`)
     embed.setColor("RANDOM");
+    embed.addField("Yan Adlar", komut.aliases.map(i=>`${usedPrefix}${i}`).join(", "));
     embed.addField("Açıklama", komut.desc || "Açıklama belirtilmemiş.");
     embed.addField("Kullanımı", usageText);
     embed.addField("Yavaşlatma", `${komut.coolDown <= 0 ? "Yok" : `${(komut.coolDown / 1000).toFixed(2)} saniye yavaşlatma`}`)

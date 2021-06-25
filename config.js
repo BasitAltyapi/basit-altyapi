@@ -80,5 +80,16 @@ module.exports = new (require("./types/Config"))({
   onReady(client) {
     console.log("[CONFIG] Discord hesabına giriş yaptıktan sonra çalıştı.");
     client.user.setActivity(`${this.prefixes[0]}help`, {type: "WATCHING"})
+  },
+  // Komut üzerinde hiçbir kontrol yapılmadan önce çalışır.
+  // Sadece cevap true ise işleme devam eder.
+  async onCommandBeforeChecks(command, message, other) {
+    return true;
+  },
+  // Komuttaki bütün kontrolleri geçtikten sonra, komut
+  // hemen çalıştırılmadan önce çalışır.
+  // Sadece cevap true ise işleme devam eder.
+  async onCommandAfterChecks(command, message, other) {
+    return true;
   }
 })

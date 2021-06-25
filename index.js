@@ -136,6 +136,18 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
        */
       (command) => {
         if (!command.aliases.some(i => i.toLowerCase() == lowerUsedAlias)) return;
+
+        if (command.disabled) {
+          config.userErrors.disabled(message, command);
+          return chillout.StopIteration;
+        }
+
+        let shouldRun1 = await config.onCommandBeforeChecks(command, message, {
+          args, plsargs, usedPrefix, usedAlias,
+          setCoolDown
+        });
+
+        if (!shouldRun1) return chillout.StopIteration;
         
         if (command.developerOnly && !config.developers.has(message.author.id)) {
           config.userErrors.developerOnly(message, command);
@@ -151,13 +163,6 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
           config.userErrors.guildOnly(message, command);
           return chillout.StopIteration;
         }
-
-        if (command.disabled) {
-          config.userErrors.disabled(message, command);
-          return chillout.StopIteration;
-        }
-
-        
 
         let userCooldown = command.coolDowns.get(message.author.id) || 0;
         if (Date.now() < userCooldown) {
@@ -187,10 +192,19 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
           return chillout.StopIteration;
         }
 
-        command.onCommand(message, {
-          args, plsargs, usedPrefix, usedAlias,
-          setCoolDown
-        })
+
+
+        (async () => {
+          let shouldRun2 = await config.onCommandAfterChecks(command, message, {
+            args, plsargs, usedPrefix, usedAlias,
+            setCoolDown
+          });
+          if (!shouldRun2) return chillout.StopIteration;
+          await command.onCommand(message, {
+            args, plsargs, usedPrefix, usedAlias,
+            setCoolDown
+          });
+        })();
 
         return chillout.StopIteration;
       }

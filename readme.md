@@ -20,6 +20,7 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
 - ✅ Event kapatabilme.
 - ✅ Gelişmiş config dosyası. Hiç `index.js` dosyasını modifiye etmenize gerek kalmıyor.
 - ✅ Komut varsayılanlarını değiştirebilme.
+- ✅ Kolay bir şekilde komut öncesi işlem ekleyebilme.
 
 ## Kurlumu
 
