@@ -134,7 +134,7 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
       /**
        * @param {Command} command
        */
-      (command) => {
+      async (command) => {
         if (!command.aliases.some(i => i.toLowerCase() == lowerUsedAlias)) return;
 
         if (command.disabled) {
