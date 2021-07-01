@@ -21,6 +21,7 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
 - ✅ Gelişmiş config dosyası. Hiç `index.js` dosyasını modifiye etmenize gerek kalmıyor.
 - ✅ Komut varsayılanlarını değiştirebilme.
 - ✅ Kolay bir şekilde komut öncesi işlem ekleyebilme.
+- ⏳ Kolay bir şekilde komut veya olay altyapsı oluşturabilme.
 
 ## Kurlumu
 

@@ -2,7 +2,7 @@ module.exports = new (require("./types/Config"))({
   // Liste haline bot için kullanılacak ön-ek/preifxler
   prefixes: ["!", "ba!"],
   // E tabi, bot tokeni buraya.
-  clientToken: "hot",
+  clientToken: "",
   // Yasaklı kullanıcıların idleri.
   blockedUsers: new Set([
 
@@ -64,7 +64,7 @@ module.exports = new (require("./types/Config"))({
       usage: "{p}{alias}"
     },
     perms: {
-      bot: ["SEND_MESSAGES"],
+      bot: [],
       user: []
     }
   },

@@ -1,3 +1,4 @@
+require("./other/patchConsoleLog");
 const config = require("./config");
 const {plsParseArgs} = require("plsargs");
 const Discord = require("discord.js");
@@ -7,6 +8,7 @@ const readdirRecursive = require("recursive-readdir");
 const { makeSureFolderExists } = require("stuffs");
 const Command = require("./types/Command");
 const client = new Discord.Client(config.clientOptions);
+
 
 global.commands = new Discord.Collection();
 global.events = new Discord.Collection();
