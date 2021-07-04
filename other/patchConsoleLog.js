@@ -1,10 +1,18 @@
+try {
+  require("chalk");
+} catch {
+  console.warn("Bu işlemi yapamadan önce gerkli modülleri indirmeniz gerkiyor.")
+  console.warn("-> yarn install");
+  process.exit(-1);
+}
+
 const chalk = require("chalk");
 
 {
   let originalLog = console.log;
 
-  console.log = function (...args) {
-    originalLog(chalk.blackBright(`[${new Date().toLocaleTimeString()}]`), ...args);
+  let log = (...args)=>{
+    originalLog(chalk.blackBright(`[${new Date().toLocaleTimeString()}]`), ...args)
   }
 
   console.info = function (...args) {
@@ -12,7 +20,7 @@ const chalk = require("chalk");
       if (typeof i == "string") return chalk.cyanBright(i)
       return i
     })
-    console.log(...args);
+    log(...args);
   }
 
   console.warn = function (...args) {
@@ -20,7 +28,7 @@ const chalk = require("chalk");
       if (typeof i == "string") return chalk.yellowBright(i)
       return i
     })
-    console.log(...args);
+    log(...args);
   }
 
   console.error = function (...args) {
@@ -28,6 +36,6 @@ const chalk = require("chalk");
       if (typeof i == "string") return chalk.redBright(i)
       return i
     })
-    console.log(...args);
+    log(...args);
   }
 }

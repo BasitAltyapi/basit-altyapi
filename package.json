@@ -17,12 +17,20 @@
   "version": "1.4.2",
   "description": "Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran discord bot altyapısı.",
   "main": "index.js",
-  "repository": "https://github.com/TheArmagan/basit-altyapi",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TheArmagan/basit-altyapi.git"
+  },
   "author": "Kıraç Armağan Önal",
   "license": "GPL-v3-or-later",
   "private": true,
   "scripts": {
     "komut": "node ./other/generator.js command",
     "olay": "node ./other/generator.js event"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/TheArmagan/basit-altyapi/issues"
+  },
+  "homepage": "https://github.com/TheArmagan/basit-altyapi#readme",
+  "keywords": []
 }
