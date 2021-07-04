@@ -42,7 +42,7 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
 
 ## Güncelleme
 
-- Güncelleme yaparken yapmanız gereken sadece `types klasörünü`, `index.js dosyası`, `package.json dosyasını` eskisi ile değiştirmek.
+- Güncelleme yaparken yapmanız gereken sadece `types klasörünü`, `other klasörünü`, `index.js dosyası`, `package.json dosyasını` eskisi ile değiştirmek.
 
 ## Yardım
 
