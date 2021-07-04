@@ -1,4 +1,4 @@
-# Basit Altyapı
+# Basit Altyapı (Versiyon 1.4.4)
 
 Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran discord bot altyapısı. Sık sık güncelleme alıyor.
 
@@ -21,7 +21,7 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
 - ✅ Gelişmiş config dosyası. Hiç `index.js` dosyasını modifiye etmenize gerek kalmıyor.
 - ✅ Komut varsayılanlarını değiştirebilme.
 - ✅ Kolay bir şekilde komut öncesi işlem ekleyebilme.
-- ⏳ Kolay bir şekilde komut veya olay altyapsı oluşturabilme.
+- ✅ Kolay bir şekilde komut veya olay altyapsı oluşturabilme.
 
 ## Kurlumu
 
@@ -36,7 +36,9 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
 ### Kullanımı
 - Botun genel ayarlarını, kullanıcı hata mesajlarını düzenlemek ve diğer olaylarda düzenleme yapmak için [`config.js`](./config.js) config dosyasını dikkatlice okuyup ona göre ayarlayabilirsiniz.
 - Komutlar için `commands` klasörünün içindeki [`ornekKomut.js`](./commands/ornekKomut.js) dosyasını dikkatlice okuyabilirsiniz.
+- Yeni bir komut dosyası oluşturmak isterseniz `yarn komut` komutunu kullanabilsiniz. Bu sayede sizi ilk komut altyapısını yazma derdinden kurtaracak ve komut hakkında her türlü soruyu soracaktır.
 - Olaylar için `events` klasörünün içindeki [`ornekOlay.js`](./events/ornekOlay.js) dosyasını dikkatlice okuyabilirsiniz.
+- Yeni bir olay dosyası oluşturmak isterseniz `yarn olay` komutunu kullanabilsiniz. Bu sayede sizi ilk olay altyapısını yazma derdinden kurtaracak ve olay hakkında her türlü soruyu soracaktır.
 
 ## Güncelleme
 
