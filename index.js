@@ -229,18 +229,13 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
       ([eventName, events]) => {
         console.info(`[BİLGİ] Event "${eventName}" için ${events.length} dinleyici yüklendi!`);
         client.on(eventName, (...args) => {
-          events.forEach(event => {
-            if (!event.disabled) {
-              event.onEvent(...args);
-            }
-          })
-          // Nedenini bilmediğim bir şekilde sadece araya sync birşey
-          // sıkıştırınca çalışıyor. Örneğin console.log
-          // chillout.forEach(events, (event) => {
-          //   if (!event.disabled) {
-          //     event.onEvent(...args);
-          //   }
-          // });
+          setTimeout(() => {
+            chillout.forEach(events, (event) => {
+              if (!event.disabled) {
+                event.onEvent(...args);
+              }
+            });
+          },0)
         });
       }
     )
