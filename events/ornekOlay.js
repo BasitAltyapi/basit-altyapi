@@ -13,7 +13,7 @@ module.exports = new (require("../types/Event"))({
   },
   // Event idsi. Opsiyonel, boş bırakıldığında dosya ismini alır.
   // Boşluk içeremez.
-  name: "örnekKomut",
+  name: "örnekOlay",
   // Herhangi bir discord.js olay ismi.
   eventName: "message",
   // Event açıkmı kapalı mı?
