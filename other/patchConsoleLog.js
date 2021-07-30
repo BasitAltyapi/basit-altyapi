@@ -1,7 +1,7 @@
 try {
   require("chalk");
 } catch {
-  console.warn("Bu işlemi yapamadan önce gerkli modülleri indirmeniz gerkiyor.")
+  console.warn("Bu işlemi yapmadan önce gerekli modülleri indirmeniz gerekiyor.")
   console.warn("-> yarn install");
   process.exit(-1);
 }
