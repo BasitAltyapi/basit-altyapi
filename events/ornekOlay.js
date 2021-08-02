@@ -15,7 +15,7 @@ module.exports = new (require("../types/Event"))({
   // Boşluk içeremez.
   name: "örnekOlay",
   // Herhangi bir discord.js olay ismi.
-  eventName: "message",
+  eventName: "messageCreate",
   // Event açıkmı kapalı mı?
   // Opsiyonel. Varsayılan değer false.
   disabled: false

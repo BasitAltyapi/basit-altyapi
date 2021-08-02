@@ -38,13 +38,7 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
       return;
     }
 
-    if (typeof command.name != "string") command.name = path.basename(commandFile).slice(0, -3).replace(/ /g, "");
-    if (!command.aliases.includes(command.name) && config.addCommandNameAsAlias) command.aliases.unshift(command.name);
-
-    if (command.aliases.length == 0) {
-      console.warn(`[UYARI] "${command.name}" adlı bir komut için hiç bir yanad(alias) tanımlanmamış. Atlanıyor..`);
-      return;
-    }
+    if (typeof command.name != "string") command.name = path.basename(commandFile).slice(0, -3).replace(/ /g, "").toLowerCase();
 
     if (global.commands.has(command.name)) {
       console.warn(`[UYARI] "${command.name}" adlı bir komut daha önceden zaten yüklenmiş. Atlanıyor.`)
@@ -107,115 +101,80 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
     console.warn(`[UYARI] Hiçbir event yüklenmedi, herşey yolunda mı?`);
   }
 
-  client.on("message", async (message) => {
-    if (message.author.id == client.user.id) return;
+  client.on("interactionCreate", async (interaction) => {
+    if (!interaction.isCommand()) return;
 
-    let usedPrefix = "";
-    let usedAlias = "";
-    let content = message.content;
-    
-    await chillout.forEach(config.prefixes, (p) => {
-      if (content.slice(0, p.length).toLowerCase() == p.toLowerCase()) {
-        usedPrefix = p;
-        usedAlias = content.slice(p.length).trim().split(" ", 2)[0];
-        return chillout.StopIteration;
-      }
-    });
+    const command = global.commands.get(interaction.commandName);
 
-    if (!usedPrefix || !usedAlias) return;
-    let lowerUsedAlias = usedAlias.toLowerCase();
-    let args = content.trim().split(" ");
-    if (args[0] == usedPrefix) {
-      args.shift();
-      args[0] = `${usedPrefix}${usedAlias}`;
+    if (!command) return;
+
+    if (config.autoDefer) interaction.defer();
+
+    if (command.disabled) {
+      config.userErrors.disabled(interaction, command);
+      return;
     }
-    let plsargs = plsParseArgs(args);
 
-    chillout.forEach(
-      global.commands.array(),
-      /**
-       * @param {Command} command
-       */
-      async (command) => {
-        if (!command.aliases.some(i => i.toLowerCase() == lowerUsedAlias)) return;
+    let shouldRun1 = await config.onCommandBeforeChecks(command, interaction);
 
-        if (command.disabled) {
-          config.userErrors.disabled(message, command);
-          return chillout.StopIteration;
-        }
+    if (!shouldRun1) return;
 
-        let shouldRun1 = await config.onCommandBeforeChecks(command, message, {
-          args, plsargs, usedPrefix, usedAlias,
-          setCoolDown
-        });
+    if (command.developerOnly && !config.developers.has(interaction.user.id)) {
+      config.userErrors.developerOnly(interaction, command);
+      return;
+    }
 
-        if (!shouldRun1) return chillout.StopIteration;
-        
-        if (command.developerOnly && !config.developers.has(message.author.id)) {
-          config.userErrors.developerOnly(message, command);
-          return chillout.StopIteration;
-        }
+    if (config.blockedUsers.has(interaction.user.id)) {
+      config.userErrors.blocked(interaction, command);
+      return;
+    }
 
-        if (config.blockedUsers.has(message.author.id)) {
-          config.userErrors.blocked(message, command);
-          return chillout.StopIteration;
-        }
-
-        if (command.guildOnly && message.channel.type == "dm") {
-          config.userErrors.guildOnly(message, command);
-          return chillout.StopIteration;
-        }
-
-        let userCooldown = command.coolDowns.get(message.author.id) || 0;
-        if (Date.now() < userCooldown) {
-          config.userErrors.coolDown(message, command, userCooldown - Date.now());
-          return chillout.StopIteration;
-        }
-
-        function setCoolDown(duration = 0) {
-          if (typeof duration == "number" && duration > 0) {
-            return command.coolDowns.set(message.author.id, Date.now() + duration);
-          } else {
-            return command.coolDowns.delete(message.author.id);
-          }
-        }
-
-        if (command.coolDown > 0) {
-          setCoolDown(command.coolDown);
-        }
-
-        if (command.guildOnly && command.perms.bot.length != 0 && !command.perms.bot.every(perm => message.guild.me.permissions.has(perm))) {
-          config.userErrors.botPermsRequired(message, command, command.perms.bot);
-          return chillout.StopIteration;
-        }
-
-        if (command.guildOnly && command.perms.user.length != 0 && !command.perms.user.every(perm => message.member.permissions.has(perm))) {
-          config.userErrors.userPermsRequired(message, command, command.perms.user);
-          return chillout.StopIteration;
-        }
+    if (command.guildOnly && interaction.channel.type == "dm") {
+      config.userErrors.guildOnly(interaction, command);
+      return;
+    }
 
 
+    let userCooldown = command.coolDowns.get(interaction.user.id) || 0;
+    if (Date.now() < userCooldown) {
+      config.userErrors.coolDown(interaction, command, userCooldown - Date.now());
+      return;
+    }
 
-        (async () => {
-          let shouldRun2 = await config.onCommandAfterChecks(command, message, {
-            args, plsargs, usedPrefix, usedAlias,
-            setCoolDown
-          });
-          if (!shouldRun2) return chillout.StopIteration;
-          await command.onCommand(message, {
-            args, plsargs, usedPrefix, usedAlias,
-            setCoolDown
-          });
-        })();
-
-        return chillout.StopIteration;
+    function setCoolDown(duration = 0) {
+      if (typeof duration == "number" && duration > 0) {
+        return command.coolDowns.set(interaction.user.id, Date.now() + duration);
+      } else {
+        return command.coolDowns.delete(interaction.user.id);
       }
-    );
+    }
+
+    if (command.coolDown > 0) {
+      setCoolDown(command.coolDown);
+    }
+
+    if (command.guildOnly && command.perms.bot.length != 0 && !command.perms.bot.every(perm => interaction.guild.me.permissions.has(perm))) {
+      config.userErrors.botPermsRequired(interaction, command, command.perms.bot);
+      return;
+    }
+
+    if (command.guildOnly && command.perms.user.length != 0 && !command.perms.user.every(perm => interaction.member.permissions.has(perm))) {
+      config.userErrors.userPermsRequired(interaction, command, command.perms.user);
+      return;
+    }
+
+    (async () => {
+      let shouldRun2 = await config.onCommandAfterChecks(command, interaction, {setCoolDown});
+      if (!shouldRun2) return;
+      await command.onCommand(interaction, {setCoolDown});
+    })();
+
+    return;
   })
 
   {
     /** @type {Map<string, (import("./types/Event"))[]>} */
-    let eventsMapped = global.events.array().reduce((all, cur) => {
+    let eventsMapped = global.events.reduce((all, cur) => {
       if (!all.has(cur.eventName)) all.set(cur.eventName, []);
       all.get(cur.eventName).push(cur);
       return all;

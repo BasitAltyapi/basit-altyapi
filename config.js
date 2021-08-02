@@ -1,6 +1,6 @@
 module.exports = new (require("./types/Config"))({
   // E tabi, bot tokeni buraya.
-  clientToken: "ODI0MjEwMTMyMzUwMDA5MzY2.YFsDgA.1pYWz9QrGqJGvLZ2oLdmC9ibbrk",
+  clientToken: "",
   // Yasaklı kullanıcıların idleri.
   blockedUsers: new Set([
 
@@ -11,38 +11,37 @@ module.exports = new (require("./types/Config"))({
   ]),
   // Discord.js client ayarları.
   clientOptions: {
-    intents: ["GUILDS", "GUILD_MESSAGES", "DIRECT_MESSAGES"]
+    intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_MEMBERS", "GUILD_WEBHOOKS"]
   },
   // Kullanıcı hatalarındaki uyarı mesajları/olayları.
   userErrors: {
     // Arka arkaya komut kullanma limiti aşıldığında.
-    coolDown(message, command, coolDown) {
-      message.reply(`Bu komutu tekrardan ${(coolDown / 1000).toFixed(2)} saniye içerisinde kullanabilirsin.`).then(m=>m.delete({timeout: 5000}));
-      message.react("⏳");
+    coolDown(interaction, command, coolDown) {
+      interaction.reply(`Bu komutu tekrardan ${(coolDown / 1000).toFixed(2)} saniye içerisinde kullanabilirsin.`)
     },
     // Komut kapalı olduğunda
-    disabled(message, command) {
-      message.react("⭕");
+    disabled(interaction, command) {
+      interaction.reply("Bu komut kapalı.");
     },
     // Kullanıcı bottan yasaklı olduğunda.
-    blocked(message, command) {
-      message.react("💥");
+    blocked(interaction, command) {
+      interaction.reply("Bottan yasaklanmışsınız.");
     },
     // Botun çalışmak için x yertkilerine ihtiyacı olduğunda.
-    botPermsRequired(message, command, perms) {
-      message.reply(`Bu komutun çalışması için ${perms.join(", ")} yetkilerine ihtiyacım var.`).then(m => m.delete({ timeout: 5000 }));
+    botPermsRequired(interaction, command, perms) {
+      interaction.reply(`Bu komutun çalışması için ${perms.join(", ")} yetkilerine ihtiyacım var.`)
     },
     // Kullanıcının komutu kullanabilmek için x yetkilerine ihtiyacı olduğunda.
-    userPermsRequired(message, command, perms) {
-      message.reply(`Bu komutu kullanabilmek için ${perms.join(", ")} yetkilerine ihtiyacın var.`).then(m => m.delete({ timeout: 5000 }));
+    userPermsRequired(interaction, command, perms) {
+      interaction.reply(`Bu komutu kullanabilmek için ${perms.join(", ")} yetkilerine ihtiyacın var.`)
     },
     // Komut sadece geliştiricilere özel olduğunda.
-    developerOnly(message, command) {
-      message.reply(`Bu komutu sadece bot geliştiricileri kullanabilir.`).then(m => m.delete({ timeout: 5000 }));
+    developerOnly(interaction, command) {
+      interaction.reply(`Bu komutu sadece bot geliştiricileri kullanabilir.`)
     },
     // Sunuculara özel olan bir komutu dm'den kullanılmaya çalıştığı zaman.
-    guildOnly(message, command) {
-      message.reply(`Bu komut sadece sunucularda kullanılabilir.`).then(m => m.delete({ timeout: 5000 }));
+    guildOnly(interaction, command) {
+      interaction.reply(`Bu komut sadece sunucularda kullanılabilir.`)
     }
   },
   // Diğer ayarlar. Bunun içine ne isterseniz koyabilirsiniz.
@@ -52,14 +51,11 @@ module.exports = new (require("./types/Config"))({
   // işe yaradığını merak ediyorsanız commands/ornekKomut.js'e
   // bakabilirsiniz.
   commandDefaults: {
-    description: "",
+    description: "Açıkla belirtilmemiş.",
     develoeOnly: false,
     disabled: false,
     coolDown: 0,
-    guildOnly: true,
-    other: {
-      usage: "{p}{alias}"
-    },
+    other: {},
     perms: {
       bot: [],
       user: []
@@ -77,7 +73,7 @@ module.exports = new (require("./types/Config"))({
   // Bot açıldıktan sonra kullanıma hazır olduktan sonra çalışan fonksiyon. Opsiyonel.
   onReady(client) {
     console.log("[CONFIG] Discord hesabına giriş yaptıktan sonra çalıştı.");
-    client.user.setActivity(`${this.prefixes[0]}help`, {type: "WATCHING"})
+    client.user.setActivity(`/help`, {type: "WATCHING"})
   },
   // Komut üzerinde hiçbir kontrol yapılmadan önce çalışır.
   // Sadece cevap true ise işleme devam eder.

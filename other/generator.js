@@ -151,7 +151,7 @@ async function permissionPrompt(message = "") {
 
     console.log(`√ Dosya "${filePath}" konumuna hazırlanıyor!`);
     let t = `module.exports = new (require("../types/Command"))({
-  onCommand(message, other) {
+  onCommand(interaction, other) {
     // Komut kullanıldığında burası çalışır.
   },
   onLoad(client) {
@@ -166,6 +166,7 @@ async function permissionPrompt(message = "") {
     ${botPerms.length != 0 ? `bot: ${JSON.stringify(botPerms)},` : ""}
     ${userPerms.length != 0 ? `user: ${JSON.stringify(userPerms)}` : ""}
   },` : ""}
+  options: [],
   disabled: false
 })`.split("\n").filter(i => !!i.trim()).join("\n");
     console.log(chalk.greenBright(t));

@@ -106,7 +106,7 @@ global.config = config;
     console.info(`[BİLGİ] ${GUILD_ID} idli sunucunun komutları gönderiliyor..`);
     await client.guilds.cache.get(GUILD_ID).commands.set(commandData);
     console.info(`[BİLGİ] ${GUILD_ID} idli sunucunun komutları gönderildi!`);
-    console.warn(`[UYARI] ${GUILD_ID} idli sunucuya komutların gelmedi 5 ila 10 saniye sürebilir. Bu süre discord tarafından verilmiştir.`);
+    console.warn(`[UYARI] ${GUILD_ID} idli sunucuya komutların gelmesi 5 ila 10 saniye sürebilir. Bu süre discord tarafından verilmiştir.`);
   } else {
     console.info("[BİLGİ] Global komutlar gönderiliyor..");
     await client.application.commands.set(commandData);

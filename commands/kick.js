@@ -3,9 +3,8 @@ module.exports = new (require("../types/Command"))({
   async onCommand(inter) {
     let targetMember = inter.options.getMember("target_member", true);
     let reason = inter.options.getString("reason", false) || "Sebep belirtilmedi.";
-    let message = await msg.channel.send(`⏳ \`${targetMember.user.tag}\` sunucudan \`${reason}\` sebebi ile **atılıyor**..`);
     await targetMember.kick(reason);
-    await message.edit(`✅ \`${targetMember.user.tag}\` sunucudan \`${reason}\` sebebi ile **atıldı**.`);
+    await inter.reply(`✅ \`${targetMember.user.tag}\` sunucudan \`${reason}\` sebebi ile **atıldı**.`);
   },
   perms: {
     bot: ["KICK_MEMBERS"],

@@ -12,7 +12,7 @@ class Config {
   /** @type {Discord.ClientOptions} */
   clientOptions = {};
 
-  /** @type {{coolDown(message: Discord.Message, command: Command, timeout: number): void, disabled(message: Discord.Message, command: Command): void, blocked(message: Discord.Message, command: Command): void, botPermsRequired(message: Discord.Message, command: Command, perms: string[]): void, userPermsRequired(message: Discord.Message, command: Command, perms: string[]): void, developerOnly(message: Discord.Message, command: Command): void, guildOnly(message: Discord.Message, command: Command): void}} */
+  /** @type {{coolDown(interaction: Discord.CommandInteraction, command: Command, timeout: number): void, disabled(interaction: Discord.CommandInteraction, command: Command): void, blocked(interaction: Discord.CommandInteraction, command: Command): void, botPermsRequired(interaction: Discord.CommandInteraction, command: Command, perms: string[]): void, userPermsRequired(interaction: Discord.CommandInteraction, command: Command, perms: string[]): void, developerOnly(interaction: Discord.CommandInteraction, command: Command): void, guildOnly(interaction: Discord.CommandInteraction, command: Command): void}} */
   userErrors = {};
 
   /** @type {{[key: string|number]: any}} */
@@ -27,6 +27,9 @@ class Config {
   /** @type {Set<string>} */
   developers = new Set();
 
+  /** @type {boolean} */
+  autoDefer = false;
+
   /** @type {(client:import("discord.js").Client)=>void} */
   onBeforeLoad = () => { };
 
@@ -36,10 +39,10 @@ class Config {
   /** @type {(client:import("discord.js").Client)=>void} */
   onReady = () => { };
 
-  /** @type {(command:Command, message: import("discord.js").Message, other: {plsargs: import("plsargs/src/Result").Result, args: string[], setCoolDown(duration:number): void, usedPrefix: string, usedAlias: string)=>void} */
+  /** @type {(command:Command, interaction: Discord.CommandInteraction} */
   onCommandBeforeChecks = async () => { return true; };
 
-  /** @type {(command:Command, message: import("discord.js").Message, other: {plsargs: import("plsargs/src/Result").Result, args: string[], setCoolDown(duration:number): void, usedPrefix: string, usedAlias: string)=>void} */
+  /** @type {(command:Command, interaction: Discord.CommandInteraction, other: {setCoolDown(duration:number): void)=>void} */
   onCommandAfterChecks = async () => { return true; };
 
   /**
@@ -99,6 +102,8 @@ class Config {
       Array.isArray(arg.developers) ||
       arg.developers instanceof Set
     ) this.developers = new Set([...arg.developers]);
+
+    this.autoDefer = Boolean(arg.autoDefer ?? false);
 
     if (typeof arg.onBeforeLoad == "function") this.onBeforeLoad = arg.onBeforeLoad;
     if (typeof arg.onAfterLoad == "function") this.onAfterLoad = arg.onAfterLoad;
