@@ -83,7 +83,6 @@ global.config = config;
     console.info(`[BİLGİ] ${commands.size} komut okundu.`);
   } else {
     console.error(`[HATA] Hiçbir komut yüklenmedi, herşey yolunda mı?`);
-    process.exit(-1);
   }
 
   console.info("[BİLGİ] Discord hesabına giriş yapılıyor..");
