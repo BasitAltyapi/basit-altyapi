@@ -6,9 +6,6 @@ class Config {
   /** @private */
   _type = "config";
 
-  /** @type {string[]} */
-  prefixes = [];
-
   /** @type {string} */
   clientToken = "";
 
@@ -45,29 +42,10 @@ class Config {
   /** @type {(command:Command, message: import("discord.js").Message, other: {plsargs: import("plsargs/src/Result").Result, args: string[], setCoolDown(duration:number): void, usedPrefix: string, usedAlias: string)=>void} */
   onCommandAfterChecks = async () => { return true; };
 
-  /** @type {Boolean} */
-  addCommandNameAsAlias = true;
-
   /**
    * @param {Config} arg 
    */
   constructor(arg = {}) {
-    if (Array.isArray(arg.prefixes) && arg.prefixes.length != 0) {
-      this.prefixes = arg.prefixes;
-    } else {
-      console.warn(`[UYARI] Ayarlar içerisinde hiçbir prefix belirtilmediği için var sayılan olarak "!" kullanılıyor.`);
-      this.prefixes = ["!"];
-    }
-
-    if (this.prefixes.some(i => typeof i != "string")) {
-      console.error("[HATA] Ayarlardaki prefixler sadece yazı olabilir.");
-      process.exit(-1);
-    }
-
-    if (this.prefixes.some(i => i.includes(" "))) {
-      console.error("[HATA] Ayarlardaki prefixler içerlerinde boşluk içeremezler.");
-      process.exit(-1);
-    }
 
     if (!(typeof arg.clientToken == "string" && arg.clientToken.length != 0)) {
       console.error("[HATA] Ayarlar dosayasında geçersiz bot tokeni girişi yapılmış.");
@@ -98,11 +76,9 @@ class Config {
     this.userErrors = arg.userErrors;
     this.other = arg.other || {};
 
-    this.addCommandNameAsAlias = Boolean(arg.addCommandNameAsAlias ?? true);
-
     this.commandDefaults = typeof arg.commandDefaults == "object" ? arg.commandDefaults : {
       aliases: [],
-      desc: "",
+      description: "",
       develoeOnly: false,
       disabled: false,
       coolDown: -1,

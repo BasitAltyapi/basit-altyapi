@@ -1,8 +1,6 @@
 module.exports = new (require("./types/Config"))({
-  // Liste haline bot için kullanılacak ön-ek/preifxler
-  prefixes: ["!", "ba!"],
   // E tabi, bot tokeni buraya.
-  clientToken: "",
+  clientToken: "ODI0MjEwMTMyMzUwMDA5MzY2.YFsDgA.1pYWz9QrGqJGvLZ2oLdmC9ibbrk",
   // Yasaklı kullanıcıların idleri.
   blockedUsers: new Set([
 
@@ -12,7 +10,9 @@ module.exports = new (require("./types/Config"))({
     "707309693449535599"
   ]),
   // Discord.js client ayarları.
-  clientOptions: {},
+  clientOptions: {
+    intents: ["GUILDS", "GUILD_MESSAGES", "DIRECT_MESSAGES"]
+  },
   // Kullanıcı hatalarındaki uyarı mesajları/olayları.
   userErrors: {
     // Arka arkaya komut kullanma limiti aşıldığında.
@@ -48,14 +48,11 @@ module.exports = new (require("./types/Config"))({
   // Diğer ayarlar. Bunun içine ne isterseniz koyabilirsiniz.
   // Ulaşmak için "global.config.other" objesini kullanabilirsiniz.
   other: {},
-  // Komut ismini otomatik olarak aliasların içine
-  // eklersin mi? Varsayılan true.
-  addCommandNameAsAlias: true,
   // Her komutun varsayılan ayarları her anahtarın ne
   // işe yaradığını merak ediyorsanız commands/ornekKomut.js'e
   // bakabilirsiniz.
   commandDefaults: {
-    desc: "",
+    description: "",
     develoeOnly: false,
     disabled: false,
     coolDown: 0,
@@ -66,7 +63,8 @@ module.exports = new (require("./types/Config"))({
     perms: {
       bot: [],
       user: []
-    }
+    },
+    options: []
   },
   // Bot ilk açıldığında daha hiçbirşey yüklenmeden önce çalışan fonksiyon. Opsiyonel.
   onBeforeLoad(client) {
