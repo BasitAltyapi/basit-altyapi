@@ -14,7 +14,7 @@ class Command {
   /** @type {{bot: import("discord.js").PermissionString[], user: import("discord.js").PermissionString[]}} */
   perms = {bot: [], user: []};
 
-  /** @type {(message: import("discord.js").Message, other: {plsargs: import("plsargs/src/Result").Result, args: string[], setCoolDown(duration:number): void, usedPrefix: string, usedAlias: string})=>void} */
+  /** @type {(message: import("discord.js").Message, other: {plsargs: import("plsargs/src/Result").Result, args: string[], setCoolDown(duration:number): void, usedPrefix: string, usedAlias: string, [key: string|number]: any})=>void} */
   onCommand = () => { };
   
   /** @type {(client: import("discord.js").Client)=>void} */

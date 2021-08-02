@@ -83,13 +83,16 @@ module.exports = new (require("./types/Config"))({
   },
   // Komut üzerinde hiçbir kontrol yapılmadan önce çalışır.
   // Sadece cevap true ise işleme devam eder.
-  async onCommandBeforeChecks(command, message, other) {
+  async onCommandBeforeChecks(command, message) {
     return true;
   },
   // Komuttaki bütün kontrolleri geçtikten sonra, komut
   // hemen çalıştırılmadan önce çalışır.
   // Sadece cevap true ise işleme devam eder.
-  async onCommandAfterChecks(command, message, other) {
+  //
+  // Other objesini istediğiniz gibi modifiye edebilirsiniz. Bunu middleware gibi düşünebilirsiniz.
+  // Nasılsa altakki fonksiyon her komut çalışmadan önce çalışır.
+  async onCommand(command, message, other) {
     return true;
   }
 })

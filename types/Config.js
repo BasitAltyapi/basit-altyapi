@@ -39,11 +39,11 @@ class Config {
   /** @type {(client:import("discord.js").Client)=>void} */
   onReady = () => { };
 
-  /** @type {(command:Command, message: import("discord.js").Message, other: {plsargs: import("plsargs/src/Result").Result, args: string[], setCoolDown(duration:number): void, usedPrefix: string, usedAlias: string)=>void} */
+  /** @type {(command:Command, message: import("discord.js").Message)=>void} */
   onCommandBeforeChecks = async () => { return true; };
 
-  /** @type {(command:Command, message: import("discord.js").Message, other: {plsargs: import("plsargs/src/Result").Result, args: string[], setCoolDown(duration:number): void, usedPrefix: string, usedAlias: string)=>void} */
-  onCommandAfterChecks = async () => { return true; };
+  /** @type {(command:Command, message: import("discord.js").Message, other: {plsargs: import("plsargs/src/Result").Result, args: string[], setCoolDown(duration:number): void, usedPrefix: string, usedAlias: string, [key: string|number]: any)=>void} */
+  onCommand = async () => { return true; };
 
   /** @type {Boolean} */
   addCommandNameAsAlias = true;
@@ -129,7 +129,7 @@ class Config {
     if (typeof arg.onReady == "function") this.onReady = arg.onReady;
     
     if (typeof arg.onCommandBeforeChecks == "function") this.onCommandBeforeChecks = arg.onCommandBeforeChecks;
-    if (typeof arg.onCommandAfterChecks == "function") this.onCommandAfterChecks = arg.onCommandAfterChecks;
+    if (typeof arg.onCommand == "function") this.onCommand = arg.onCommand;
   }
 }
 

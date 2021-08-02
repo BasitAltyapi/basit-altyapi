@@ -144,10 +144,7 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
           return chillout.StopIteration;
         }
 
-        let shouldRun1 = await config.onCommandBeforeChecks(command, message, {
-          args, plsargs, usedPrefix, usedAlias,
-          setCoolDown
-        });
+        let shouldRun1 = await config.onCommandBeforeChecks(command, message);
 
         if (!shouldRun1) return chillout.StopIteration;
         
@@ -180,6 +177,10 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
           }
         }
 
+        let other = {
+          args, plsargs, usedPrefix, usedAlias, setCoolDown
+        };
+
         if (command.coolDown > 0) {
           setCoolDown(command.coolDown);
         }
@@ -195,17 +196,10 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
         }
 
 
-
         (async () => {
-          let shouldRun2 = await config.onCommandAfterChecks(command, message, {
-            args, plsargs, usedPrefix, usedAlias,
-            setCoolDown
-          });
-          if (!shouldRun2) return chillout.StopIteration;
-          await command.onCommand(message, {
-            args, plsargs, usedPrefix, usedAlias,
-            setCoolDown
-          });
+          let shouldRun2 = await config.onCommand(command, message, other);
+          if (!shouldRun2) return;
+          await command.onCommand(message, other);
         })();
 
         return chillout.StopIteration;

@@ -1,4 +1,4 @@
-# Basit Altyapı (Versiyon 1.4.4)
+# Basit Altyapı (Versiyon 1.4.5)
 
 Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran discord bot altyapısı. Sık sık güncelleme alıyor.
 
