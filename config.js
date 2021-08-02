@@ -85,7 +85,7 @@ module.exports = new (require("./types/Config"))({
   // Sadece cevap true ise işleme devam eder.
   //
   // Other objesini istediğiniz gibi modifiye edebilirsiniz.
-  // Nasılsa altakki fonksiyon her komut çalışmadan önce çalışıyor.
+  // Nasılsa altakki fonksiyon her komut çalışmadan önce çalışır.
   async onCommand(command, interaction, other) {
     return true;
   }
