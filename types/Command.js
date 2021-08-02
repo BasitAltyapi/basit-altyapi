@@ -12,7 +12,7 @@ class Command {
   /** @type {{bot: import("discord.js").PermissionString[], user: import("discord.js").PermissionString[]}} */
   perms = {bot: [], user: []};
 
-  /** @type {(interaction: import("discord.js").CommandInteraction, other: {setCoolDown(duration:number): void})=>void} */
+  /** @type {(interaction: import("discord.js").CommandInteraction, other: {setCoolDown(duration:number): void, [key: string|number]: any })=>void} */
   onCommand = () => { };
   
   /** @type {(client: import("discord.js").Client)=>void} */

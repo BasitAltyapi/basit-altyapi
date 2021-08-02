@@ -134,6 +134,7 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
       return;
     }
 
+    let other = {};
 
     let userCooldown = command.coolDowns.get(interaction.user.id) || 0;
     if (Date.now() < userCooldown) {
@@ -148,6 +149,7 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
         return command.coolDowns.delete(interaction.user.id);
       }
     }
+    other.setCoolDown = setCoolDown;
 
     if (command.coolDown > 0) {
       setCoolDown(command.coolDown);
@@ -164,9 +166,9 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
     }
 
     (async () => {
-      let shouldRun2 = await config.onCommandAfterChecks(command, interaction, {setCoolDown});
+      let shouldRun2 = await config.onCommand(command, interaction, other);
       if (!shouldRun2) return;
-      await command.onCommand(interaction, {setCoolDown});
+      await command.onCommand(interaction, other);
     })();
 
     return;

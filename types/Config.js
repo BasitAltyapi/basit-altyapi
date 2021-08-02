@@ -42,8 +42,8 @@ class Config {
   /** @type {(command:Command, interaction: Discord.CommandInteraction} */
   onCommandBeforeChecks = async () => { return true; };
 
-  /** @type {(command:Command, interaction: Discord.CommandInteraction, other: {setCoolDown(duration:number): void)=>void} */
-  onCommandAfterChecks = async () => { return true; };
+  /** @type {(command:Command, interaction: Discord.CommandInteraction, other: {setCoolDown(duration:number): void, [key:string|number]: any)=>void} */
+  onCommand = async () => { return true; };
 
   /**
    * @param {Config} arg 
@@ -110,7 +110,7 @@ class Config {
     if (typeof arg.onReady == "function") this.onReady = arg.onReady;
     
     if (typeof arg.onCommandBeforeChecks == "function") this.onCommandBeforeChecks = arg.onCommandBeforeChecks;
-    if (typeof arg.onCommandAfterChecks == "function") this.onCommandAfterChecks = arg.onCommandAfterChecks;
+    if (typeof arg.onCommand == "function") this.onCommand = arg.onCommand;
   }
 }
 
