@@ -7,6 +7,7 @@ module.exports = new (require("../types/Command"))({
 
     switch (action) {
       case "at": {
+        if (!interaction.member.permissions.has("KICK_MEMBERS")) return interaction.reply("Bu işlemi yapmak için gerekli yetkilere sahip değilsin.");
         let targetMember = interaction.options.getMember("uye");
         let reason = interaction.options.getString("sebep") || "";
         if (!targetMember.kickable) return interaction.reply("Bu üyeyi sunucudan atmaya gücüm yetmiyor.");
@@ -18,6 +19,7 @@ module.exports = new (require("../types/Command"))({
         break;
       };
       case "yasakla": {
+        if (!interaction.member.permissions.has("BAN_MEMBERS")) return interaction.reply("Bu işlemi yapmak için gerekli yetkilere sahip değilsin.");
         let targetMember = interaction.options.getMember("uye");
         let reason = interaction.options.getString("sebep") || "";
         if (!targetMember.bannable) return interaction.reply("Bu üyeyi sunucudan yasaklamaya gücüm yetmiyor.");
@@ -29,6 +31,7 @@ module.exports = new (require("../types/Command"))({
         break;
       };
       case "temizle": {
+        if (!interaction.member.permissions.has("MANAGE_MESSAGES")) return interaction.reply("Bu işlemi yapmak için gerekli yetkilere sahip değilsin.");
         let amount = interaction.options.getInteger("miktar");
         if (amount < 1 || amount > 100) return interaction.reply("Miktar 1 ila 100 arasında olmalıdır.");
 
