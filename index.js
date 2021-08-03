@@ -225,6 +225,7 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
 
   await client.login(config.clientToken);
   console.info("[BİLGİ] Discord'a bağlanıldı!", client.user.tag);
+
   config.onReady(client);
 })();
 

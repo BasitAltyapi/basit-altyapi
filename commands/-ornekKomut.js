@@ -43,5 +43,6 @@ module.exports = new (require("../types/Command"))({
   },
   // Slash komut opsiyonları.
   // Daha fazla örnek için diğer komut dosylarına bakabilirsiniz.
-  options: []
+  options: [],
+  
 })

@@ -26,7 +26,7 @@ class Event {
   disabled = false;
 
   /**
-   * @param {Event} arg
+   * @param {Omit<Event, "_type">} arg
    */
   constructor(arg) {
     this.name = arg.name;

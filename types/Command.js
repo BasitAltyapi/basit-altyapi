@@ -3,9 +3,11 @@ const { } = require("discord.js");
 
 class Command {
 
-  /** @private */
+  /** 
+   * @private
+   */
   _type = "command";
-  
+
   /** @type {string} */
   name = "";
 
@@ -43,7 +45,7 @@ class Command {
   guildOnly = true;
 
   /**
-   * @param {Command} arg
+   * @param {Omit<Command, "_type" >} arg
    */
   constructor(arg = {}) {
     this.name = arg.name;
