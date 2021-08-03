@@ -1,3 +1,5 @@
+const {sleep} = require("stuffs");
+
 module.exports = new (require("../types/Command"))({
   name: "moderasyon",
   async onCommand(interaction, other) {
@@ -6,7 +8,7 @@ module.exports = new (require("../types/Command"))({
     switch (action) {
       case "at": {
         let targetMember = interaction.options.getMember("uye");
-        let reason = interaction.options.getString("reason") || "";
+        let reason = interaction.options.getString("sebep") || "";
         if (!targetMember.kickable) return interaction.reply("Bu üyeyi sunucudan atmaya gücüm yetmiyor.");
         
         await targetMember.kick(reason);
@@ -17,7 +19,7 @@ module.exports = new (require("../types/Command"))({
       };
       case "yasakla": {
         let targetMember = interaction.options.getMember("uye");
-        let reason = interaction.options.getString("reason") || "";
+        let reason = interaction.options.getString("sebep") || "";
         if (!targetMember.bannable) return interaction.reply("Bu üyeyi sunucudan yasaklamaya gücüm yetmiyor.");
 
         await targetMember.ban({reason});
@@ -30,10 +32,16 @@ module.exports = new (require("../types/Command"))({
         let amount = interaction.options.getInteger("miktar");
         if (amount < 1 || amount > 100) return interaction.reply("Miktar 1 ila 100 arasında olmalıdır.");
 
-        await interaction.channel.bulkDelete(amount);
+        try {
+          await interaction.channel.bulkDelete(amount);
 
-        interaction.reply(`**${amount} adet** mesaj **silindi*.`);
-        
+          interaction.reply(`**${amount} adet** mesaj **silindi**.`);
+          await sleep(3000);
+          interaction.deleteReply();
+        } catch (err) {
+          interaction.reply(`Birşeyler yanlış gitti! \`${err}\``);
+        }
+
         break;
       };
     }

@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 
 module.exports = new (require("./types/Config"))({
   // E tabi, bot tokeni buraya.
-  clientToken: "ODI0MjEwMTMyMzUwMDA5MzY2.YFsDgA.pnjs_wWuqiUuxuVsS-MdOhYNFkY",
+  clientToken: "",
   // Yasaklı kullanıcıların idleri.
   blockedUsers: new Set([
 
