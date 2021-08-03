@@ -37,6 +37,12 @@ global.config = config;
 
   let commandFiles = await readdirRecursive(commandsPath);
 
+  commandFiles = commandFiles.filter(i => {
+    let state = path.basename(i).startsWith("-");
+    if (state) console.warn(`[UYARI] "${i}" dosyası tire ile başladığı için liste dışı bırakıldı.`);
+    return !state;
+  });
+
   /** @type {Map<import("./types/Command")>} */
   let commands = new Map();
 

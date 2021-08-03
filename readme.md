@@ -22,6 +22,7 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
 - ✅ Komut varsayılanlarını değiştirebilme.
 - ✅ Kolay bir şekilde komut öncesi işlem ekleyebilme.
 - ✅ Kolay bir şekilde komut veya olay altyapsı oluşturabilme.
+- ✅ Kolayca dosya devre dışı bırakılabilme. İsmi tire (-) ile başlayan komutlar ve olaylar umursanmaz.
 
 ## Kurlumu
 
