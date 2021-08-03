@@ -1,3 +1,7 @@
+>
+> Slash command versiyonu için [dcjs-v13](https://github.com/TheArmagan/basit-altyapi/tree/dcjs-v13) dalına bakabilirsiniz.
+>
+
 # Basit Altyapı (Versiyon 1.4.5)
 
 Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran discord bot altyapısı. Sık sık güncelleme alıyor.
