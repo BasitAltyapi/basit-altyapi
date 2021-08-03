@@ -86,10 +86,6 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
       return;
     };
 
-    if (!command.guildOnly && (command.perms.bot.length != 0 || command.perms.user.length != 0)) {
-      console.warn(`[UYARI] "${command.name}" adlı komut sunuculara özel olmamasına rağmen özel perm kullanıyor.`);
-    }
-
     global.events.set(event.name, event);
     event.onLoad(client);
     console.info(`[BİLGİ] "${event.name}" adlı event yüklendi. (${Date.now() - start}ms sürdü.)`);
@@ -132,6 +128,10 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
     if (command.guildOnly && interaction.channel.type == "dm") {
       config.userErrors.guildOnly(interaction, command);
       return;
+    }
+
+    if (!command.guildOnly && (command.perms.bot.length != 0 || command.perms.user.length != 0)) {
+      console.warn(`[UYARI] "${command.name}" adlı komut sunuculara özel olmamasına rağmen özel perm kullanıyor.`);
     }
 
     let other = {};
