@@ -1,7 +1,21 @@
+const expressionMap = {
+  "add": "+",
+  "subtract": "-",
+  "multiply": "*",
+  "divide": "/"
+};
+
 module.exports = new (require("../types/Command"))({
   name: "matamatik",
   onCommand(interaction, other) {
-    interaction.reply("test");
+    let numberOne = interaction.options.getNumber("number_one");
+    let expressionName = interaction.options.getString("expression_type");
+    let numberTwo = interaction.options.getNumber("number_two");
+
+    let expressionOperator = expressionMap[expressionName];
+    let result = eval(`${numberOne}${expressionOperator}${numberTwo}`);
+
+    interaction.reply(`\`${numberOne} ${expressionOperator} ${numberTwo}\` işleminin cevabı: \`${result}\``);
   },
   description: "Basit 4 işlem sorularını yapmanızı sağlar.",
   developerOnly: false,
