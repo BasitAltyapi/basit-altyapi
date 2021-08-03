@@ -2,7 +2,7 @@
 > Slash command versiyonu için [dcjs-v13](https://github.com/TheArmagan/basit-altyapi/tree/dcjs-v13) dalına bakabilirsiniz.
 >
 
-# Basit Altyapı (Versiyon 1.4.5)
+# Basit Altyapı (Versiyon 1.4.6)
 
 Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran discord bot altyapısı. Sık sık güncelleme alıyor.
 
@@ -26,6 +26,7 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
 - ✅ Komut varsayılanlarını değiştirebilme.
 - ✅ Kolay bir şekilde komut öncesi işlem ekleyebilme.
 - ✅ Kolay bir şekilde komut veya olay altyapsı oluşturabilme.
+- ✅ Kolayca dosya devre dışı bırakılabilme. İsmi tire (-) ile başlayan komutlar ve olaylar umursanmaz.
 
 ## Kurlumu
 

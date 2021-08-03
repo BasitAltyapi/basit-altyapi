@@ -27,6 +27,12 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
   let loadStart = Date.now();
   let commandFiles = await readdirRecursive(commandsPath);
 
+  commandFiles = commandFiles.filter(i => {
+    let state = path.basename(i).startsWith("-");
+    if (state) console.warn(`[UYARI] "${i}" dosyası tire ile başladığı için liste dışı bırakıldı.`);
+    return !state;
+  });
+
   await chillout.forEach(commandFiles, (commandFile) => {
     let start = Date.now();
     console.info(`[BİLGİ] "${commandFile}" komut yükleniyor..`)
@@ -72,6 +78,13 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
   }
 
   let eventFiles = await readdirRecursive(eventsPath);
+
+  eventFiles = eventFiles.filter(i => {
+    let state = path.basename(i).startsWith("-");
+    if (state) console.warn(`[UYARI] "${i}" dosyası tire ile başladığı için liste dışı bırakıldı.`);
+    return !state;
+  });
+
   await chillout.forEach(eventFiles, async (eventFile) => {
     let start = Date.now();
     console.info(`[BİLGİ] "${eventFile}" event yükleniyor..`);
