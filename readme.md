@@ -1,6 +1,6 @@
 # Basit Altyapı (Versiyon 1.5.1)
 
-Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran discord bot altyapısı. Sık sık güncelleme alıyor.
+Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran discord bot altyapısı. Sık sık güncelleme alıyor. (Slash Commands)
 
 ## Yapılacaklar
 
