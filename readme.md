@@ -1,4 +1,4 @@
-# Basit Altyapı (Versiyon 1.5.1)
+# Basit Altyapı (Versiyon 1.5.2)
 
 Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran discord bot altyapısı. Sık sık güncelleme alıyor. (Slash Commands)
 
@@ -37,7 +37,8 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
 - Botun genel ayarlarını, kullanıcı hata mesajlarını düzenlemek ve diğer olaylarda düzenleme yapmak için [`config.js`](./config.js) config dosyasını dikkatlice okuyup ona göre ayarlayabilirsiniz.
 - Komutlar için `commands` klasörünün içindeki [`ornekKomut.js`](./commands/ornekKomut.js) dosyasını dikkatlice okuyabilirsiniz.
 - Yeni bir komut dosyası oluşturmak isterseniz `yarn komut` komutunu kullanabilsiniz. Bu sayede sizi ilk komut altyapısını yazma derdinden kurtaracak ve komut hakkında her türlü soruyu soracaktır.
-- Slash komutlarını discord üzerinde global olarak yayınlamak için `node loadcommands.js global` veya sadece bir sunucu için yayınlamak istiyorsanız `node loadcommands.js guild <guildId>` komutunu kullanabilirsiniz. Global komutların sunuculara gelmesi 1 saat kadar sürebilir. Aksine suncuya ayit komutlar 5 ile 10 saniye içerisinde gelir.
+
+- Slash komutlarını discord üzerinde global olarak yayınlamak için `node loadcommands.js global` veya sadece bir sunucu için yayınlamak istiyorsanız `node loadcommands.js guild <guildId>` komutunu kullanabilirsiniz. Global komutların sunuculara gelmesi 1 saat kadar sürebilir. Aksine suncuya ayit komutlar 5 ile 10 saniye içerisinde gelir. *Not: Botunuzu test ederken global komutlar akisne sunucu komutlarını kullanarak debug etmenizi tavsiye ederim. Çünkü global komutları spam halinde yayınlarsanız ratelimite düşebilirsiniz.*
 
 
 - Olaylar için `events` klasörünün içindeki [`ornekOlay.js`](./events/ornekOlay.js) dosyasını dikkatlice okuyabilirsiniz.

@@ -50,10 +50,6 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
       return;
     };
 
-    if (!command.guildOnly && (command.perms.bot.length != 0 || command.perms.user.length != 0)) {
-      console.warn(`[UYARI] "${command.name}" adlı komut sunuculara özel olmamasına rağmen özel perm kullanıyor.`);
-    }
-
     global.commands.set(command.name, command);
     command.onLoad(client);
     console.info(`[BİLGİ] "${command.name}" adlı komut yüklendi. (${Date.now() - start}ms sürdü.)`);
@@ -129,11 +125,6 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
       return;
     }
 
-    if (command.guildOnly && interaction.channel.type == "dm") {
-      config.userErrors.guildOnly(interaction, command);
-      return;
-    }
-
     let other = {};
 
     let userCooldown = command.coolDowns.get(interaction.user.id) || 0;
@@ -155,12 +146,12 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
       setCoolDown(command.coolDown);
     }
 
-    if (command.guildOnly && command.perms.bot.length != 0 && !command.perms.bot.every(perm => interaction.guild.me.permissions.has(perm))) {
+    if (command.perms.bot.length != 0 && !command.perms.bot.every(perm => interaction.guild.me.permissions.has(perm))) {
       config.userErrors.botPermsRequired(interaction, command, command.perms.bot);
       return;
     }
 
-    if (command.guildOnly && command.perms.user.length != 0 && !command.perms.user.every(perm => interaction.member.permissions.has(perm))) {
+    if (command.perms.user.length != 0 && !command.perms.user.every(perm => interaction.member.permissions.has(perm))) {
       config.userErrors.userPermsRequired(interaction, command, command.perms.user);
       return;
     }

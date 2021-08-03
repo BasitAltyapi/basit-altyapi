@@ -1,7 +1,7 @@
 module.exports = new (require("../types/Command"))({
   // Komutun ismi. Opsiyonel, boş bırakıldığında dosya ismini alır.
-  // Boşluk içeremez. Bu komut kullanıcıya /önnekkomut şeklinde gözükecektir.
-  name: "örnekKomut",
+  // Boşluk içeremez. Bu komut kullanıcıya /onnekkomut şeklinde gözükecektir.
+  name: "ornekKomut",
   // onCommand fonksiyonu her komut kullanıldığında çağrılır.
   onCommand(interaction, other) {
     // Discord.js CommandInteraction objesi.
@@ -18,7 +18,7 @@ module.exports = new (require("../types/Command"))({
     // Normal discord.js Client objesi
     client;
   },
-  // Komut açıklaması, Opsiyonel.
+  // Komut açıklaması, Gerekli.
   description: "Örnek komut.",
   // Sadece bot geliştiricilerine özelmi değil mi?
   // Opsiyonel. Varsayılan olarak false.
@@ -30,9 +30,6 @@ module.exports = new (require("../types/Command"))({
   // Opsiyonel. Varsayılan olarak 0.
   // Bu değer other.setCoolDown(1000) fonksiyonu olarak işlem başına değiştirilebilir.
   coolDown: 1000,
-  // Komut sadece sunuculara mı özel?
-  // Opsiyonel. Varsayılan olarak true.
-  guildOnly: true,
   // İstediğiniz komut ile alakalı diğer bütün dataları burada tutabilirsiniz.
   // Opsiyonel. Varsayılan olarak {}.
   other: {},
@@ -43,5 +40,8 @@ module.exports = new (require("../types/Command"))({
     bot: ["SEND_MESSAGES"],
     // Komutun çalışması için kullanıcıya gerekli olan yetkiler.
     user: []
-  }
+  },
+  // Slash komut opsiyonları.
+  // Daha fazla örnek için diğer komut dosylarına bakabilirsiniz.
+  options: []
 })

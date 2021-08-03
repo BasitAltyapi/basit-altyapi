@@ -48,7 +48,7 @@ async function permissionPrompt(message = "") {
 (async () => {
   if (mode == "command") {
     console.clear();
-    let name = (await prompt({
+    let fileName = (await prompt({
       type: "input",
       name: "name",
       message: "Komut dosya ismi ne olsun?",
@@ -59,25 +59,37 @@ async function permissionPrompt(message = "") {
       required: true
     })).name;
     console.clear();
-    let desc = (await prompt({
+    let commandName = (await prompt({
       type: "input",
-      name: "desc",
+      name: "name",
+      message: "Slash komut ismi ne olsun? Boşluk, büyük harf, türkçe harf içeremez.",
+      validate(name) {
+        if (name.includes(" ")) return false;
+        if (name != name.toLowerCase()) return false;
+        if (name.length > 32) return false;
+        if (name.length < 1) return false;
+        return true;
+      },
+      result(value) {
+        if (value.startsWith("/")) value = value.slice(1);
+        return value;
+      },
+      required: true
+    })).name;
+    console.clear();
+    let description = (await prompt({
+      type: "input",
+      name: "description",
       message: "Komut açıklaması ne olsun?",
-      initial: ""
-    })).desc;
+      initial: "",
+      required: true,
+    })).description;
     console.clear();
     const developerOnly = await (new Toggle({
       message: "Bu komut geliştiricilere özel mi?",
       enabled: "Evet",
       disabled: "Hayır",
       initial: false
-    })).run();
-    console.clear();
-    const guildOnly = await (new Toggle({
-      message: "Bu komut sadece sunuculara özel mi?",
-      enabled: "Evet",
-      disabled: "Hayır",
-      initial: true
     })).run();
     console.clear();
     const usesCoolDown = await (new Toggle({
@@ -106,62 +118,49 @@ async function permissionPrompt(message = "") {
         }
       })).coolDown;
     }
-    console.clear();
-    const { aliases } = await prompt({
-      type: "input",
-      name: "aliases",
-      message: "Bu komutun başka yan-isimleri var mı? (aliases, Virgül ile ayır.)",
-      initial: "",
-      result(val) {
-        return val.split(/ ?, ?| /);
-      }
-    });
 
     let botPerms = [];
     let userPerms = [];
 
-    if (guildOnly) {
+    console.clear();
+    if (await (new Toggle({
+      message: "Komut çalışması için botta ek yetkilerin olması gerekiyor mu?",
+      enabled: "Evet",
+      disabled: "Hayır",
+      initial: false
+    })).run()) {
       console.clear();
-      if (await (new Toggle({
-        message: "Komut çalışması için botta ek yetkilerin olması gerekiyor mu?",
-        enabled: "Evet",
-        disabled: "Hayır",
-        initial: false
-      })).run()) {
-        console.clear();
-        botPerms = await permissionPrompt("Komutun çalışması için bota gerekli olan yetkileri seç.");
-      }
+      botPerms = await permissionPrompt("Komutun çalışması için bota gerekli olan yetkileri seç.");
+    }
 
+    console.clear();
+    if (await (new Toggle({
+      message: "Bu komutu kullanabilmek için kullanıcının ek yetkilere ihtiyacı var mı?",
+      enabled: "Evet",
+      disabled: "Hayır",
+      initial: false
+    })).run()) {
       console.clear();
-      if (await (new Toggle({
-        message: "Bu komutu kullanabilmek için kullanıcının ek yetkilere ihtiyacı var mı?",
-        enabled: "Evet",
-        disabled: "Hayır",
-        initial: false
-      })).run()) {
-        console.clear();
-        userPerms = await permissionPrompt("Bu komutu kullanabilmek için kullanıcıya gerekli olan yetkileri seç.");
-      }
+      userPerms = await permissionPrompt("Bu komutu kullanabilmek için kullanıcıya gerekli olan yetkileri seç.");
     }
     console.clear();
 
-    name = name.replace(/ +/g, "");
-    if (name.endsWith(".js")) name = name.slice(-3);
-    let filePath = path.resolve("./commands", `${name}.js`);
+    fileName = fileName.replace(/ +/g, "");
+    if (fileName.endsWith(".js")) fileName = fileName.slice(-3);
+    let filePath = path.resolve("./commands", `${fileName}.js`);
 
     console.log(`√ Dosya "${filePath}" konumuna hazırlanıyor!`);
     let t = `module.exports = new (require("../types/Command"))({
+  name: "${commandName.replace(/"/gm, "\\\"")}",
   onCommand(interaction, other) {
     // Komut kullanıldığında burası çalışır.
   },
   onLoad(client) {
     // Komut çalışmaya hazır olduğunda çalışır. Opsiyonel silebilirsiniz.
   },
-  ${aliases.length != 0 ? `aliases: ${JSON.stringify(aliases)},` : ""}
-  ${desc.trim() ? `desc: "${desc.replace(/"/gm, "\\\"")}",` : ""}
+  ${description.trim() ? `description: "${description.replace(/"/gm, "\\\"")}",` : ""}
   developerOnly: ${developerOnly},
   ${usesCoolDown ? `coolDown: ${coolDown},` : ""}
-  guildOnly: ${guildOnly},
   ${botPerms.length != 0 || userPerms.length != 0 ? `perms: {
     ${botPerms.length != 0 ? `bot: ${JSON.stringify(botPerms)},` : ""}
     ${userPerms.length != 0 ? `user: ${JSON.stringify(userPerms)}` : ""}

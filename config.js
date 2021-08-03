@@ -1,3 +1,5 @@
+const Discord = require('discord.js');
+
 module.exports = new (require("./types/Config"))({
   // E tabi, bot tokeni buraya.
   clientToken: "",
@@ -11,6 +13,7 @@ module.exports = new (require("./types/Config"))({
   ]),
   // Discord.js client ayarları.
   clientOptions: {
+    // Okumanızı tavsiye ederim: https://discordjs.guide/popular-topics/intents.html
     intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_MEMBERS", "GUILD_WEBHOOKS"]
   },
   // Kullanıcı hatalarındaki uyarı mesajları/olayları.
@@ -38,10 +41,6 @@ module.exports = new (require("./types/Config"))({
     // Komut sadece geliştiricilere özel olduğunda.
     developerOnly(interaction, command) {
       interaction.reply(`Bu komutu sadece bot geliştiricileri kullanabilir.`)
-    },
-    // Sunuculara özel olan bir komutu dm'den kullanılmaya çalıştığı zaman.
-    guildOnly(interaction, command) {
-      interaction.reply(`Bu komut sadece sunucularda kullanılabilir.`)
     }
   },
   // Diğer ayarlar. Bunun içine ne isterseniz koyabilirsiniz.

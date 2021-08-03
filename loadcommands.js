@@ -59,20 +59,25 @@ global.config = config;
       console.warn(`[UYARI] "${command.name}" adlı bir komut daha önceden zaten yüklenmiş. Atlanıyor..`)
       return;
     }
+  
+    if (!command.description) {
+      console.warn(`[UYARI] "${command.name}" adlı komut açıklama içermiyor. Atlanıyor..`)
+      return;
+    }
 
-    command.options.forEach(i => {
-      if (i.name != i.name.toLowerCase()) {
-        console.error(`[HATA] "${command.name}" adlı komutun, "${i.name}" adlı opsiyon ismi tamamen küçük haflerden oluşmalı.`);
-        process.exit(-1);
-      }
-      if (i.name.includes(" ")) {
-        console.error(`[HATA] "${command.name}" adlı komutun, "${i.name}" adlı opsiyon ismi boşluk içeremez.`);
-        process.exit(-1);
-      }
-    })
-
-    if (!command.guildOnly && (command.perms.bot.length != 0 || command.perms.user.length != 0)) {
-      console.warn(`[UYARI] "${command.name}" adlı komut sunuculara özel olmamasına rağmen özel perm kullanıyor.`);
+    {
+      let err = false;
+      command.options.forEach(i => {
+        if (i.name != i.name.toLowerCase()) {
+          console.error(`[HATA] "${command.name}" adlı komutun, "${i.name}" adlı opsiyon ismi tamamen küçük haflerden oluşmalı. Atlanıyor..`);
+          err = true;
+        }
+        if (i.name.includes(" ")) {
+          console.error(`[HATA] "${command.name}" adlı komutun, "${i.name}" adlı opsiyon ismi boşluk içeremez. Atlanıyor..`);
+          err = true;
+        }
+      });
+      if (err) return;
     }
 
     commands.set(command.name, command);
@@ -89,7 +94,7 @@ global.config = config;
   await client.login(config.clientToken);
   console.info("[BİLGİ] Discord hesabına giriş yapıldı.");
 
-  console.info("[BİLGİ] Komutlar discord'a gönderiliyor.");
+  console.info("[BİLGİ] Komut şekilleri oluşturuluyor.");
 
   const commandData = [...commands.values()].map(cmd => {
     let shape = {
@@ -97,7 +102,7 @@ global.config = config;
       description: cmd.description,
       options: cmd.options
     };
-    console.log("[BİLGİ] Komut: " + cmd.name, shape);
+    console.info(`[BİLGİ] Komut: ${cmd.name}`, shape);
     return shape;
   })
 

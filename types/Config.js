@@ -12,7 +12,7 @@ class Config {
   /** @type {Discord.ClientOptions} */
   clientOptions = {};
 
-  /** @type {{coolDown(interaction: Discord.CommandInteraction, command: Command, timeout: number): void, disabled(interaction: Discord.CommandInteraction, command: Command): void, blocked(interaction: Discord.CommandInteraction, command: Command): void, botPermsRequired(interaction: Discord.CommandInteraction, command: Command, perms: string[]): void, userPermsRequired(interaction: Discord.CommandInteraction, command: Command, perms: string[]): void, developerOnly(interaction: Discord.CommandInteraction, command: Command): void, guildOnly(interaction: Discord.CommandInteraction, command: Command): void}} */
+  /** @type {{coolDown(interaction: Discord.CommandInteraction, command: Command, timeout: number): void, disabled(interaction: Discord.CommandInteraction, command: Command): void, blocked(interaction: Discord.CommandInteraction, command: Command): void, botPermsRequired(interaction: Discord.CommandInteraction, command: Command, perms: string[]): void, userPermsRequired(interaction: Discord.CommandInteraction, command: Command, perms: string[]): void, developerOnly(interaction: Discord.CommandInteraction, command: Command): void}} */
   userErrors = {};
 
   /** @type {{[key: string|number]: any}} */
@@ -64,8 +64,7 @@ class Config {
       "blocked",
       "botPermsRequired",
       "userPermsRequired",
-      "developerOnly",
-      "guildOnly"
+      "developerOnly"
     ];
     let loadedMessageTypes = Object.keys(arg.userErrors || {});
     if (
@@ -85,7 +84,6 @@ class Config {
       develoeOnly: false,
       disabled: false,
       coolDown: -1,
-      guildOnly: true,
       other: {},
       perms: {
         bot: ["SEND_MESSAGES"],
