@@ -74,9 +74,10 @@ module.exports = new (require("./types/Config"))({
     console.log("[CONFIG] Yükleme bittikten sonra çalıştı.");
   },
   // Bot açıldıktan sonra kullanıma hazır olduktan sonra çalışan fonksiyon. Opsiyonel.
-  onReady(client) {
+  async onReady(client) {
     console.log("[CONFIG] Discord hesabına giriş yaptıktan sonra çalıştı.");
     client.user.setActivity(`/help`, { type: "WATCHING" });
+
   },
   // Komut üzerinde hiçbir kontrol yapılmadan önce çalışır.
   // Sadece cevap true ise işleme devam eder.

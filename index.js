@@ -44,7 +44,8 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
       return;
     }
 
-    if (typeof command.name != "string") command.name = path.basename(commandFile).slice(0, -3).replace(/ /g, "").toLowerCase();
+    if (typeof command.name != "string") command.name = path.basename(commandFile).slice(0, -3);
+    command.name = command.name.replace(/ /g, "").toLowerCase();
 
     if (global.commands.has(command.name)) {
       console.warn(`[UYARI] "${command.name}" adlı bir komut daha önceden zaten yüklenmiş. Atlanıyor.`)
