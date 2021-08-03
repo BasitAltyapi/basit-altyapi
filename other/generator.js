@@ -92,6 +92,13 @@ async function permissionPrompt(message = "") {
       initial: false
     })).run();
     console.clear();
+    const guildOnly = await (new Toggle({
+      message: "Bu komut sadece sunuculara özel mi?",
+      enabled: "Evet",
+      disabled: "Hayır",
+      initial: true
+    })).run();
+    console.clear();
     const usesCoolDown = await (new Toggle({
       message: "Bu komut yavaşlatma kullanıyor mu? (coolDown)",
       enabled: "Evet",
@@ -122,26 +129,28 @@ async function permissionPrompt(message = "") {
     let botPerms = [];
     let userPerms = [];
 
-    console.clear();
-    if (await (new Toggle({
-      message: "Komut çalışması için botta ek yetkilerin olması gerekiyor mu?",
-      enabled: "Evet",
-      disabled: "Hayır",
-      initial: false
-    })).run()) {
+    if (guildOnly) {
       console.clear();
-      botPerms = await permissionPrompt("Komutun çalışması için bota gerekli olan yetkileri seç.");
-    }
+      if (await (new Toggle({
+        message: "Komut çalışması için botta ek yetkilerin olması gerekiyor mu?",
+        enabled: "Evet",
+        disabled: "Hayır",
+        initial: false
+      })).run()) {
+        console.clear();
+        botPerms = await permissionPrompt("Komutun çalışması için bota gerekli olan yetkileri seç.");
+      }
 
-    console.clear();
-    if (await (new Toggle({
-      message: "Bu komutu kullanabilmek için kullanıcının ek yetkilere ihtiyacı var mı?",
-      enabled: "Evet",
-      disabled: "Hayır",
-      initial: false
-    })).run()) {
       console.clear();
-      userPerms = await permissionPrompt("Bu komutu kullanabilmek için kullanıcıya gerekli olan yetkileri seç.");
+      if (await (new Toggle({
+        message: "Bu komutu kullanabilmek için kullanıcının ek yetkilere ihtiyacı var mı?",
+        enabled: "Evet",
+        disabled: "Hayır",
+        initial: false
+      })).run()) {
+        console.clear();
+        userPerms = await permissionPrompt("Bu komutu kullanabilmek için kullanıcıya gerekli olan yetkileri seç.");
+      }
     }
     console.clear();
 
@@ -160,6 +169,7 @@ async function permissionPrompt(message = "") {
   },
   ${description.trim() ? `description: "${description.replace(/"/gm, "\\\"")}",` : ""}
   developerOnly: ${developerOnly},
+  guildOnly: ${guildOnly},
   ${usesCoolDown ? `coolDown: ${coolDown},` : ""}
   ${botPerms.length != 0 || userPerms.length != 0 ? `perms: {
     ${botPerms.length != 0 ? `bot: ${JSON.stringify(botPerms)},` : ""}

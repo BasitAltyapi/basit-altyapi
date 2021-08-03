@@ -39,6 +39,9 @@ class Command {
   /** @type {import("discord.js").ApplicationCommandOption[]} */
   options = [];
 
+  /** @type {boolean} */
+  guildOnly = true;
+
   /**
    * @param {Command} arg
    */
@@ -48,6 +51,7 @@ class Command {
     this.perms.user = Array.isArray(arg.perms?.user) && arg.perms.user.length != 0 ? arg.perms.user : global.config.commandDefaults.perms.user;
     this.onCommand = arg.onCommand;
     if (typeof arg.onLoad == "function") this.onLoad = arg.onLoad;
+    this.guildOnly = Boolean(arg.guildOnly ?? global.config.commandDefaults.guildOnly);
     this.description = arg.description || global.config.commandDefaults.description;
     this.disabled = Boolean(arg.disabled ?? global.config.commandDefaults.disabled);
     this.developerOnly = Boolean(arg.developerOnly ?? global.config.commandDefaults.developerOnly);

@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 
 module.exports = new (require("./types/Config"))({
   // E tabi, bot tokeni buraya.
-  clientToken: "",
+  clientToken: "ODI0MjEwMTMyMzUwMDA5MzY2.YFsDgA.pnjs_wWuqiUuxuVsS-MdOhYNFkY",
   // Yasaklı kullanıcıların idleri.
   blockedUsers: new Set([
 
@@ -41,6 +41,9 @@ module.exports = new (require("./types/Config"))({
     // Komut sadece geliştiricilere özel olduğunda.
     developerOnly(interaction, command) {
       interaction.reply(`Bu komutu sadece bot geliştiricileri kullanabilir.`)
+    },
+    guildOnly(interaction, command) {
+      interaction.reply(`Bu komutu sadece sunucularda kullanılabilir.`)
     }
   },
   // Diğer ayarlar. Bunun içine ne isterseniz koyabilirsiniz.
@@ -51,9 +54,10 @@ module.exports = new (require("./types/Config"))({
   // bakabilirsiniz.
   commandDefaults: {
     description: "Açıkla belirtilmemiş.",
-    develoeOnly: false,
+    developerOnly: false,
+    guildOnly: true,
     disabled: false,
-    coolDown: 0,
+    coolDown: -1,
     other: {},
     perms: {
       bot: [],
