@@ -42,7 +42,7 @@ class Command {
   coolDown = 0;
 
   /**
-   * @param {Command} arg
+   * @param {Omit<Command, "_type" >} arg
    */
   constructor(arg = {}) {
     this.name = arg.name;
