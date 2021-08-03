@@ -1,7 +1,7 @@
 module.exports = new (require("../types/Command"))({
   // Komutun ismi. Opsiyonel, boş bırakıldığında dosya ismini alır.
   // Boşluk içeremez. Bu komut kullanıcıya /onnekkomut şeklinde gözükecektir.
-  name: "ornekKomut",
+  name: "ornekkomut",
   // onCommand fonksiyonu her komut kullanıldığında çağrılır.
   onCommand(interaction, other) {
     // Discord.js CommandInteraction objesi.

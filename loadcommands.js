@@ -51,7 +51,9 @@ global.config = config;
       return;
     }
 
-    if (typeof command.name != "string") command.name = path.basename(commandFile).slice(0, -3).replace(/ /g, "").toLowerCase();
+    if (typeof command.name != "string") command.name = path.basename(commandFile).slice(0, -3);
+    command.name = command.name.replace(/ /g, "").toLowerCase();
+
 
     console.info(`[BILGI] "${commandFile}" -> /${command.name}`);
 
@@ -106,16 +108,22 @@ global.config = config;
     return shape;
   })
 
-  if (GUILD_ID) {
-    console.info(`[BİLGİ] ${GUILD_ID} idli sunucunun komutları gönderiliyor..`);
-    await client.guilds.cache.get(GUILD_ID).commands.set(commandData);
-    console.info(`[BİLGİ] ${GUILD_ID} idli sunucunun komutları gönderildi!`);
-    console.warn(`[UYARI] ${GUILD_ID} idli sunucuya komutların gelmesi 5 ila 10 saniye sürebilir. Bu süre discord tarafından verilmiştir.`);
-  } else {
-    console.info("[BİLGİ] Global komutlar gönderiliyor..");
-    await client.application.commands.set(commandData);
-    console.info("[BİLGİ] Global komutlar gönderildi!");
-    console.warn("[UYARI] Global yükleme yaptığınız için bütün sunucular komutların gelmesi 1 saat kadar sürebilir. Bu süre discord tarafından verilmiştir.");
+  try {
+    if (GUILD_ID) {
+      console.info(`[BİLGİ] ${GUILD_ID} idli sunucunun komutları gönderiliyor..`);
+      await client.guilds.cache.get(GUILD_ID).commands.set(commandData);
+      console.info(`[BİLGİ] ${GUILD_ID} idli sunucunun komutları gönderildi!`);
+      console.warn(`[UYARI] ${GUILD_ID} idli sunucuya komutların gelmesi 5 ila 10 saniye sürebilir. Bu süre discord tarafından verilmiştir.`);
+    } else {
+      console.info("[BİLGİ] Global komutlar gönderiliyor..");
+      await client.application.commands.set(commandData);
+      console.info("[BİLGİ] Global komutlar gönderildi!");
+      console.warn("[UYARI] Global yükleme yaptığınız için bütün sunucular komutların gelmesi 1 saat kadar sürebilir. Bu süre discord tarafından verilmiştir.");
+    }
+  } catch (err) {
+    console.error("[HATA] Birşeyler çok yanlış gitti!");
+    console.error(err);
+    process.exit(-1);
   }
   
   await sleep(3000);
