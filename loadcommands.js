@@ -43,7 +43,7 @@ global.config = config;
     return !state;
   });
 
-  /** @type {Map<import("./types/Command")>} */
+  /** @type {Map<string, import("./types/Command")>} */
   let commands = new Map();
 
   await chillout.forEach(commandFiles, (commandFile) => {
@@ -108,7 +108,8 @@ global.config = config;
     let shape = {
       name: cmd.name,
       description: cmd.description,
-      options: cmd.options
+      options: cmd.options,
+      defaultPermission: cmd.defaultPermission
     };
     console.info(`[BİLGİ] Komut: ${cmd.name}`, shape);
     return shape;
@@ -116,6 +117,16 @@ global.config = config;
 
   try {
     if (GUILD_ID) {
+      
+      // let oldCommands = [...(await client.guilds.cache.get(GUILD_ID).commands.fetch()).entries()];
+      
+      // console.info(`[BİLGİ] ${GUILD_ID} idli sunucunun komutları temizleniyor..`);
+      // for (let i = 0; i < oldCommands.length; i++) {
+      //   const [oldCommandId, oldCommand] = oldCommands[i];
+      //   await oldCommand.delete();
+      //   console.info(`[BİLGİ] ${oldCommand.name} isimli komut silindi.`);
+      // }
+
       console.info(`[BİLGİ] ${GUILD_ID} idli sunucunun komutları gönderiliyor..`);
       await client.guilds.cache.get(GUILD_ID).commands.set(commandData);
       console.info(`[BİLGİ] ${GUILD_ID} idli sunucunun komutları gönderildi!`);

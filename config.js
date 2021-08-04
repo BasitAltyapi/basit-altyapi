@@ -63,7 +63,8 @@ module.exports = new (require("./types/Config"))({
       bot: [],
       user: []
     },
-    options: []
+    options: [],
+    defaultPermission: true
   },
   // Bot ilk açıldığında daha hiçbirşey yüklenmeden önce çalışan fonksiyon. Opsiyonel.
   onBeforeLoad(client) {
@@ -76,7 +77,7 @@ module.exports = new (require("./types/Config"))({
   // Bot açıldıktan sonra kullanıma hazır olduktan sonra çalışan fonksiyon. Opsiyonel.
   async onReady(client) {
     console.log("[CONFIG] Discord hesabına giriş yaptıktan sonra çalıştı.");
-    client.user.setActivity(`/help`, { type: "WATCHING" });
+    client.user.setActivity(`/help - Basit Altyapı by TheArmagan`, { type: "WATCHING" });
 
   },
   // Komut üzerinde hiçbir kontrol yapılmadan önce çalışır.

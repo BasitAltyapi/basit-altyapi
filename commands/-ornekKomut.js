@@ -44,5 +44,12 @@ module.exports = new (require("../types/Command"))({
   // Slash komut opsiyonları.
   // Daha fazla örnek için diğer komut dosylarına bakabilirsiniz.
   options: [],
-  
+  // Slash komut varsayılan olarak sunucudaki
+  // gözüksün mü gözükmesin mi? Opsiyonel.
+  // Bunun false olması durumunda komutlar dmlerde
+  // kullanılmaz hale gelir. Ek olarak sunucunun admini
+  // olsanız bile kullanamazsınız. Daha fazla bilgi için
+  // discord.js guilde sitesine bakabilirsiniz: 
+  // https://discordjs.guide/interactions/slash-command-permissions.html
+  defaultPermission: true
 })

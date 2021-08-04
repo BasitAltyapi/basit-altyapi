@@ -44,6 +44,9 @@ class Command {
   /** @type {boolean} */
   guildOnly = true;
 
+  /** @type {boolean} */
+  defaultPermission = true;
+
   /**
    * @param {Omit<Command, "_type" >} arg
    */
@@ -60,6 +63,7 @@ class Command {
     this.other = defaultify(typeof arg.other == "object" ? arg.other : {}, global.config.commandDefaults.other);
     this.coolDown = typeof arg.coolDown == "number" ? arg.coolDown : global.config.commandDefaults.coolDown;
     this.options = Array.isArray(arg.options) ? arg.options : global.config.commandDefaults.options;
+    this.defaultPermission = Boolean(arg.defaultPermission ?? global.config.commandDefaults.defaultPermission);
   }
 }
 
