@@ -6,9 +6,8 @@ module.exports = new (require("../types/Event"))({
   eventName: "message",
   // onEvent belirtiğiniz olay yaşandığında çağrılır.
   // Komut argumentlari normal discord.js'deki gib ideğişkendir.
-  // eventName 
+  // Otomatik tamamlama eventName değişkenindeki tipe göre değişir.
   onEvent(message) {
-    
     console.log(`[MESAJ] ${message.author.tag}: ${message.content}`);
   },
   // Olay çalışmaya hazır olduğunda bot açılırken
