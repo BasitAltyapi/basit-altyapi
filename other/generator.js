@@ -210,14 +210,15 @@ async function permissionPrompt(message = "") {
 
     console.log(`√ Dosya "${filePath}" konumuna hazırlanıyor!`);
     let t = `module.exports = new (require("../types/Event"))({
+  name: "${name}",
+  eventName: "${eventName}"
   onEvent(message) {
     // Olay olduğunda burası çalışır.
   },
   onLoad(client) {
     // Olay çalışmaya hazır olduğunda burası çalışır. Opsiyonel silebilrisiniz.
   },
-  name: "${name}",
-  eventName: "${eventName}"
+  disabled: true
 });`;
     console.log(chalk.greenBright(t));
     await fs.promises.writeFile(filePath, t);
