@@ -1,4 +1,4 @@
-# Basit Altyapı (Versiyon 1.5.6)
+# Basit Altyapı (Versiyon 1.5.8)
 
 Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran discord bot altyapısı. Sık sık güncelleme alıyor. (Slash Commands)
 
@@ -17,6 +17,7 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
 - ✅ Komut açıp kapama desteği.
 - ✅ Sadece geliştiricilerin kullanabildiği komut desteği.
 - ✅ Genel event desteği.
+- ✅ Event otomatik tamamlama desteği.
 - ✅ Event kapatabilme.
 - ✅ Gelişmiş config dosyası. Hiç `index.js` dosyasını modifiye etmenize gerek kalmıyor.
 - ✅ Komut varsayılanlarını değiştirebilme.
