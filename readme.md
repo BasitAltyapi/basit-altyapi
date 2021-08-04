@@ -28,7 +28,7 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
 ## Kurlumu
 
 ### Gerekenler
-- Node.js; `v14.17.0` veya üstü. Ben `v14.17.0` versiyonunda test ettim. Node.js'in kendi sitesinden indirebilirsiniz.
+- Node.js; `v16.4.0` veya üstü. Ben `v16.4.0` versiyonunda test ettim. Node.js'in kendi sitesinden indirebilirsiniz.
 - Yarn; Yarn benim kullandığım paket yöneticisi npm'e göre 8-10 kat daha hızlı ve sorun çözücü. Kurmak için konsolunuza `npm install -g yarn` yazmanız yeterlidir.
 
 ### Kurulum
