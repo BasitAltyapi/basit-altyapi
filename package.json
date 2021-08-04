@@ -1,9 +1,7 @@
 {
   "dependencies": {
-    "@discordjs/rest": "^0.1.0-canary.0",
     "chalk": "^4.1.1",
     "chillout": "^5.0.0",
-    "discord-api-types": "0.20.2",
     "discord.js": "^13.0.0-dev.t1627906063.6e0ea02",
     "enquirer": "^2.3.6",
     "plsargs": "^0.1.6",
