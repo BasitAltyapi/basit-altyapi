@@ -6,6 +6,7 @@ const expressionMap = {
 };
 
 module.exports = new (require("../types/Command"))({
+  type: "COMMAND",
   name: "matamatik",
   onCommand(interaction, other) {
     let numberOne = interaction.options.getNumber("number_one");

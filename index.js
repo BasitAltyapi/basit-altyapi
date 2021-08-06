@@ -44,11 +44,30 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
       return;
     }
 
-    if (typeof command.name != "string") command.name = path.basename(commandFile).slice(0, -3);
+    if (!command.type) {
+      console.warn(`[UYARI] "${commandFile}" komut dosyasın için bir type belirtilmemiş. Atlanıyor.`);
+      return;
+    }
+
+    if (!command.id) {
+      console.warn(`[UYARI] "${commandFile}" komut dosyasının bir idsi bulunmuyor. Atlanıyor..`);
+      return;
+    }
+
+    if (typeof command.name != "string") {
+      console.warn(`[UYARI] "${commandFile}" komut dosyasının bir ismi bulunmuyor. Atlanıyor..`);
+      return;
+    }
     command.name = command.name.replace(/ /g, "").toLowerCase();
 
-    if (global.commands.has(command.name)) {
-      console.warn(`[UYARI] "${command.name}" adlı bir komut daha önceden zaten yüklenmiş. Atlanıyor.`)
+    if (typeof command.type == "SUB_COMMAND" && !command.subName) {
+      console.warn(`[UYARI] "${commandFile}" komut dosyasının tipi "SUB_COMMAND" ancak bir subName bulundurmuyor. Atlanıyor..`);
+      return;
+    }
+
+
+    if (global.commands.has(command.id)) {
+      console.warn(`[UYARI] "${command.id}" idli bir komut daha önceden zaten yüklenmiş. Atlanıyor.`)
       return;
     }
 
@@ -57,9 +76,14 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
       return;
     };
 
-    global.commands.set(command.name, command);
+    if (!command.guildOnly && (command.perms.bot.length != 0 || command.perms.user.length != 0)) {
+      console.warn(`[UYARI] "${command.name}" adlı komut sunuculara özel olmamasına rağmen özel perm kullanıyor.`);
+    }
+
+
+    global.commands.set(command.id, command);
     command.onLoad(client);
-    console.info(`[BİLGİ] "${command.name}" adlı komut yüklendi. (${Date.now() - start}ms sürdü.)`);
+    console.info(`[BİLGİ] "${command.name}" (${command.id}) adlı komut yüklendi. (${Date.now() - start}ms sürdü.)`);
   });
 
   if (global.commands.size) {
@@ -88,21 +112,21 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
       return;
     }
 
-    if (typeof event.name != "string") event.name = path.basename(eventFile).slice(0, -3).replace(/ /g, "");
+    if (typeof event.id != "string") event.id = path.basename(eventFile).slice(0, -3).replace(/ /g, "");
 
-    if (global.events.has(event.name)) {
-      console.warn(`[UYARI] "${event.name}" adlı bir event daha önceden zaten yüklenmiş. Atlanıyor.`);
+    if (global.events.has(event.id)) {
+      console.warn(`[UYARI] "${event.id}" adlı bir event daha önceden zaten yüklenmiş. Atlanıyor.`);
       return;
     }
 
     if (typeof event.onEvent != "function") {
-      console.error(`[HATA] "${event.name}" adlı event geçerli bir onEvent fonksiyonuna sahip değil! Atlanıyor.`);
+      console.error(`[HATA] "${event.id}" adlı event geçerli bir onEvent fonksiyonuna sahip değil! Atlanıyor.`);
       return;
     };
 
-    global.events.set(event.name, event);
+    global.events.set(event.id, event);
     event.onLoad(client);
-    console.info(`[BİLGİ] "${event.name}" adlı event yüklendi. (${Date.now() - start}ms sürdü.)`);
+    console.info(`[BİLGİ] "${event.id}" adlı event yüklendi. (${Date.now() - start}ms sürdü.)`);
   })
 
   if (global.events.size) {
@@ -113,8 +137,14 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
 
   client.on("interactionCreate", async (interaction) => {
     if (!interaction.isCommand()) return;
-
-    const command = global.commands.get(interaction.commandName);
+    let subCommandName = interaction.options?.getSubcommand();
+    let command = global.commands.find(cmd => {
+      if (cmd.type == "SUB_COMMAND") {
+        return cmd.name == interaction.commandName && cmd.subName == subCommandName;
+      } else if (cmd.type == "COMMAND") {
+        return cmd.name == interaction.commandName;
+      }
+    });
 
     if (!command) return;
 
@@ -144,9 +174,6 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
       return;
     }
 
-    if (!command.guildOnly && (command.perms.bot.length != 0 || command.perms.user.length != 0)) {
-      console.warn(`[UYARI] "${command.name}" adlı komut sunuculara özel olmamasına rağmen özel perm kullanıyor.`);
-    }
 
     let other = {};
 

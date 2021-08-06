@@ -14,7 +14,7 @@ global.config = config;
 
   /** @type {"guild"|"global"} */
   const LOAD_TYPE = argv.get(0);
-  if (![ "guild", "global" ].includes(LOAD_TYPE)) {
+  if (!["guild", "global"].includes(LOAD_TYPE)) {
     console.error("[HATA] Geçersiz yükleme tipi seçilmiş. Kullanım: node loadcommands.js <guild/global>");
     process.exit(-1);
   }
@@ -34,8 +34,7 @@ global.config = config;
   } else {
     console.info(`[BİLGİ] Tüm sunucular için komut yüklemsi başlatılıyor..`)
   }
-
-
+  
   /** @type {Map<string, import("./types/Command")>} */
   let commands = new Map();
 
@@ -62,14 +61,30 @@ global.config = config;
         return;
       }
 
-      if (typeof command.name != "string") command.name = path.basename(commandFile).slice(0, -3);
+      if (!command.type) {
+        console.warn(`[UYARI] "${commandFile}" komut dosyasın için bir type belirtilmemiş. Atlanıyor.`);
+        return;
+      }
+
+      if (!command.id) {
+        console.warn(`[UYARI] "${commandFile}" komut dosyasının bir idsi bulunmuyor. Atlanıyor..`);
+        return;
+      }
+
+      if (typeof command.name != "string") {
+        console.warn(`[UYARI] "${commandFile}" komut dosyasının bir ismi bulunmuyor. Atlanıyor..`);
+        return;
+      }
       command.name = command.name.replace(/ /g, "").toLowerCase();
 
+      if (typeof command.type == "SUB_COMMAND" && !command.subName) {
+        console.warn(`[UYARI] "${commandFile}" komut dosyasının tipi "SUB_COMMAND" ancak bir subName bulundurmuyor. Atlanıyor..`);
+        return;
+      }
 
-      console.info(`[BILGI] "${commandFile}" -> /${command.name}`);
 
-      if (commands.has(command.name)) {
-        console.warn(`[UYARI] "${command.name}" adlı bir komut daha önceden zaten yüklenmiş. Atlanıyor..`)
+      if (commands.has(command.id)) {
+        console.warn(`[UYARI] "${command.id}" idli bir komut daha önceden zaten yüklenmiş. Atlanıyor.`)
         return;
       }
 
@@ -93,8 +108,8 @@ global.config = config;
         if (err) return;
       }
 
-      commands.set(command.name, command);
-      console.info(`[BİLGİ] "${command.name}" adlı komut okundu. (${Date.now() - start}ms sürdü.)`);
+      commands.set(command.id, command);
+      console.info(`[BİLGİ] "${command.name}" (${command.id}) adlı komut okundu. (${Date.now() - start}ms sürdü.)`);
     });
 
     if (commands.size) {
@@ -102,34 +117,58 @@ global.config = config;
     } else {
       console.error(`[HATA] Hiçbir komut yüklenmedi, herşey yolunda mı?`);
     }
-
   } else {
-    console.info("[BİLGİ] Temizleme modunda olduğu için hiçbir komut yüklenmedi.");
+    console.info(`[BILGI] Temizleme modu açık olduğu için hiç bir komut yüklenmedi!`);
   }
   
+  /** @type {import("discord.js").ApplicationCommandData[]} */
+  let commandData = [];
 
-  
+
+  if (!isClearMode) {
+    console.info(`[BILGI] Komutlar discord'un anlayacağı dile çevriliyor..`);
+    /** @type {Map<string, import("./types/Command")[]>} */
+    let subCommands = new Map();
+    [...commands.values()].forEach((cmd) => {
+      if (cmd.type == "COMMAND") {
+        commandData.push({
+          name: cmd.name,
+          description: cmd.description,
+          options: cmd.options,
+          defaultPermission: cmd.defaultPermission
+        });
+        console.info(`[BILGI] Normal komut "/${cmd.name}" dönüştürüldü.`);
+      } else if (cmd.type == "SUB_COMMAND") {
+        if (!subCommands.has(cmd.name)) subCommands.set(cmd.name, []);
+        subCommands.get(cmd.name).push(cmd);
+        console.info(`[BILGI] Sub komut "/${cmd.name} ${cmd.subName}" ikinci aşama için listeye eklendi.`);
+      }
+    })
+
+    console.info(`[BILGI] Sub komutlar için ikin aşama başlıyor..`);
+    subCommands.forEach((cmds, cmdName) => {
+      commandData.push({
+        name: cmdName,
+        description: `${cmdName} command.`,
+        defaultPermission: cmds[0].defaultPermission,
+        options: cmds.map(i => {
+          console.info(`[BILGI] Sub komut "/${cmdName} ${i.subName}" dönüştürldü.`);
+          return {
+            type: "SUB_COMMAND",
+            description: i.description,
+            name: i.subName,
+            options: i.options
+          }
+        })
+      });
+    })
+  }
 
   console.info("[BİLGİ] Discord hesabına giriş yapılıyor..");
   await client.login(config.clientToken);
   console.info("[BİLGİ] Discord hesabına giriş yapıldı.");
 
-  console.info("[BİLGİ] Komut şekilleri oluşturuluyor.");
-
-  let commandData = [];
-
-  if (!isClearMode) {
-    [...commands.values()].map(cmd => {
-      let shape = {
-        name: cmd.name,
-        description: cmd.description,
-        options: cmd.options,
-        defaultPermission: cmd.defaultPermission
-      };
-      console.info(`[BİLGİ] Komut: ${cmd.name}`, shape);
-      commandData.push(shape);
-    })
-  }
+  console.info("[BİLGİ] Komutlar gönderiliyor..");
 
   try {
     if (GUILD_ID) {
@@ -156,6 +195,7 @@ global.config = config;
   } catch (err) {
     console.error("[HATA] Birşeyler çok yanlış gitti!");
     console.error(err);
+    if (`${err}`.toLowerCase().includes("missing access")) console.warn(`[UYARI] Botu sunucunuza eklerken "applications.commands" scope'unu verdiniz değilmi?`);
     process.exit(-1);
   }
   

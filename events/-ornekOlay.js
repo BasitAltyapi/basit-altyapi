@@ -1,7 +1,7 @@
 module.exports = new (require("../types/Event"))({
   // Event idsi. Opsiyonel, boş bırakıldığında dosya ismini alır.
   // Boşluk içeremez.
-  name: "örnekOlay",
+  id: "örnekOlay",
   // Herhangi bir discord.js olay ismi.
   eventName: "messageCreate",
   // onEvent belirtiğiniz olay yaşandığında çağrılır.

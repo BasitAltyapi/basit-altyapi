@@ -35,7 +35,7 @@ import {
 class BaseEvent {
   private _type: string;
 
-  name?: string;
+  id?: string;
 
   eventName!: string;
 

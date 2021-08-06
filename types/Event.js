@@ -4,7 +4,7 @@ class Event {
   _type = "event";
   
   /** @type {string} */
-  name = "";
+  id = "";
 
   /** @type {keyof import("discord.js").ClientEvents} */
   eventName = "";
@@ -29,7 +29,7 @@ class Event {
    * @param {Omit<Event, "_type">} arg
    */
   constructor(arg) {
-    this.name = arg.name;
+    this.id = arg.id;
     this.eventName = arg.eventName;
     this.onEvent = arg.onEvent;
     if (typeof arg.onLoad == "function") this.onLoad = arg.onLoad;

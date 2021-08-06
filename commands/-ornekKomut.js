@@ -1,5 +1,12 @@
 module.exports = new (require("../types/Command"))({
-  // Komutun ismi. Opsiyonel, boş bırakıldığında dosya ismini alır.
+  // Komut tipi. COMMAND veya SUB_COMMAND. Gerekli
+  // Komut tipi SUB_COMMAND olması durumunda subName değeri vermek zoundasınız.
+  // Subkomut örnekleri için moderasyon komutlarına bakabilirsiniz.
+  type: "COMMAND",
+  // Komutun idsi. Opsiyonel, boş bırakıldığında {type}:{name}:{subName} formatı ile kayıt olur.
+  // Boşluk içeremez.
+  id: "ornekkomut",
+  // Komutun kullanıcıya gözüken ismi. Opsiyonel, boş bırakıldığında dosya ismini alır.
   // Boşluk içeremez. Bu komut kullanıcıya /onnekkomut şeklinde gözükecektir.
   // Boşluk, büyük harf, türkçe harf içeremez.
   name: "ornekkomut",
