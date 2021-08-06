@@ -43,6 +43,7 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
 - Yeni bir komut dosyası oluşturmak isterseniz `yarn komut` komutunu kullanabilsiniz. Bu sayede sizi ilk komut altyapısını yazma derdinden kurtaracak ve komut hakkında her türlü soruyu soracaktır.
 
 - Slash komutlarını discord üzerinde global olarak yayınlamak için `node loadcommands.js global` veya sadece bir sunucu için yayınlamak istiyorsanız `node loadcommands.js guild <guildId>` komutunu kullanabilirsiniz. Global komutların sunuculara gelmesi 1 saat kadar sürebilir. Aksine suncuya ayit komutlar 5 ile 10 saniye içerisinde gelir. *Not: Botunuzu test ederken global komutlar akisne sunucu komutlarını kullanarak debug etmenizi tavsiye ederim. Çünkü global komutları spam halinde yayınlarsanız ratelimite düşebilirsiniz.*
+- Bütün komutları temizlemek için `node loadcommands.js global clear` veya `node loadcommands.js guild <guildId> clear` komutunu kullanabilirsiniz.
 
 
 - Olaylar için `events` klasörünün içindeki [`ornekOlay.js`](./events/-ornekOlay.js) dosyasını dikkatlice okuyabilirsiniz.
