@@ -11,6 +11,14 @@ class Command {
   /** @type {string} */
   name = "";
 
+  /** @type {string} */
+  id = "";
+
+  /** @type {"COMMAND"|"SUB_COMMAND"} **/
+  type = "COMMAND";
+
+  subName = "";
+
   /** @type {{bot: import("discord.js").PermissionString[], user: import("discord.js").PermissionString[]}} */
   perms = {bot: [], user: []};
 
@@ -48,10 +56,15 @@ class Command {
   defaultPermission = true;
 
   /**
-   * @param {Omit<Command, "_type" >} arg
+   * @param {Omit<Command, "_type" | "coolDowns" >} arg
    */
   constructor(arg = {}) {
     this.name = arg.name;
+    this.type = arg.type || global.config.commandDefaults.type;
+    this.subName = arg.type == "SUB_COMMAND" ? arg.subName : "";
+
+    this.id = arg.id || arg.type == "COMMAND" ? `COMMAND:${this.name}` : arg.type == "SUB_COMMAND" ? `SUB_COMMAND:${this.name}:${this.subName}` : null;
+
     this.perms.bot = Array.isArray(arg.perms?.bot) && arg.perms.bot.length != 0 ? arg.perms.bot : global.config.commandDefaults.perms.bot;
     this.perms.user = Array.isArray(arg.perms?.user) && arg.perms.user.length != 0 ? arg.perms.user : global.config.commandDefaults.perms.user;
     this.onCommand = arg.onCommand;

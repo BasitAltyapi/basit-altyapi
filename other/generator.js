@@ -160,6 +160,7 @@ async function permissionPrompt(message = "") {
 
     console.log(`√ Dosya "${filePath}" konumuna hazırlanıyor!`);
     let t = `module.exports = new (require("../types/Command"))({
+  type: "COMMAND",
   name: "${commandName.replace(/"/gm, "\\\"")}",
   onCommand(interaction, other) {
     // Komut kullanıldığında burası çalışır.

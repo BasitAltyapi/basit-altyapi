@@ -1,6 +1,7 @@
 const {sleep} = require("stuffs");
 
 module.exports = new (require("../types/Command"))({
+  type: "COMMAND",
   name: "moderasyon",
   async onCommand(interaction, other) {
     let action = interaction.options.getSubcommand();
