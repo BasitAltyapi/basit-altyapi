@@ -1,9 +1,11 @@
-# Basit Altyapı (Versiyon 1.5.9)
+# Basit Altyapı (Versiyon 1.6.1)
 
 Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran discord bot altyapısı. Sık sık güncelleme alıyor. (Slash Commands)
 
 ## Yapılacaklar
 
+- ✅ Slash command desteği.
+- ✅ Slash subcommand desteği.
 - ✅ Async ve aşırı hızlı. `(Komut başına 1ms kadar sürüyor.)`
 - ✅ Komut başına _değişken_ yavaşlatma desteği.
 - ✅ Komut başına bot gerekli yetki desteği.
@@ -28,7 +30,7 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
 ## Kurlumu
 
 ### Gerekenler
-- Node.js; `v16.4.0` veya üstü. Ben `v16.4.0` versiyonunda test ettim. Node.js'in kendi sitesinden indirebilirsiniz.
+- Node.js; `v16.6.1` veya üstü. Ben `v16.6.1` versiyonunda test ettim. Node.js'in kendi sitesinden indirebilirsiniz.
 - Yarn; Yarn benim kullandığım paket yöneticisi npm'e göre 8-10 kat daha hızlı ve sorun çözücü. Kurmak için konsolunuza `npm install -g yarn` yazmanız yeterlidir.
 
 ### Kurulum
@@ -37,13 +39,13 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
 
 ### Kullanımı
 - Botun genel ayarlarını, kullanıcı hata mesajlarını düzenlemek ve diğer olaylarda düzenleme yapmak için [`config.js`](./config.js) config dosyasını dikkatlice okuyup ona göre ayarlayabilirsiniz.
-- Komutlar için `commands` klasörünün içindeki [`ornekKomut.js`](./commands/ornekKomut.js) dosyasını dikkatlice okuyabilirsiniz.
+- Komutlar için `commands` klasörünün içindeki [`ornekKomut.js`](./commands/-ornekKomut.js) dosyasını dikkatlice okuyabilirsiniz.
 - Yeni bir komut dosyası oluşturmak isterseniz `yarn komut` komutunu kullanabilsiniz. Bu sayede sizi ilk komut altyapısını yazma derdinden kurtaracak ve komut hakkında her türlü soruyu soracaktır.
 
 - Slash komutlarını discord üzerinde global olarak yayınlamak için `node loadcommands.js global` veya sadece bir sunucu için yayınlamak istiyorsanız `node loadcommands.js guild <guildId>` komutunu kullanabilirsiniz. Global komutların sunuculara gelmesi 1 saat kadar sürebilir. Aksine suncuya ayit komutlar 5 ile 10 saniye içerisinde gelir. *Not: Botunuzu test ederken global komutlar akisne sunucu komutlarını kullanarak debug etmenizi tavsiye ederim. Çünkü global komutları spam halinde yayınlarsanız ratelimite düşebilirsiniz.*
 
 
-- Olaylar için `events` klasörünün içindeki [`ornekOlay.js`](./events/ornekOlay.js) dosyasını dikkatlice okuyabilirsiniz.
+- Olaylar için `events` klasörünün içindeki [`ornekOlay.js`](./events/-ornekOlay.js) dosyasını dikkatlice okuyabilirsiniz.
 - Yeni bir olay dosyası oluşturmak isterseniz `yarn olay` komutunu kullanabilsiniz. Bu sayede sizi ilk olay altyapısını yazma derdinden kurtaracak ve olay hakkında her türlü soruyu soracaktır.
 
 ## Güncelleme
