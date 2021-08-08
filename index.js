@@ -137,10 +137,10 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
 
   client.on("interactionCreate", async (interaction) => {
     if (!interaction.isCommand()) return;
-    let subCommandName = interaction.options?.getSubcommand();
+    
     let command = global.commands.find(cmd => {
       if (cmd.type == "SUB_COMMAND") {
-        return cmd.name == interaction.commandName && cmd.subName == subCommandName;
+        return cmd.name == interaction.commandName && cmd.subName == interaction.options.getSubcommand();
       } else if (cmd.type == "COMMAND") {
         return cmd.name == interaction.commandName;
       }

@@ -4,9 +4,7 @@ module.exports = new (require("./types/Config"))({
   // E tabi, bot tokeni buraya.
   clientToken: "",
   // Yasaklı kullanıcıların idleri.
-  blockedUsers: new Set([
-
-  ]),
+  blockedUsers: new Set([]),
   // Geliştiricilerin idleri.
   developers: new Set([
     "707309693449535599"
