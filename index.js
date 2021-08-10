@@ -83,7 +83,7 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
 
     global.commands.set(command.id, command);
     command.onLoad(client);
-    console.info(`[BİLGİ] "${command.name}" (${command.id}) adlı komut yüklendi. (${Date.now() - start}ms sürdü.)`);
+    console.info(`[BİLGİ] "${command.name}${command.subName ? ` ${command.subName}` : ""}" (${command.id}) adlı komut yüklendi. (${Date.now() - start}ms sürdü.)`);
   });
 
   if (global.commands.size) {
