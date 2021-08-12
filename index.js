@@ -132,7 +132,7 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
   if (global.events.size) {
     console.info(`[BİLGİ] ${global.events.size} event yüklendi.`);
   } else {
-    console.warn(`[UYARI] Hiçbir event yüklenmedi, herşey yolunda mı?`);
+    console.warn(`[UYARI] Hiçbir olay yüklenmedi, herşey yolunda mı?`);
   }
 
   client.on("interactionCreate", async (interaction) => {
