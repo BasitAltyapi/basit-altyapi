@@ -52,33 +52,40 @@ global.config = config;
 
     await chillout.forEach(commandFiles, (commandFile) => {
       let start = Date.now();
-      console.info(`[BİLGİ] "${commandFile}" komut okunuyor..`)
+      let rltPath = path.relative(__dirname, commandFile);
+      console.info(`[BİLGİ] "${rltPath}" komut okunuyor..`)
       /** @type {import("./types/Command")} */
       let command = require(commandFile);
+      
 
       if (command?._type != "command") {
-        console.warn(`[UYARI] "${commandFile}" komut dosyası boş. Atlanıyor..`);
+        console.warn(`[UYARI] "${rltPath}" komut dosyası boş. Atlanıyor..`);
         return;
       }
 
       if (!command.type) {
-        console.warn(`[UYARI] "${commandFile}" komut dosyasın için bir type belirtilmemiş. Atlanıyor.`);
+        console.warn(`[UYARI] "${rltPath}" komut dosyasın için bir type belirtilmemiş. Atlanıyor.`);
         return;
       }
 
       if (!command.id) {
-        console.warn(`[UYARI] "${commandFile}" komut dosyasının bir idsi bulunmuyor. Atlanıyor..`);
+        console.warn(`[UYARI] "${rltPath}" komut dosyasının bir idsi bulunmuyor. Atlanıyor..`);
         return;
       }
 
       if (typeof command.name != "string") {
-        console.warn(`[UYARI] "${commandFile}" komut dosyasının bir ismi bulunmuyor. Atlanıyor..`);
+        console.warn(`[UYARI] "${rltPath}" komut dosyasının bir ismi bulunmuyor. Atlanıyor..`);
         return;
       }
-      command.name = command.name.replace(/ /g, "").toLowerCase();
+      if (command.actionType == "CHAT_INPUT") command.name = command.name.replace(/ /g, "").toLowerCase();
 
-      if (typeof command.type == "SUB_COMMAND" && !command.subName) {
-        console.warn(`[UYARI] "${commandFile}" komut dosyasının tipi "SUB_COMMAND" ancak bir subName bulundurmuyor. Atlanıyor..`);
+      if (command.type == "SUB_COMMAND" && command.actionType != "CHAT_INPUT") {
+        console.warn(`[UYARI] "${rltPath}" "SUB_COMMAND" tipi ile sadece "CHAT_INPUT" aksiyon tipi birlikte kullanılabilir. Atlanıyor..`);
+        return;
+      }
+
+      if (command.type == "SUB_COMMAND" && !command.subName) {
+        console.warn(`[UYARI] "${rltPath}" komut dosyasının tipi "SUB_COMMAND" ancak bir subName bulundurmuyor. Atlanıyor..`);
         return;
       }
 
@@ -88,8 +95,8 @@ global.config = config;
         return;
       }
 
-      if (!command.description) {
-        console.warn(`[UYARI] "${command.name}" adlı komut açıklama içermiyor. Atlanıyor..`)
+      if (command.actionType == "CHAT_INPUT" && !command.description) {
+        console.warn(`[UYARI] "${rltPath}" komut dosyasının "CHAT_INPUT" aksiyon tipinde ve açıklama içermiyor. Atlanıyor..`)
         return;
       }
 
@@ -97,11 +104,11 @@ global.config = config;
         let err = false;
         command.options.forEach(i => {
           if (i.name != i.name.toLowerCase()) {
-            console.error(`[HATA] "${command.name}" adlı komutun, "${i.name}" adlı opsiyon ismi tamamen küçük haflerden oluşmalı. Atlanıyor..`);
+            console.error(`[HATA] "${rltPath}" komut dosyasının, "${i.name}" adlı opsiyon ismi tamamen küçük haflerden oluşmalı. Atlanıyor..`);
             err = true;
           }
           if (i.name.includes(" ")) {
-            console.error(`[HATA] "${command.name}" adlı komutun, "${i.name}" adlı opsiyon ismi boşluk içeremez. Atlanıyor..`);
+            console.error(`[HATA] "${rltPath}" komut dosyasının, "${i.name}" adlı opsiyon ismi boşluk içeremez. Atlanıyor..`);
             err = true;
           }
         });
@@ -109,7 +116,7 @@ global.config = config;
       }
 
       commands.set(command.id, command);
-      console.info(`[BİLGİ] "${command.name}" (${command.id}) adlı komut okundu. (${Date.now() - start}ms sürdü.)`);
+      console.info(`[BİLGİ] ("${rltPath}") "${command.name}" (${command.id}) adlı komut okundu. (${Date.now() - start}ms sürdü.)`);
     });
 
     if (commands.size) {
@@ -135,9 +142,10 @@ global.config = config;
           name: cmd.name,
           description: cmd.description,
           options: cmd.options,
-          defaultPermission: cmd.defaultPermission
+          defaultPermission: cmd.defaultPermission,
+          type: cmd.actionType
         });
-        console.info(`[BILGI] Normal komut "/${cmd.name}" dönüştürüldü.`);
+        console.info(`[BILGI] Normal komut "/${cmd.name}" (${cmd.actionType}) dönüştürüldü.`);
       } else if (cmd.type == "SUB_COMMAND") {
         if (!subCommands.has(cmd.name)) subCommands.set(cmd.name, []);
         subCommands.get(cmd.name).push(cmd);
@@ -148,6 +156,7 @@ global.config = config;
     console.info(`[BILGI] Sub komutlar için ikin aşama başlıyor..`);
     subCommands.forEach((cmds, cmdName) => {
       commandData.push({
+        type: cmds[0].actionType,
         name: cmdName,
         description: `${cmdName} command.`,
         defaultPermission: cmds[0].defaultPermission,

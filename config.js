@@ -51,6 +51,7 @@ module.exports = new (require("./types/Config"))({
   // işe yaradığını merak ediyorsanız commands/ornekKomut.js'e
   // bakabilirsiniz.
   commandDefaults: {
+    actionType: "CHAT_INPUT",
     description: "Açıkla belirtilmemiş.",
     developerOnly: false,
     guildOnly: true,

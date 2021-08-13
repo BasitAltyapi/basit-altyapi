@@ -2,7 +2,7 @@
   "dependencies": {
     "chalk": "^4.1.1",
     "chillout": "^5.0.0",
-    "discord.js": "^13.0.0",
+    "discord.js": "13.1.0",
     "enquirer": "^2.3.6",
     "plsargs": "^0.1.6",
     "recursive-readdir": "^2.2.2",
@@ -14,7 +14,7 @@
     "@types/recursive-readdir": "^2.2.0"
   },
   "name": "armagan-basit-altyapi",
-  "version": "1.6.1",
+  "version": "1.6.6",
   "description": "Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran discord bot altyapısı.",
   "main": "index.js",
   "repository": {

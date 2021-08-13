@@ -1,11 +1,12 @@
-# Basit Altyapı (Versiyon 1.6.1)
+# Basit Altyapı (Versiyon 1.6.6)
 
 Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran discord bot altyapısı. Sık sık güncelleme alıyor. (Slash Commands)
 
-## Yapılacaklar
+## Özellikler
 
-- ✅ Slash command desteği.
-- ✅ Slash subcommand desteği.
+- ✅ **Sağtık menü desteği.**
+- ✅ **Slash command desteği.**
+- ✅ **Slash subcommand desteği.**
 - ✅ Async ve aşırı hızlı. `(Komut başına 1ms kadar sürüyor.)`
 - ✅ Komut başına _değişken_ yavaşlatma desteği.
 - ✅ Komut başına bot gerekli yetki desteği.

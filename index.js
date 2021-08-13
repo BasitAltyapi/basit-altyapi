@@ -35,33 +35,34 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
 
   await chillout.forEach(commandFiles, (commandFile) => {
     let start = Date.now();
+    let rltPath = path.relative(__dirname, commandFile);
     console.info(`[BİLGİ] "${commandFile}" komut yükleniyor..`)
     /** @type {import("./types/Command")} */
     let command = require(commandFile);
 
     if (command?._type != "command") {
-      console.warn(`[UYARI] "${commandFile}" komut dosyası boş. Atlanıyor..`);
+      console.warn(`[UYARI] "${rltPath}" komut dosyası boş. Atlanıyor..`);
       return;
     }
 
     if (!command.type) {
-      console.warn(`[UYARI] "${commandFile}" komut dosyasın için bir type belirtilmemiş. Atlanıyor.`);
+      console.warn(`[UYARI] "${rltPath}" komut dosyasın için bir type belirtilmemiş. Atlanıyor.`);
       return;
     }
 
     if (!command.id) {
-      console.warn(`[UYARI] "${commandFile}" komut dosyasının bir idsi bulunmuyor. Atlanıyor..`);
+      console.warn(`[UYARI] "${rltPath}" komut dosyasının bir idsi bulunmuyor. Atlanıyor..`);
       return;
     }
 
     if (typeof command.name != "string") {
-      console.warn(`[UYARI] "${commandFile}" komut dosyasının bir ismi bulunmuyor. Atlanıyor..`);
+      console.warn(`[UYARI] "${rltPath}" komut dosyasının bir ismi bulunmuyor. Atlanıyor..`);
       return;
     }
-    command.name = command.name.replace(/ /g, "").toLowerCase();
+    if (command.actionType == "CHAT_INPUT") command.name = command.name.replace(/ /g, "").toLowerCase();
 
     if (typeof command.type == "SUB_COMMAND" && !command.subName) {
-      console.warn(`[UYARI] "${commandFile}" komut dosyasının tipi "SUB_COMMAND" ancak bir subName bulundurmuyor. Atlanıyor..`);
+      console.warn(`[UYARI] "${rltPath}" komut dosyasının tipi "SUB_COMMAND" ancak bir subName bulundurmuyor. Atlanıyor..`);
       return;
     }
 
@@ -72,18 +73,18 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
     }
 
     if (typeof command.onCommand != "function") {
-      console.error(`[HATA] "${command.name}" adlı komut geçerli bir onCommand fonksiyonuna sahip değil! Atlanıyor.`);
+      console.error(`[HATA] "${rltPath}" komut dosyası geçerli bir onCommand fonksiyonuna sahip değil! Atlanıyor.`);
       return;
     };
 
     if (!command.guildOnly && (command.perms.bot.length != 0 || command.perms.user.length != 0)) {
-      console.warn(`[UYARI] "${command.name}" adlı komut sunuculara özel olmamasına rağmen özel perm kullanıyor.`);
+      console.warn(`[UYARI] "${rltPath}" komut dosyası sunuculara özel olmamasına rağmen özel perm kullanıyor.`);
     }
 
 
     global.commands.set(command.id, command);
     command.onLoad(client);
-    console.info(`[BİLGİ] "${command.name}${command.subName ? ` ${command.subName}` : ""}" (${command.id}) adlı komut yüklendi. (${Date.now() - start}ms sürdü.)`);
+    console.info(`[BİLGİ] "/${command.name}${command.subName ? ` ${command.subName}` : ""}" (${command.id}) adlı komut yüklendi. (${Date.now() - start}ms sürdü.)`);
   });
 
   if (global.commands.size) {
@@ -102,13 +103,14 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
 
   await chillout.forEach(eventFiles, async (eventFile) => {
     let start = Date.now();
+    let rltPath = path.relative(__dirname, commandFile);
     console.info(`[BİLGİ] "${eventFile}" event yükleniyor..`);
 
     /** @type {import("./types/Event")} */
     let event = require(eventFile);
 
     if (event?._type != "event") {
-      console.warn(`[UYARI] "${eventFile}" event dosyası boş. Atlanıyor..`);
+      console.warn(`[UYARI] "${rltPath}" event dosyası boş. Atlanıyor..`);
       return;
     }
 
@@ -120,13 +122,13 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
     }
 
     if (typeof event.onEvent != "function") {
-      console.error(`[HATA] "${event.id}" adlı event geçerli bir onEvent fonksiyonuna sahip değil! Atlanıyor.`);
+      console.error(`[HATA] "${rltPath}" olay dosyası geçerli bir onEvent fonksiyonuna sahip değil! Atlanıyor.`);
       return;
     };
 
     global.events.set(event.id, event);
     event.onLoad(client);
-    console.info(`[BİLGİ] "${event.id}" adlı event yüklendi. (${Date.now() - start}ms sürdü.)`);
+    console.info(`[BİLGİ] ("${rltPath}") "${event.id}" adlı event yüklendi. (${Date.now() - start}ms sürdü.)`);
   })
 
   if (global.events.size) {
@@ -136,7 +138,7 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
   }
 
   client.on("interactionCreate", async (interaction) => {
-    if (!interaction.isCommand()) return;
+    if (!(interaction.isCommand() || interaction.isContextMenu())) return;
     
     let command = global.commands.find(cmd => {
       if (cmd.type == "SUB_COMMAND") {

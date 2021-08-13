@@ -1,13 +1,13 @@
-import { ApplicationCommandOption, Client, CommandInteraction, PermissionString } from "discord.js";
+import { ApplicationCommandOption, ApplicationCommandType, Client, CommandInteraction, ContextMenuInteraction, PermissionString } from "discord.js";
 
 class BaseCommand {
   private _type: string;
   name: string;
-  id: string;
+  id?: string;
   type: "COMMAND" | "SUB_COMMAND";
   subName?: string;
   perms?: { bot: PermissionString[], user: PermissionString[] };
-  onCommand: (interaction: CommandInteraction, other: { setCoolDown(durations: number): void, [key: string | number]: any }) => void;
+  onCommand: (interaction: CommandInteraction | ContextMenuInteraction, other: IOther ) => void;
   onLoad?: (client: Client) => void;
   coolDowns: Map<string, number>;
   description!: string;
@@ -16,19 +16,33 @@ class BaseCommand {
   other?: { [key: string | number]: any };
   coolDown?: number;
   guildOnly?: boolean;
-  options: ApplicationCommandOption[];
+  options?: ApplicationCommandOption[];
   defaultPermission?: boolean;
-  constructor(arg: Omit<BaseCommand, "_type" | "coolDowns" | "name" | "subName" | "type"> & TCommandTypes)
+  actionType?: ApplicationCommandType;
+  constructor(arg: Omit<BaseCommand, "_type" | "coolDowns" | "name" | "subName" | "type" | "onCommand"> & ((EasyNormalCommand | EasySubCommand) & (ActionChatCommand | ActionRightClickCommand)))
 }
 
-type TCommandTypes = NormalCommand | SubCommand;
+interface IOther {
+  setCoolDown(durations: number): void,
+  [key: string | number]: any
+}
 
-interface NormalCommand {
+interface ActionChatCommand {
+  actionType: "CHAT_INPUT";
+  onCommand: (interaction: CommandInteraction, other: IOther) => void;
+}
+
+interface ActionRightClickCommand {
+  actionType: "MESSAGE" | "USER";
+  onCommand: (interaction: ContextMenuInteraction, other: IOther) => void;
+}
+
+interface EasyNormalCommand {
   type: "COMMAND";
   name: string;
 }
 
-interface SubCommand {
+interface EasySubCommand {
   type: "SUB_COMMAND";
   name: string;
   subName: string;
