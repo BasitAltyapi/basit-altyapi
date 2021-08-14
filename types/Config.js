@@ -80,17 +80,19 @@ class Config {
     this.other = arg.other || {};
 
     this.commandDefaults = typeof arg.commandDefaults == "object" ? arg.commandDefaults : {
-      aliases: [],
-      description: "",
+      actionType: "CHAT_INPUT",
+      description: "Açıkla belirtilmemiş.",
       developerOnly: false,
       guildOnly: true,
       disabled: false,
       coolDown: -1,
       other: {},
       perms: {
-        bot: ["SEND_MESSAGES"],
+        bot: [],
         user: []
-      }
+      },
+      options: [],
+      defaultPermission: true
     };
 
     if (

@@ -20,7 +20,7 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
   let eventsPath = path.resolve("./events");
   await makeSureFolderExists(eventsPath);
 
-  config.onBeforeLoad(client);
+  await config.onBeforeLoad(client);
 
   let loadStart = Date.now();
   let commandFiles = await readdirRecursive(commandsPath);
@@ -249,7 +249,7 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
   eventFiles = 0;
   loadStart = 0;
 
-  config.onAfterLoad(client);
+  await config.onAfterLoad(client);
 
   await client.login(config.clientToken);
   console.info("[BİLGİ] Discord'a bağlanıldı!", client.user.tag);
