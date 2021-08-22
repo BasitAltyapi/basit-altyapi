@@ -52,4 +52,4 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
 
 ## Yardım
 
-- Yardım için discord sunucuma katılıp, benden yardım alabirsiniz: http://armagan.rest/discord
+- Yardım için discord sunucuma katılıp, benden yardım alabirsiniz: https://discord.gg/CFbGS6kXfD
