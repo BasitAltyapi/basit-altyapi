@@ -40,7 +40,7 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
 
 ### Kullanımı
 - Botun genel ayarlarını, kullanıcı hata mesajlarını düzenlemek ve diğer olaylarda düzenleme yapmak için [`config.js`](./config.js) config dosyasını dikkatlice okuyup ona göre ayarlayabilirsiniz.
-- interaksiyonlar için `commands` klasörünün içindeki [`ornekinteraksiyon.js`](./commands/-ornekinteraksiyon.js) dosyasını dikkatlice okuyabilirsiniz.
+- interaksiyonlar için `interactions` klasörünün içindeki [`ornekInteraksiyon.js`](./interactions/-ornekInteraksiyon.js) dosyasını dikkatlice okuyabilirsiniz.
 - Yeni bir interaksiyon dosyası oluşturmak isterseniz `yarn interaksiyon` interaksiyonunu kullanabilsiniz. Bu sayede sizi ilk interaksiyon altyapısını yazma derdinden kurtaracak ve interaksiyon hakkında her türlü soruyu soracaktır.
 
 - Slash interaksiyonlarını discord üzerinde global olarak yayınlamak için `node publishInteractions.js global` veya sadece bir sunucu için yayınlamak istiyorsanız `node publishInteractions.js guild <guildId>` interaksiyonunu kullanabilirsiniz. Global interaksiyonların sunuculara gelmesi 1 saat kadar sürebilir. Aksine suncuya ayit interaksiyonlar 5 ile 10 saniye içerisinde gelir. *Not: Botunuzu test ederken global interaksiyonlar akisne sunucu interaksiyonlarını kullanarak debug etmenizi tavsiye ederim. Çünkü global interaksiyonları spam halinde yayınlarsanız ratelimite düşebilirsiniz.*
