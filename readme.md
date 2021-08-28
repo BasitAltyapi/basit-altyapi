@@ -1,4 +1,4 @@
-# Basit Altyapı (Versiyon 1.6.6)
+# Basit Altyapı (Versiyon 1.7.0)
 
 Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran discord bot altyapısı. Sık sık güncelleme alıyor. (Slash Commands)
 
@@ -7,26 +7,26 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
 - ✅ **Sağtık menü desteği.**
 - ✅ **Slash command desteği.**
 - ✅ **Slash subcommand desteği.**
-- ✅ Async ve aşırı hızlı. `(Komut başına 1ms kadar sürüyor.)`
-- ✅ Komut başına _değişken_ yavaşlatma desteği.
-- ✅ Komut başına bot gerekli yetki desteği.
-- ✅ Komut başına kullanıcı gerekli yetki desteği.
+- ✅ Async ve aşırı hızlı. `(interaksiyon başına 1ms kadar sürüyor.)`
+- ✅ interaksiyon başına _değişken_ yavaşlatma desteği.
+- ✅ interaksiyon başına bot gerekli yetki desteği.
+- ✅ interaksiyon başına kullanıcı gerekli yetki desteği.
 - ✅ Özelleştirilebilir hata mesajları.
 - ✅ Mantık hatası uyarı sistemleri.
 - ✅ Bottan kullanıcı yasaklama.
-- ✅ Komutlarda otomatik tamamlama.
+- ✅ interaksiyonlarda otomatik tamamlama.
 - ✅ Global değişkenlerde otomatik tamamlama. (commands, events, config, client)
 - ✅ İç içe klasör desteği.
-- ✅ Komut açıp kapama desteği.
-- ✅ Sadece geliştiricilerin kullanabildiği komut desteği.
+- ✅ interaksiyon açıp kapama desteği.
+- ✅ Sadece geliştiricilerin kullanabildiği interaksiyon desteği.
 - ✅ Genel event desteği.
 - ✅ Event otomatik tamamlama desteği.
 - ✅ Event kapatabilme.
 - ✅ Gelişmiş config dosyası. Hiç `index.js` dosyasını modifiye etmenize gerek kalmıyor.
-- ✅ Komut varsayılanlarını değiştirebilme.
-- ✅ Kolay bir şekilde komut öncesi işlem ekleyebilme.
-- ✅ Kolay bir şekilde komut veya olay altyapsı oluşturabilme.
-- ✅ Kolayca dosya devre dışı bırakılabilme. İsmi tire (-) ile başlayan komutlar ve olaylar umursanmaz.
+- ✅ interaksiyon varsayılanlarını değiştirebilme.
+- ✅ Kolay bir şekilde interaksiyon öncesi işlem ekleyebilme.
+- ✅ Kolay bir şekilde interaksiyon veya olay altyapsı oluşturabilme.
+- ✅ Kolayca dosya devre dışı bırakılabilme. İsmi tire (-) ile başlayan interaksiyonlar ve olaylar umursanmaz.
 
 ## Kurlumu
 
@@ -40,15 +40,15 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
 
 ### Kullanımı
 - Botun genel ayarlarını, kullanıcı hata mesajlarını düzenlemek ve diğer olaylarda düzenleme yapmak için [`config.js`](./config.js) config dosyasını dikkatlice okuyup ona göre ayarlayabilirsiniz.
-- Komutlar için `commands` klasörünün içindeki [`ornekKomut.js`](./commands/-ornekKomut.js) dosyasını dikkatlice okuyabilirsiniz.
-- Yeni bir komut dosyası oluşturmak isterseniz `yarn komut` komutunu kullanabilsiniz. Bu sayede sizi ilk komut altyapısını yazma derdinden kurtaracak ve komut hakkında her türlü soruyu soracaktır.
+- interaksiyonlar için `commands` klasörünün içindeki [`ornekinteraksiyon.js`](./commands/-ornekinteraksiyon.js) dosyasını dikkatlice okuyabilirsiniz.
+- Yeni bir interaksiyon dosyası oluşturmak isterseniz `yarn interaksiyon` interaksiyonunu kullanabilsiniz. Bu sayede sizi ilk interaksiyon altyapısını yazma derdinden kurtaracak ve interaksiyon hakkında her türlü soruyu soracaktır.
 
-- Slash komutlarını discord üzerinde global olarak yayınlamak için `node loadcommands.js global` veya sadece bir sunucu için yayınlamak istiyorsanız `node loadcommands.js guild <guildId>` komutunu kullanabilirsiniz. Global komutların sunuculara gelmesi 1 saat kadar sürebilir. Aksine suncuya ayit komutlar 5 ile 10 saniye içerisinde gelir. *Not: Botunuzu test ederken global komutlar akisne sunucu komutlarını kullanarak debug etmenizi tavsiye ederim. Çünkü global komutları spam halinde yayınlarsanız ratelimite düşebilirsiniz.*
-- Bütün komutları temizlemek için `node loadcommands.js global clear` veya `node loadcommands.js guild <guildId> clear` komutunu kullanabilirsiniz.
+- Slash interaksiyonlarını discord üzerinde global olarak yayınlamak için `node publishInteractions.js global` veya sadece bir sunucu için yayınlamak istiyorsanız `node publishInteractions.js guild <guildId>` interaksiyonunu kullanabilirsiniz. Global interaksiyonların sunuculara gelmesi 1 saat kadar sürebilir. Aksine suncuya ayit interaksiyonlar 5 ile 10 saniye içerisinde gelir. *Not: Botunuzu test ederken global interaksiyonlar akisne sunucu interaksiyonlarını kullanarak debug etmenizi tavsiye ederim. Çünkü global interaksiyonları spam halinde yayınlarsanız ratelimite düşebilirsiniz.*
+- Bütün interaksiyonları temizlemek için `node publishInteractions.js global clear` veya `node publishInteractions.js guild <guildId> clear` interaksiyonunu kullanabilirsiniz.
 
 
 - Olaylar için `events` klasörünün içindeki [`ornekOlay.js`](./events/-ornekOlay.js) dosyasını dikkatlice okuyabilirsiniz.
-- Yeni bir olay dosyası oluşturmak isterseniz `yarn olay` komutunu kullanabilsiniz. Bu sayede sizi ilk olay altyapısını yazma derdinden kurtaracak ve olay hakkında her türlü soruyu soracaktır.
+- Yeni bir olay dosyası oluşturmak isterseniz `yarn olay` interaksiyonunu kullanabilsiniz. Bu sayede sizi ilk olay altyapısını yazma derdinden kurtaracak ve olay hakkında her türlü soruyu soracaktır.
 
 ## Güncelleme
 

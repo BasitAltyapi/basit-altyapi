@@ -8,87 +8,94 @@ const { makeSureFolderExists } = require("stuffs");
 const client = new Discord.Client(config.clientOptions);
 
 
-global.commands = new Discord.Collection();
-global.events = new Discord.Collection();
-global.config = config;
-global.client = client;
+const interactions = new Discord.Collection();
+const events = new Discord.Collection();
+
+globalThis.Underline = {
+  config,
+  client,
+  interactions: interactions,
+  events: events,
+  Interaction: require('./types/Interaction'),
+  Event: require('./types/Event')
+}
 
 console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
 (async () => {
-  let commandsPath = path.resolve("./commands");
-  await makeSureFolderExists(commandsPath);
+  let interactionsPath = path.resolve("./interactions");
+  await makeSureFolderExists(interactionsPath);
   let eventsPath = path.resolve("./events");
   await makeSureFolderExists(eventsPath);
 
   await config.onBeforeLoad(client);
 
   let loadStart = Date.now();
-  let commandFiles = await readdirRecursive(commandsPath);
+  let interactionFiles = await readdirRecursive(interactionsPath);
 
-  commandFiles = commandFiles.filter(i => {
+  interactionFiles = interactionFiles.filter(i => {
     let state = path.basename(i).startsWith("-");
     if (state) console.warn(`[UYARI] "${i}" dosyası tire ile başladığı için liste dışı bırakıldı.`);
     return !state;
   });
-
-  await chillout.forEach(commandFiles, (commandFile) => {
+  
+  await chillout.forEach(interactionFiles, (interactionFile) => {
     let start = Date.now();
-    let rltPath = path.relative(__dirname, commandFile);
-    console.info(`[BİLGİ] "${commandFile}" komut yükleniyor..`)
-    /** @type {import("./types/Command")} */
-    let command = require(commandFile);
+    let rltPath = path.relative(__dirname, interactionFile);
+    console.info(`[BİLGİ] "${interactionFile}" konumundaki interaksiyon yükleniyor..`)
+    /** @type {import("./types/Interaction")} */
+    let interactionData = require(interactionFile);
 
-    if (command?._type != "command") {
-      console.warn(`[UYARI] "${rltPath}" komut dosyası boş. Atlanıyor..`);
+    if (interactionData?._type != "interaction") {
+      console.warn(`[UYARI] "${rltPath}" interaksiyon dosyası boş. Atlanıyor..`);
       return;
     }
 
-    if (!command.type) {
-      console.warn(`[UYARI] "${rltPath}" komut dosyasın için bir type belirtilmemiş. Atlanıyor.`);
+    if (!interactionData.type) {
+      console.warn(`[UYARI] "${rltPath}" interaksiyon dosyasın için bir type belirtilmemiş. Atlanıyor.`);
       return;
     }
 
-    if (!command.id) {
-      console.warn(`[UYARI] "${rltPath}" komut dosyasının bir idsi bulunmuyor. Atlanıyor..`);
+    if (!interactionData.id) {
+      console.warn(`[UYARI] "${rltPath}" interaksiyon dosyasının bir idsi bulunmuyor. Atlanıyor..`);
       return;
     }
 
-    if (typeof command.name != "string") {
-      console.warn(`[UYARI] "${rltPath}" komut dosyasının bir ismi bulunmuyor. Atlanıyor..`);
+    if (typeof interactionData.name != "string") {
+      console.warn(`[UYARI] "${rltPath}" interaksiyon dosyasının bir ismi bulunmuyor. Atlanıyor..`);
       return;
     }
-    if (command.actionType == "CHAT_INPUT") command.name = command.name.replace(/ /g, "").toLowerCase();
+    if (interactionData.actionType == "CHAT_INPUT") interactionData.name = interactionData.name.replace(/ /g, "").toLowerCase();
 
-    if (typeof command.type == "SUB_COMMAND" && !command.subName) {
-      console.warn(`[UYARI] "${rltPath}" komut dosyasının tipi "SUB_COMMAND" ancak bir subName bulundurmuyor. Atlanıyor..`);
-      return;
-    }
-
-
-    if (global.commands.has(command.id)) {
-      console.warn(`[UYARI] "${command.id}" idli bir komut daha önceden zaten yüklenmiş. Atlanıyor.`)
+    if (typeof interactionData.type == "SUB_COMMAND" && !interactionData.subName) {
+      console.warn(`[UYARI] "${rltPath}" interaksiyon dosyasının tipi "SUB_COMMAND" ancak bir subName bulundurmuyor. Atlanıyor..`);
       return;
     }
 
-    if (typeof command.onCommand != "function") {
-      console.error(`[HATA] "${rltPath}" komut dosyası geçerli bir onCommand fonksiyonuna sahip değil! Atlanıyor.`);
+
+    if (Underline.interactions.has(interactionData.id)) {
+      console.warn(`[UYARI] "${interactionData.id}" idli bir interaksiyon daha önceden zaten yüklenmiş. Atlanıyor.`)
+      return;
+    }
+
+    if (typeof interactionData.onInteraction != "function") {
+      console.error(`[HATA] "${rltPath}" interaksiyon dosyası geçerli bir onInteraction fonksiyonuna sahip değil! Atlanıyor.`);
       return;
     };
 
-    if (!command.guildOnly && (command.perms.bot.length != 0 || command.perms.user.length != 0)) {
-      console.warn(`[UYARI] "${rltPath}" komut dosyası sunuculara özel olmamasına rağmen özel perm kullanıyor.`);
+    if (!interactionData.guildOnly && (interactionData.perms.bot.length != 0 || interactionData.perms.user.length != 0)) {
+      console.warn(`[UYARI] "${rltPath}" interaksiyon dosyası sunuculara özel olmamasına rağmen özel perm kullanıyor.`);
     }
 
 
-    global.commands.set(command.id, command);
-    command.onLoad(client);
-    console.info(`[BİLGİ] "/${command.name}${command.subName ? ` ${command.subName}` : ""}" (${command.id}) adlı komut yüklendi. (${Date.now() - start}ms sürdü.)`);
+    Underline.interactions.set(interactionData.id, interactionData);
+    interactionData.onLoad(client);
+    console.info(`[BİLGİ] "/${interactionData.name}${interactionData.subName ? ` ${interactionData.subName}` : ""}" (${interactionData.id}) adlı interaksiyon yüklendi. (${Date.now() - start}ms sürdü.)`);
   });
 
-  if (global.commands.size) {
-    console.info(`[BİLGİ] ${global.commands.size} komut yüklendi.`);
+  if (Underline.interactions.size) {
+    console.info(`[BİLGİ] ${Underline.interactions.size} interaksiyon yüklendi.`);
   } else {
-    console.warn(`[UYARI] Hiçbir komut yüklenmedi, herşey yolunda mı?`);
+    console.warn(`[UYARI] Hiçbir interaksiyon yüklenmedi, herşey yolunda mı?`);
   }
 
   let eventFiles = await readdirRecursive(eventsPath);
@@ -114,7 +121,7 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
 
     if (typeof event.id != "string") event.id = path.basename(eventFile).slice(0, -3).replace(/ /g, "");
 
-    if (global.events.has(event.id)) {
+    if (Underline.events.has(event.id)) {
       console.warn(`[UYARI] "${event.id}" adlı bir event daha önceden zaten yüklenmiş. Atlanıyor.`);
       return;
     }
@@ -124,13 +131,13 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
       return;
     };
 
-    global.events.set(event.id, event);
+    Underline.events.set(event.id, event);
     event.onLoad(client);
     console.info(`[BİLGİ] ("${rltPath}") "${event.id}" adlı event yüklendi. (${Date.now() - start}ms sürdü.)`);
   })
 
-  if (global.events.size) {
-    console.info(`[BİLGİ] ${global.events.size} event yüklendi.`);
+  if (Underline.events.size) {
+    console.info(`[BİLGİ] ${Underline.events.size} event yüklendi.`);
   } else {
     console.warn(`[UYARI] Hiçbir olay yüklenmedi, herşey yolunda mı?`);
   }
@@ -138,7 +145,7 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
   client.on("interactionCreate", async (interaction) => {
     if (!(interaction.isCommand() || interaction.isContextMenu())) return;
     
-    let command = global.commands.find(cmd => {
+    let command = Underline.interactions.find(cmd => {
       if (cmd.type == "SUB_COMMAND") {
         return cmd.name == interaction.commandName && cmd.subName == interaction.options.getSubcommand();
       } else if (cmd.type == "COMMAND") {
@@ -150,17 +157,17 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
 
     if (config.autoDefer) interaction.defer();
 
-    if (command.disabled) {
-      config.userErrors.disabled(interaction, command);
-      return;
-    }
-
-    let shouldRun1 = await config.onCommandBeforeChecks(command, interaction);
+    let shouldRun1 = await config.onInteractionBeforeChecks(command, interaction);
 
     if (!shouldRun1) return;
 
     if (command.developerOnly && !config.developers.has(interaction.user.id)) {
       config.userErrors.developerOnly(interaction, command);
+      return;
+    }
+
+    if (command.disabled) {
+      config.userErrors.disabled(interaction, command);
       return;
     }
 
@@ -207,9 +214,9 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
     }
 
     (async () => {
-      let shouldRun2 = await config.onCommand(command, interaction, other);
+      let shouldRun2 = await config.onInteraction(command, interaction, other);
       if (!shouldRun2) return;
-      await command.onCommand(interaction, other);
+      await command.onInteraction(interaction, other);
     })();
 
     return;
@@ -217,7 +224,7 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
 
   {
     /** @type {Map<string, (import("./types/Event"))[]>} */
-    let eventsMapped = global.events.reduce((all, cur) => {
+    let eventsMapped = Underline.events.reduce((all, cur) => {
       if (!all.has(cur.eventName)) all.set(cur.eventName, []);
       all.get(cur.eventName).push(cur);
       return all;
@@ -245,7 +252,7 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
 
   console.info(`[BİLGİ] Herşey ${Date.now() - loadStart}ms içerisinde yüklendi!`);
 
-  commandFiles = 0;
+  interactionFiles = 0;
   eventFiles = 0;
   loadStart = 0;
 

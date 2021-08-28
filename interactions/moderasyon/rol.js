@@ -1,4 +1,4 @@
-module.exports = new (require("../../types/Command"))({
+module.exports = new Underline.Interaction({
   type: "SUB_COMMAND",
   name: "moderasyon",
   subName: "rol",
@@ -33,7 +33,7 @@ module.exports = new (require("../../types/Command"))({
       ]
     }
   ],
-  async onCommand(interaction, other) {
+  async onInteraction(interaction, other) {
     /** @type {import("discord.js").GuildMember} */
     let targetMember = interaction.options.getMember("uye", true);
     let targetRole = interaction.options.getRole("rol", true);

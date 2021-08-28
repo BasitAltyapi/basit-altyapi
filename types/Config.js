@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const Command = require("./Command");
+const Interaction = require("./Interaction");
 
 class Config {
 
@@ -12,14 +12,14 @@ class Config {
   /** @type {Discord.ClientOptions} */
   clientOptions = {};
 
-  /** @type {{coolDown(interaction: Discord.CommandInteraction, command: Command, timeout: number): void, disabled(interaction: Discord.CommandInteraction, command: Command): void, blocked(interaction: Discord.CommandInteraction, command: Command): void, botPermsRequired(interaction: Discord.CommandInteraction, command: Command, perms: string[]): void, userPermsRequired(interaction: Discord.CommandInteraction, command: Command, perms: string[]): void, developerOnly(interaction: Discord.CommandInteraction, command: Command): void, guildOnly(interaction: Discord.CommandInteraction, command: Command): void}} */
+  /** @type {{coolDown(interaction: Discord.CommandInteraction, interaction: Interaction, timeout: number): void, disabled(interaction: Discord.CommandInteraction, interaction: Interaction): void, blocked(interaction: Discord.CommandInteraction, interaction: Interaction): void, botPermsRequired(interaction: Discord.CommandInteraction, interaction: Interaction, perms: string[]): void, userPermsRequired(interaction: Discord.CommandInteraction, interaction: Interaction, perms: string[]): void, developerOnly(interaction: Discord.CommandInteraction, interaction: Interaction): void, guildOnly(interaction: Discord.CommandInteraction, interaction: Interaction): void}} */
   userErrors = {};
 
   /** @type {{[key: string|number]: any}} */
   other = {};
 
   /** @type {Command} */
-  commandDefaults = {};
+  interactionDefaults = {};
 
   /** @type {Set<string>} */
   blockedUsers = new Set();
@@ -39,11 +39,11 @@ class Config {
   /** @type {(client:import("discord.js").Client)=>void} */
   onReady = () => { };
 
-  /** @type {(command:Command, interaction: Discord.CommandInteraction} */
-  onCommandBeforeChecks = async () => { return true; };
+  /** @type {(interaction:Command, interaction: Discord.CommandInteraction} */
+  onInteractionBeforeChecks = async () => { return true; };
 
-  /** @type {(command:Command, interaction: Discord.CommandInteraction, other: {setCoolDown(duration:number): void, [key:string|number]: any)=>void} */
-  onCommand = async () => { return true; };
+  /** @type {(interaction:Command, interaction: Discord.CommandInteraction, other: {setCoolDown(duration:number): void, [key:string|number]: any)=>void} */
+  onInteraction = async () => { return true; };
 
   /**
    * @param {Config} arg 
@@ -79,9 +79,9 @@ class Config {
     this.userErrors = arg.userErrors;
     this.other = arg.other || {};
 
-    this.commandDefaults = typeof arg.commandDefaults == "object" ? arg.commandDefaults : {
+    this.interactionDefaults = typeof arg.interactionDefaults == "object" ? arg.interactionDefaults : {
       actionType: "CHAT_INPUT",
-      description: "Açıkla belirtilmemiş.",
+      description: "...",
       developerOnly: false,
       guildOnly: true,
       disabled: false,
@@ -111,8 +111,8 @@ class Config {
     if (typeof arg.onAfterLoad == "function") this.onAfterLoad = arg.onAfterLoad;
     if (typeof arg.onReady == "function") this.onReady = arg.onReady;
     
-    if (typeof arg.onCommandBeforeChecks == "function") this.onCommandBeforeChecks = arg.onCommandBeforeChecks;
-    if (typeof arg.onCommand == "function") this.onCommand = arg.onCommand;
+    if (typeof arg.onInteractionBeforeChecks == "function") this.onInteractionBeforeChecks = arg.onInteractionBeforeChecks;
+    if (typeof arg.onInteraction == "function") this.onInteraction = arg.onInteraction;
   }
 }
 

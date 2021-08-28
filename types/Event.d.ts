@@ -1,5 +1,5 @@
 import {
-  ApplicationCommand,
+  ApplicationInteraction,
   Client,
   Collection,
   DMChannel,
@@ -51,11 +51,11 @@ class BaseEvent {
 export = BaseEvent;
 
 
-type TEvents = ApplicationCommandCreateEvent | ApplicationCommandDeleteEvent | ApplicationCommandUpdateEvent | ChannelCreateEvent | ChannelDeleteEvent | ChannelPinsUpdateEvent | ChannelUpdateEvent | DebugEvent | WarnEvent | EmojiCreateEvent | EmojiDeleteEvent | EmojiUpdateEvent | ErrorEvent | GuildBanAddEvent | GuildBanRemoveEvent | GuildCreateEvent | GuildDeleteEvent | GuildUnavailableEvent | GuildIntegrationsUpdateEvent | GuildMemberAddEvent | GuildMemberAvailableEvent | GuildMemberRemoveEvent | GuildMembersChunkEvent | GuildMemberUpdateEvent | GuildUpdateEvent | InviteCreateEvent | InviteDeleteEvent | MessageEvent | MessageCreateEvent | MessageDeleteEvent | MessageReactionRemoveAllEvent | MessageReactionRemoveEmojiEvent | MessageDeleteBulkEvent | MessageReactionAddEvent | MessageReactionRemoveEvent | MessageUpdateEvent | PresenceUpdateEvent | RateLimitEvent | InvalidRequestWarningEvent | ReadyEvent | RoleCreateEvent | RoleDeleteEvent | RoleUpdateEvent | ThreadCreateEvent | ThreadDeleteEvent | ThreadListSyncEvent | ThreadMemberUpdateEvent | ThreadMembersUpdateEvent | ThreadUpdateEvent | TypingStartEvent | UserUpdateEvent | VoiceStateUpdateEvent | WebhookUpdateEvent | InteractionEvent | InteractionCreateEvent | ShardDisconnectEvent | ShardErrorEvent | ShardReadyEvent | ShardReconnectingEvent | ShardResumeEvent | StageInstanceCreateEvent | StageInstanceUpdateEvent | StageInstanceDeleteEvent | StickerCreateEvent | StickerDeleteEvent | StickerUpdateEvent;
+type TEvents = ApplicationInteractionCreateEvent | ApplicationInteractionDeleteEvent | ApplicationInteractionUpdateEvent | ChannelCreateEvent | ChannelDeleteEvent | ChannelPinsUpdateEvent | ChannelUpdateEvent | DebugEvent | WarnEvent | EmojiCreateEvent | EmojiDeleteEvent | EmojiUpdateEvent | ErrorEvent | GuildBanAddEvent | GuildBanRemoveEvent | GuildCreateEvent | GuildDeleteEvent | GuildUnavailableEvent | GuildIntegrationsUpdateEvent | GuildMemberAddEvent | GuildMemberAvailableEvent | GuildMemberRemoveEvent | GuildMembersChunkEvent | GuildMemberUpdateEvent | GuildUpdateEvent | InviteCreateEvent | InviteDeleteEvent | MessageEvent | MessageCreateEvent | MessageDeleteEvent | MessageReactionRemoveAllEvent | MessageReactionRemoveEmojiEvent | MessageDeleteBulkEvent | MessageReactionAddEvent | MessageReactionRemoveEvent | MessageUpdateEvent | PresenceUpdateEvent | RateLimitEvent | InvalidRequestWarningEvent | ReadyEvent | RoleCreateEvent | RoleDeleteEvent | RoleUpdateEvent | ThreadCreateEvent | ThreadDeleteEvent | ThreadListSyncEvent | ThreadMemberUpdateEvent | ThreadMembersUpdateEvent | ThreadUpdateEvent | TypingStartEvent | UserUpdateEvent | VoiceStateUpdateEvent | WebhookUpdateEvent | InteractionEvent | InteractionCreateEvent | ShardDisconnectEvent | ShardErrorEvent | ShardReadyEvent | ShardReconnectingEvent | ShardResumeEvent | StageInstanceCreateEvent | StageInstanceUpdateEvent | StageInstanceDeleteEvent | StickerCreateEvent | StickerDeleteEvent | StickerUpdateEvent;
 
-interface ApplicationCommandCreateEvent { eventName: "applicationCommandCreate"; onEvent: (command: ApplicationCommand) => any };
-interface ApplicationCommandDeleteEvent { eventName: "applicationCommandDelete"; onEvent: (command: ApplicationCommand) => any };
-interface ApplicationCommandUpdateEvent { eventName: "applicationCommandUpdate"; onEvent: (oldCommand: ApplicationCommand | null, newCommand: ApplicationCommand) => any };
+interface ApplicationInteractionCreateEvent { eventName: "applicationInteractionCreate"; onEvent: (command: ApplicationInteraction) => any };
+interface ApplicationInteractionDeleteEvent { eventName: "applicationInteractionDelete"; onEvent: (command: ApplicationInteraction) => any };
+interface ApplicationInteractionUpdateEvent { eventName: "applicationInteractionUpdate"; onEvent: (oldCommand: ApplicationInteraction | null, newCommand: ApplicationInteraction) => any };
 interface ChannelCreateEvent { eventName: "channelCreate"; onEvent: (channel: GuildChannel) => any };
 interface ChannelDeleteEvent { eventName: "channelDelete"; onEvent: (channel: DMChannel | GuildChannel) => any };
 interface ChannelPinsUpdateEvent { eventName: "channelPinsUpdate"; onEvent: (channel: TextChannel | NewsChannel | DMChannel | PartialDMChannel, date: Date) => any };

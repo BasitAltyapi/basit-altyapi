@@ -1,13 +1,13 @@
-import { ApplicationCommandOption, ApplicationCommandType, Client, CommandInteraction, ContextMenuInteraction, PermissionString } from "discord.js";
+import { ApplicationInteractionOption, ApplicationInteractionType, Client, CommandInteraction, ContextMenuInteraction, PermissionString } from "discord.js";
 
-class BaseCommand {
+class BaseInteraction {
   private _type: string;
   name: string;
   id?: string;
   type: "COMMAND" | "SUB_COMMAND";
   subName?: string;
   perms?: { bot: PermissionString[], user: PermissionString[] };
-  onCommand: (interaction: CommandInteraction | ContextMenuInteraction, other: IOther ) => void;
+  onInteraction: (interaction: CommandInteraction | ContextMenuInteraction, other: IOther ) => void;
   onLoad?: (client: Client) => void;
   coolDowns: Map<string, number>;
   description!: string;
@@ -16,10 +16,10 @@ class BaseCommand {
   other?: { [key: string | number]: any };
   coolDown?: number;
   guildOnly?: boolean;
-  options?: ApplicationCommandOption[];
+  options?: ApplicationInteractionOption[];
   defaultPermission?: boolean;
-  actionType?: ApplicationCommandType;
-  constructor(arg: Omit<BaseCommand, "_type" | "coolDowns" | "name" | "subName" | "type" | "onCommand"> & ((EasyNormalCommand | EasySubCommand) & (ActionChatCommand | ActionRightClickCommand)))
+  actionType?: ApplicationInteractionType;
+  constructor(arg: Omit<BaseInteraction, "_type" | "coolDowns" | "name" | "subName" | "type" | "onInteraction"> & ((EasyNormalCommand | EasySubCommand) & (ActionChatCommand | ActionRightClickCommand)))
 }
 
 interface IOther {
@@ -29,12 +29,12 @@ interface IOther {
 
 interface ActionChatCommand {
   actionType: "CHAT_INPUT";
-  onCommand: (interaction: CommandInteraction, other: IOther) => void;
+  onInteraction: (interaction: CommandInteraction, other: IOther) => void;
 }
 
 interface ActionRightClickCommand {
   actionType: "MESSAGE" | "USER";
-  onCommand: (interaction: ContextMenuInteraction, other: IOther) => void;
+  onInteraction: (interaction: ContextMenuInteraction, other: IOther) => void;
 }
 
 interface EasyNormalCommand {
@@ -48,4 +48,4 @@ interface EasySubCommand {
   subName: string;
 }
 
-export = BaseCommand;
+export = BaseInteraction;

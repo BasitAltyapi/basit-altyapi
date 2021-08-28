@@ -1,6 +1,6 @@
 const sleep = require('stuffs/lib/sleep');
 
-module.exports = new (require("../../types/Command"))({
+module.exports = new Underline.Interaction({
   type: "SUB_COMMAND",
   name: "moderasyon",
   subName: "temizle",
@@ -13,7 +13,7 @@ module.exports = new (require("../../types/Command"))({
       required: true
     }
   ],
-  async onCommand(interaction, other) {
+  async onInteraction(interaction, other) {
     let amount = interaction.options.getInteger("miktar");
     if (amount < 1 || amount > 100) return interaction.reply("Miktar 1 ila 100 arasında olmalıdır.");
 

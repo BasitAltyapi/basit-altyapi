@@ -1,11 +1,11 @@
-module.exports = new (require("../types/Command"))({
+module.exports = new Underline.Interaction({
   type: "COMMAND",
   description: "Bir kullanıcı hakkına bilgilere bakmanızı sağlar.",
   name: "profil",
-  async onCommand(interaction, other) {
+  async onInteraction(interaction, other) {
     /** @type {import("discord.js").GuildMember} */
     const member = interaction.options.getMember("kullanici", true);
-    let avatarURL = await getUserBannerURL(member.user.id, global.client.token);
+    let avatarURL = await getUserBannerURL(member.user.id, Underline.client.token);
     interaction.reply({
       embeds: [{
         title: member.user.tag,

@@ -5,7 +5,7 @@ module.exports = new (require("../types/Event"))({
   // Herhangi bir discord.js olay ismi.
   eventName: "messageCreate",
   // onEvent belirtiğiniz olay yaşandığında çağrılır.
-  // Komut argumentlari normal discord.js'deki gibi ideğişkendir.
+  // interaksiyon argumentlari normal discord.js'deki gibi ideğişkendir.
   // Otomatik tamamlama eventName değişkenindeki tipe göre değişir.
   onEvent(message) {
     console.log(`[MESAJ] ${message.author.tag}: ${message.content}`);

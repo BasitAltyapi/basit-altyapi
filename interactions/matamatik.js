@@ -5,10 +5,10 @@ const expressionMap = {
   "divide": "/"
 };
 
-module.exports = new (require("../types/Command"))({
+module.exports = new Underline.Interaction({
   type: "COMMAND",
   name: "matamatik",
-  onCommand(interaction, other) {
+  onInteraction(interaction, other) {
     let numberOne = interaction.options.getNumber("number_one");
     let expressionName = interaction.options.getString("expression_type");
     let numberTwo = interaction.options.getNumber("number_two");

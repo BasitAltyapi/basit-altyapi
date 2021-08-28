@@ -14,7 +14,7 @@
     "@types/recursive-readdir": "^2.2.0"
   },
   "name": "armagan-basit-altyapi",
-  "version": "1.6.6",
+  "version": "1.7.0",
   "description": "Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran discord bot altyapısı.",
   "main": "index.js",
   "repository": {
@@ -25,7 +25,7 @@
   "license": "GPL-v3-or-later",
   "private": true,
   "scripts": {
-    "komut": "node ./other/generator.js command",
+    "interaksiyon": "node ./other/generator.js interaction",
     "olay": "node ./other/generator.js event",
     "baslat": "node index.js"
   },
@@ -33,5 +33,8 @@
     "url": "https://github.com/TheArmagan/basit-altyapi/issues"
   },
   "homepage": "https://github.com/TheArmagan/basit-altyapi#readme",
-  "keywords": []
+  "keywords": [],
+  "engines": {
+    "node": "^16.6.1"
+  }
 }

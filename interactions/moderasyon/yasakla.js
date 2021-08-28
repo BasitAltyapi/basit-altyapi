@@ -1,4 +1,4 @@
-module.exports = new (require("../../types/Command"))({
+module.exports = new Underline.Interaction({
   type: "SUB_COMMAND",
   name: "moderasyon",
   subName: "yasakla",
@@ -17,7 +17,7 @@ module.exports = new (require("../../types/Command"))({
       required: false
     }
   ],
-  async onCommand(interaction, other) {
+  async onInteraction(interaction, other) {
     let targetMember = interaction.options.getMember("uye");
     let reason = interaction.options.getString("sebep") || "";
     if (!targetMember.bannable) return interaction.reply("Bu üyeyi sunucudan yasaklamaya gücüm yetmiyor.");

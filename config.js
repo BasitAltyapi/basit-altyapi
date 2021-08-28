@@ -14,15 +14,20 @@ module.exports = new (require("./types/Config"))({
     // Okumanızı tavsiye ederim: https://discordjs.guide/popular-topics/intents.html
     intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_MEMBERS", "GUILD_WEBHOOKS"]
   },
+  // Diğer ayarlar. Bunun içine ne isterseniz koyabilirsiniz.
+  // Ulaşmak için "Underline.config.other" objesini kullanabilirsiniz.
+  other: {
+    tag: "§"
+  },
   // Kullanıcı hatalarındaki uyarı mesajları/olayları.
   userErrors: {
-    // Arka arkaya komut kullanma limiti aşıldığında.
+    // Arka arkaya interaksiyon kullanma limiti aşıldığında.
     coolDown(interaction, command, coolDown) {
-      interaction.reply(`Bu komutu tekrardan ${(coolDown / 1000).toFixed(2)} saniye içerisinde kullanabilirsin.`)
+      interaction.reply(`Bu interaksiyonu tekrardan ${(coolDown / 1000).toFixed(2)} saniye içerisinde kullanabilirsin.`)
     },
-    // Komut kapalı olduğunda
+    // interaksiyon kapalı olduğunda
     disabled(interaction, command) {
-      interaction.reply("Bu komut kapalı.");
+      interaction.reply("Bu interaksiyon kapalı.");
     },
     // Kullanıcı bottan yasaklı olduğunda.
     blocked(interaction, command) {
@@ -30,29 +35,26 @@ module.exports = new (require("./types/Config"))({
     },
     // Botun çalışmak için x yertkilerine ihtiyacı olduğunda.
     botPermsRequired(interaction, command, perms) {
-      interaction.reply(`Bu komutun çalışması için ${perms.join(", ")} yetkilerine ihtiyacım var.`)
+      interaction.reply(`Bu interaksiyonun çalışması için ${perms.join(", ")} yetkilerine ihtiyacım var.`)
     },
-    // Kullanıcının komutu kullanabilmek için x yetkilerine ihtiyacı olduğunda.
+    // Kullanıcının interaksiyonu kullanabilmek için x yetkilerine ihtiyacı olduğunda.
     userPermsRequired(interaction, command, perms) {
-      interaction.reply(`Bu komutu kullanabilmek için ${perms.join(", ")} yetkilerine ihtiyacın var.`)
+      interaction.reply(`Bu interaksiyonu kullanabilmek için ${perms.join(", ")} yetkilerine ihtiyacın var.`)
     },
-    // Komut sadece geliştiricilere özel olduğunda.
+    // interaksiyon sadece geliştiricilere özel olduğunda.
     developerOnly(interaction, command) {
-      interaction.reply(`Bu komutu sadece bot geliştiricileri kullanabilir.`)
+      interaction.reply(`Bu interaksiyonu sadece bot geliştiricileri kullanabilir.`)
     },
     guildOnly(interaction, command) {
-      interaction.reply(`Bu komutu sadece sunucularda kullanılabilir.`)
+      interaction.reply(`Bu interaksiyonu sadece sunucularda kullanılabilir.`)
     }
   },
-  // Diğer ayarlar. Bunun içine ne isterseniz koyabilirsiniz.
-  // Ulaşmak için "global.config.other" objesini kullanabilirsiniz.
-  other: {},
-  // Her komutun varsayılan ayarları her anahtarın ne
-  // işe yaradığını merak ediyorsanız commands/ornekKomut.js'e
+  // Her interaksiyonun varsayılan ayarları her anahtarın ne
+  // işe yaradığını merak ediyorsanız commands/ornekinteraksiyon.js'e
   // bakabilirsiniz.
-  commandDefaults: {
+  interactionDefaults: {
     actionType: "CHAT_INPUT",
-    description: "Açıkla belirtilmemiş.",
+    description: "...",
     developerOnly: false,
     guildOnly: true,
     disabled: false,
@@ -69,7 +71,7 @@ module.exports = new (require("./types/Config"))({
   onBeforeLoad(client) {
     console.log("[CONFIG] Yüklemeye başlamadan önce çalıştı.");
   },
-  // Bot komutları ve olayları yükledikten sonra çalışan fonksiyon. Opsiyonel.
+  // Bot interaksiyonları ve olayları yükledikten sonra çalışan fonksiyon. Opsiyonel.
   onAfterLoad(client) {
     console.log("[CONFIG] Yükleme bittikten sonra çalıştı.");
   },
@@ -77,20 +79,20 @@ module.exports = new (require("./types/Config"))({
   async onReady(client) {
     console.log("[CONFIG] Discord hesabına giriş yaptıktan sonra çalıştı.");
     client.user.setActivity(`/help - Basit Altyapı by TheArmagan`, { type: "WATCHING" });
-
+    
   },
-  // Komut üzerinde hiçbir kontrol yapılmadan önce çalışır.
+  // interaksiyon üzerinde hiçbir kontrol yapılmadan önce çalışır.
   // Sadece cevap true ise işleme devam eder.
-  async onCommandBeforeChecks(command, interaction) {
+  async onInteractionBeforeChecks(command, interaction) {
     return true;
   },
-  // Komuttaki bütün kontrolleri geçtikten sonra, komut
+  // interaksiyontaki bütün kontrolleri geçtikten sonra, interaksiyon
   // hemen çalıştırılmadan önce çalışır.
   // Sadece cevap true ise işleme devam eder.
   //
   // Other objesini istediğiniz gibi modifiye edebilirsiniz.
-  // Nasılsa altakki fonksiyon her komut çalışmadan önce çalışır.
-  async onCommand(command, interaction, other) {
+  // Nasılsa altakki fonksiyon her interaksiyon çalışmadan önce çalışır.
+  async onInteraction(command, interaction, other) {
     return true;
   }
 })
