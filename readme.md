@@ -1,5 +1,5 @@
 >
-> Slash command versiyonu için [dcjs-v13](https://github.com/TheArmagan/basit-altyapi/tree/dcjs-v13) dalına bakabilirsiniz.
+> Slash ve Sağtık Menü versiyonu için [dcjs-v13](https://github.com/TheArmagan/basit-altyapi/tree/dcjs-v13) dalına bakabilirsiniz.
 >
 
 # Basit Altyapı (Versiyon 1.4.8)
