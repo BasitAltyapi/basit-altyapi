@@ -108,7 +108,7 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
 
   await chillout.forEach(eventFiles, async (eventFile) => {
     let start = Date.now();
-    let rltPath = path.relative(__dirname, commandFile);
+    let rltPath = path.relative(__dirname, eventFile);
     console.info(`[BİLGİ] "${eventFile}" event yükleniyor..`);
 
     /** @type {import("./types/Event")} */
