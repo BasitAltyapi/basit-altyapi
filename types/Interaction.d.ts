@@ -1,6 +1,6 @@
 import { ApplicationInteractionOption, ApplicationInteractionType, Client, CommandInteraction, ContextMenuInteraction, PermissionString } from "discord.js";
 
-class BaseInteraction {
+export class BaseInteraction {
   private _type: string;
   name: string;
   id?: string;
@@ -8,7 +8,7 @@ class BaseInteraction {
   subName?: string;
   perms?: { bot: PermissionString[], user: PermissionString[] };
   onInteraction: (interaction: CommandInteraction | ContextMenuInteraction, other: IOther ) => void;
-  onLoad?: (client: Client) => void;
+  onLoad?(client: Client): void;
   coolDowns: Map<string, number>;
   description!: string;
   disabled?: boolean;
@@ -19,30 +19,33 @@ class BaseInteraction {
   options?: ApplicationInteractionOption[];
   defaultPermission?: boolean;
   actionType?: ApplicationInteractionType;
-  constructor(arg: Omit<BaseInteraction, "_type" | "coolDowns" | "name" | "subName" | "type" | "onInteraction"> & ((EasyNormalCommand | EasySubCommand) & (ActionChatCommand | ActionRightClickCommand)))
+  constructor(arg: TInteractionConstructor)
 }
 
-interface IOther {
+export type TOmittedInteraction = Omit<BaseInteraction, "_type" | "coolDowns" | "name" | "subName" | "type" | "onInteraction" | "actionType">;
+export type TInteractionConstructor = TOmittedInteraction & ((SlashCommand | SlashSubCommand) & (ActionChatCommand | ActionRightClickCommand));
+
+export interface IOther {
   setCoolDown(durations: number): void,
   [key: string | number]: any
 }
 
-interface ActionChatCommand {
+export interface ActionChatCommand {
   actionType: "CHAT_INPUT";
   onInteraction: (interaction: CommandInteraction, other: IOther) => void;
 }
 
-interface ActionRightClickCommand {
+export interface ActionRightClickCommand {
   actionType: "MESSAGE" | "USER";
   onInteraction: (interaction: ContextMenuInteraction, other: IOther) => void;
 }
 
-interface EasyNormalCommand {
+export interface SlashCommand {
   type: "COMMAND";
   name: string;
 }
 
-interface EasySubCommand {
+export interface SlashSubCommand {
   type: "SUB_COMMAND";
   name: string;
   subName: string;

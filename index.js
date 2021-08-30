@@ -17,7 +17,11 @@ globalThis.Underline = {
   interactions: interactions,
   events: events,
   Interaction: require('./types/Interaction'),
-  Event: require('./types/Event')
+  Event: require('./types/Event'),
+  SlashCommand: require("./types/SlashCommand"),
+  SlashSubCommand: require("./types/SlashSubCommand"),
+  MessageAction: require("./types/MessageAction"),
+  UserAction: require("./types/UserAction"),
 }
 
 console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");

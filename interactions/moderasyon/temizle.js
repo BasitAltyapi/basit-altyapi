@@ -1,7 +1,6 @@
 const sleep = require('stuffs/lib/sleep');
 
-module.exports = new Underline.Interaction({
-  type: "SUB_COMMAND",
+module.exports = new Underline.SlashSubCommand({
   name: "moderasyon",
   subName: "temizle",
   description: "Belli bir miktar mesaj silemenizi sağlar.",

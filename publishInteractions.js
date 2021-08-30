@@ -11,7 +11,11 @@ const Discord = require("discord.js");
 globalThis.Underline = {
   config,
   Interaction: require('./types/Interaction'),
-  Event: require('./types/Event')
+  Event: require('./types/Event'),
+  SlashCommand: require("./types/SlashCommand"),
+  SlashSubCommand: require("./types/SlashSubCommand"),
+  MessageAction: require("./types/MessageAction"),
+  UserAction: require("./types/UserAction"),
 };
 
 (async () => {
@@ -54,59 +58,59 @@ globalThis.Underline = {
       return !state;
     });
 
-    await chillout.forEach(commandFiles, (commandFile) => {
+    await chillout.forEach(commandFiles, (interactionFile) => {
       let start = Date.now();
-      let rltPath = path.relative(__dirname, commandFile);
+      let rltPath = path.relative(__dirname, interactionFile);
       console.info(`[BİLGİ] "${rltPath}" interaksiyon okunuyor..`)
       /** @type {import("./types/Interaction")} */
-      let command = require(commandFile);
+      let interaction = require(interactionFile);
       
 
-      if (command?._type != "interaction") {
+      if (interaction?._type != "interaction") {
         console.warn(`[UYARI] "${rltPath}" interaksiyon dosyası boş. Atlanıyor..`);
         return;
       }
 
-      if (!command.type) {
+      if (!interaction.type) {
         console.warn(`[UYARI] "${rltPath}" interaksiyon dosyasın için bir type belirtilmemiş. Atlanıyor.`);
         return;
       }
 
-      if (!command.id) {
+      if (!interaction.id) {
         console.warn(`[UYARI] "${rltPath}" interaksiyon dosyasının bir idsi bulunmuyor. Atlanıyor..`);
         return;
       }
 
-      if (typeof command.name != "string") {
+      if (typeof interaction.name != "string") {
         console.warn(`[UYARI] "${rltPath}" interaksiyon dosyasının bir ismi bulunmuyor. Atlanıyor..`);
         return;
       }
-      if (command.actionType == "CHAT_INPUT") command.name = command.name.replace(/ /g, "").toLowerCase();
+      if (interaction.actionType == "CHAT_INPUT") interaction.name = interaction.name.replace(/ /g, "").toLowerCase();
 
-      if (command.type == "SUB_COMMAND" && command.actionType != "CHAT_INPUT") {
+      if (interaction.type == "SUB_COMMAND" && interaction.actionType != "CHAT_INPUT") {
         console.warn(`[UYARI] "${rltPath}" "SUB_COMMAND" tipi ile sadece "CHAT_INPUT" aksiyon tipi birlikte kullanılabilir. Atlanıyor..`);
         return;
       }
 
-      if (command.type == "SUB_COMMAND" && !command.subName) {
+      if (interaction.type == "SUB_COMMAND" && !interaction.subName) {
         console.warn(`[UYARI] "${rltPath}" interaksiyon dosyasının tipi "SUB_COMMAND" ancak bir subName bulundurmuyor. Atlanıyor..`);
         return;
       }
 
 
-      if (commands.has(command.id)) {
-        console.warn(`[UYARI] "${command.id}" idli bir interaksiyon daha önceden zaten yüklenmiş. Atlanıyor.`)
+      if (commands.has(interaction.id)) {
+        console.warn(`[UYARI] "${interaction.id}" idli bir interaksiyon daha önceden zaten yüklenmiş. Atlanıyor.`)
         return;
       }
 
-      if (command.actionType == "CHAT_INPUT" && !command.description) {
+      if (interaction.actionType == "CHAT_INPUT" && !interaction.description) {
         console.warn(`[UYARI] "${rltPath}" interaksiyon dosyasının "CHAT_INPUT" aksiyon tipinde ve açıklama içermiyor. Atlanıyor..`)
         return;
       }
 
       {
         let err = false;
-        command.options.forEach(i => {
+        interaction.options.forEach(i => {
           if (i.name != i.name.toLowerCase()) {
             console.error(`[HATA] "${rltPath}" interaksiyon dosyasının, "${i.name}" adlı opsiyon ismi tamamen küçük haflerden oluşmalı. Atlanıyor..`);
             err = true;
@@ -119,8 +123,8 @@ globalThis.Underline = {
         if (err) return;
       }
 
-      commands.set(command.id, command);
-      console.info(`[BİLGİ] ("${rltPath}") "${command.name}" (${command.id}) adlı interaksiyon okundu. (${Date.now() - start}ms sürdü.)`);
+      commands.set(interaction.id, interaction);
+      console.info(`[BİLGİ] ("${rltPath}") "${interaction.name}" (${interaction.id}) adlı interaksiyon okundu. (${Date.now() - start}ms sürdü.)`);
     });
 
     if (commands.size) {

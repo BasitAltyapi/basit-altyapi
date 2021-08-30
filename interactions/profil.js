@@ -1,5 +1,4 @@
-module.exports = new Underline.Interaction({
-  type: "COMMAND",
+module.exports = new Underline.SlashCommand({
   description: "Bir kullanıcı hakkına bilgilere bakmanızı sağlar.",
   name: "profil",
   async onInteraction(interaction, other) {

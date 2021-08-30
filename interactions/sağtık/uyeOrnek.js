@@ -1,10 +1,7 @@
-module.exports = new Underline.Interaction({
-  type: "COMMAND",
-  // Aksiyon tipini "USER" yapmanız durumunda interaksiyon
+module.exports = new Underline.UserAction({
   // İsminde büyük küçük ve türkçe harf kullanabilirsiniz.
   // Ve bu interaksiyon sunucu üylerine sağ tıklandığında apps
   // bölümünün altında gözükür.
-  actionType: "USER",
   name: "Sağtık Üye",
   onInteraction(interaction, other) {
     // Sağtıklanan üyeyi almak için options.getUser("user") veya options.getMember("user") diyorsunuz.

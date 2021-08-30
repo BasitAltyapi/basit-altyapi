@@ -1,10 +1,7 @@
-module.exports = new Underline.Interaction({
-  type: "COMMAND",
-  // Aksiyon tipini "MESSAGE" yapmanız durumunda interaksiyon
+module.exports = new Underline.MessageAction({
   // İsminde büyük küçük ve türkçe harf kullanabilirsiniz.
-  // Ve bu interaksiyon mesajlara sağ tıklandığında apps bölümünün
-  // altında gözükür.
-  actionType: "MESSAGE",
+  // Ve bu interaksiyon sunucu mesajlarına sağ tıklandığında apps
+  // bölümünün altında gözükür.
   name: "Sağtık Mesaj",
   onInteraction(interaction, other) {
     // Sağtıklanan üyeyi almak için options.getMessage("message") diyorsunuz.

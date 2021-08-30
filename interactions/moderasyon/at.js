@@ -1,5 +1,4 @@
-module.exports = new Underline.Interaction({
-  type: "SUB_COMMAND",
+module.exports = new Underline.SlashSubCommand({
   name: "moderasyon",
   subName: "at",
   description: "Sunucudan üye atmanızı sağlar.",

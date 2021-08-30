@@ -5,8 +5,7 @@ const expressionMap = {
   "divide": "/"
 };
 
-module.exports = new Underline.Interaction({
-  type: "COMMAND",
+module.exports = new Underline.SlashCommand({
   name: "matamatik",
   onInteraction(interaction, other) {
     let numberOne = interaction.options.getNumber("number_one");

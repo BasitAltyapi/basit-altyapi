@@ -1,5 +1,4 @@
-module.exports = new Underline.Interaction({
-  type: "SUB_COMMAND",
+module.exports = new Underline.SlashSubCommand({
   name: "moderasyon",
   subName: "yasakla",
   description: "Sunucudan üye yasaklamanızı sağlar.",

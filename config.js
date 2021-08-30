@@ -1,5 +1,3 @@
-const Discord = require('discord.js');
-
 module.exports = new (require("./types/Config"))({
   // E tabi, bot tokeni buraya.
   clientToken: "",
@@ -17,40 +15,40 @@ module.exports = new (require("./types/Config"))({
   // Diğer ayarlar. Bunun içine ne isterseniz koyabilirsiniz.
   // Ulaşmak için "Underline.config.other" objesini kullanabilirsiniz.
   other: {
-    tag: "§"
+
   },
   // Kullanıcı hatalarındaki uyarı mesajları/olayları.
   userErrors: {
     // Arka arkaya interaksiyon kullanma limiti aşıldığında.
-    coolDown(interaction, command, coolDown) {
+    coolDown(interaction, uInteraction, coolDown) {
       interaction.reply(`Bu interaksiyonu tekrardan ${(coolDown / 1000).toFixed(2)} saniye içerisinde kullanabilirsin.`)
     },
     // interaksiyon kapalı olduğunda
-    disabled(interaction, command) {
+    disabled(interaction, uInteraction) {
       interaction.reply("Bu interaksiyon kapalı.");
     },
     // Kullanıcı bottan yasaklı olduğunda.
-    blocked(interaction, command) {
+    blocked(interaction, uInteraction) {
       interaction.reply("Bottan yasaklanmışsınız.");
     },
     // Botun çalışmak için x yertkilerine ihtiyacı olduğunda.
-    botPermsRequired(interaction, command, perms) {
+    botPermsRequired(interaction, uInteraction, perms) {
       interaction.reply(`Bu interaksiyonun çalışması için ${perms.join(", ")} yetkilerine ihtiyacım var.`)
     },
     // Kullanıcının interaksiyonu kullanabilmek için x yetkilerine ihtiyacı olduğunda.
-    userPermsRequired(interaction, command, perms) {
+    userPermsRequired(interaction, uInteraction, perms) {
       interaction.reply(`Bu interaksiyonu kullanabilmek için ${perms.join(", ")} yetkilerine ihtiyacın var.`)
     },
     // interaksiyon sadece geliştiricilere özel olduğunda.
-    developerOnly(interaction, command) {
+    developerOnly(interaction, uInteraction) {
       interaction.reply(`Bu interaksiyonu sadece bot geliştiricileri kullanabilir.`)
     },
-    guildOnly(interaction, command) {
+    guildOnly(interaction, uInteraction) {
       interaction.reply(`Bu interaksiyonu sadece sunucularda kullanılabilir.`)
     }
   },
   // Her interaksiyonun varsayılan ayarları her anahtarın ne
-  // işe yaradığını merak ediyorsanız commands/ornekinteraksiyon.js'e
+  // işe yaradığını merak ediyorsanız interactions/ornekInteraksiyon.js'e
   // bakabilirsiniz.
   interactionDefaults: {
     actionType: "CHAT_INPUT",
@@ -83,7 +81,7 @@ module.exports = new (require("./types/Config"))({
   },
   // interaksiyon üzerinde hiçbir kontrol yapılmadan önce çalışır.
   // Sadece cevap true ise işleme devam eder.
-  async onInteractionBeforeChecks(command, interaction) {
+  async onInteractionBeforeChecks(uInteraction, interaction) {
     return true;
   },
   // interaksiyontaki bütün kontrolleri geçtikten sonra, interaksiyon
@@ -92,7 +90,7 @@ module.exports = new (require("./types/Config"))({
   //
   // Other objesini istediğiniz gibi modifiye edebilirsiniz.
   // Nasılsa altakki fonksiyon her interaksiyon çalışmadan önce çalışır.
-  async onInteraction(command, interaction, other) {
+  async onInteraction(uInteraction, interaction, other) {
     return true;
   }
 })
