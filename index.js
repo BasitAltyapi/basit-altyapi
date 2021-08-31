@@ -152,14 +152,13 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
       async (command) => {
         if (!command.aliases.some(i => i.toLowerCase() == lowerUsedAlias)) return;
 
+        let shouldRun1 = await config.onCommandBeforeChecks(command, message);
+        if (!shouldRun1) return chillout.StopIteration;
+
         if (command.disabled) {
           config.userErrors.disabled(message, command);
           return chillout.StopIteration;
         }
-
-        let shouldRun1 = await config.onCommandBeforeChecks(command, message);
-
-        if (!shouldRun1) return chillout.StopIteration;
         
         if (command.developerOnly && !config.developers.has(message.author.id)) {
           config.userErrors.developerOnly(message, command);
