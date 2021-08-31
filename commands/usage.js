@@ -1,9 +1,9 @@
 const { MessageEmbed } = require("discord.js")
 
-module.exports = new (require("../types/Command"))({
+module.exports = new Underline.Command({
   aliases: ["kullanımı"],
   async onCommand(msg, { args, usedPrefix, usedAlias }) {
-    let komut = global.commands.find(cmd => cmd.aliases.some(a => a.toLowerCase() == (args[1]?.toLowerCase() || "usage")));
+    let komut = Underline.commands.find(cmd => cmd.aliases.some(a => a.toLowerCase() == (args[1]?.toLowerCase() || "usage")));
     if (!komut) return msg.reply("Kullanımını öğrenmek istediğin komutu bulamadım.");
     
     if (!komut.other?.usage) return msg.reply("Bakmak istediğin komutun bir kullımı belirlenmemiş.");
@@ -11,7 +11,7 @@ module.exports = new (require("../types/Command"))({
     let usageText = komut.other.usage.replace("{p}", usedPrefix).replace("{alias}", komut.aliases[0]);
     
     let embed = new MessageEmbed();
-    embed.setAuthor(global.client.user.tag, global.client.user.avatarURL());
+    embed.setAuthor(Underline.client.user.tag, Underline.client.user.avatarURL());
     embed.setTitle(`${args[1] || komut.aliases[0]} adlı komutun kullanımı`)
     embed.setColor("RANDOM");
     embed.addField("Yan Adlar", komut.aliases.map(i=>`${usedPrefix}${i}`).join(", "));

@@ -1,4 +1,4 @@
-module.exports = new (require("../types/Command"))({
+module.exports = new Underline.Command({
   aliases: [],
   async onCommand(msg, { args, usedPrefix, usedAlias }) {
     let targetMember = msg.mentions.members.first() || (isNaN(args[1]) ? null : await msg.guild.members.cache.get(args[1]));

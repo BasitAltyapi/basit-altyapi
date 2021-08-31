@@ -150,7 +150,7 @@ async function permissionPrompt(message = "") {
     let filePath = path.resolve("./commands", `${name}.js`);
 
     console.log(`√ Dosya "${filePath}" konumuna hazırlanıyor!`);
-    let t = `module.exports = new (require("../types/Command"))({
+    let t = `module.exports = new Underline.Command({
   onCommand(message, other) {
     // Komut kullanıldığında burası çalışır.
   },
@@ -199,7 +199,7 @@ async function permissionPrompt(message = "") {
     let filePath = path.resolve("./events", `${name}.js`);
 
     console.log(`√ Dosya "${filePath}" konumuna hazırlanıyor!`);
-    let t = `module.exports = new (require("../types/Event"))({
+    let t = `module.exports = new Underline.Event({
   name: "${name}",
   eventName: "${eventName}",
   onEvent(message) {

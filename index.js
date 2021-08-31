@@ -9,11 +9,14 @@ const { makeSureFolderExists } = require("stuffs");
 const Command = require("./types/Command");
 const client = new Discord.Client(config.clientOptions);
 
-
-global.commands = new Discord.Collection();
-global.events = new Discord.Collection();
-global.config = config;
-global.client = client;
+globalThis.Underline = {
+  commands: new Discord.Collection(),
+  events: new Discord.Collection(),
+  config,
+  client,
+  Command: require("./types/Command"),
+  Event: require("./types/Event")
+}
 
 console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
 (async () => {
@@ -52,7 +55,7 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
       return;
     }
 
-    if (global.commands.has(command.name)) {
+    if (Underline.commands.has(command.name)) {
       console.warn(`[UYARI] "${command.name}" adlı bir komut daha önceden zaten yüklenmiş. Atlanıyor.`)
       return;
     }
@@ -66,13 +69,13 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
       console.warn(`[UYARI] "${command.name}" adlı komut sunuculara özel olmamasına rağmen özel perm kullanıyor.`);
     }
 
-    global.commands.set(command.name, command);
+    Underline.commands.set(command.name, command);
     command.onLoad(client);
     console.info(`[BİLGİ] "${command.name}" adlı komut yüklendi. (${Date.now() - start}ms sürdü.)`);
   });
 
-  if (global.commands.size) {
-    console.info(`[BİLGİ] ${global.commands.size} komut yüklendi.`);
+  if (Underline.commands.size) {
+    console.info(`[BİLGİ] ${Underline.commands.size} komut yüklendi.`);
   } else {
     console.warn(`[UYARI] Hiçbir komut yüklenmedi, herşey yolunda mı?`);
   }
@@ -99,7 +102,7 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
 
     if (typeof event.name != "string") event.name = path.basename(eventFile).slice(0, -3).replace(/ /g, "");
 
-    if (global.events.has(event.name)) {
+    if (Underline.events.has(event.name)) {
       console.warn(`[UYARI] "${event.name}" adlı bir event daha önceden zaten yüklenmiş. Atlanıyor.`);
       return;
     }
@@ -109,13 +112,13 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
       return;
     };
 
-    global.events.set(event.name, event);
+    Underline.events.set(event.name, event);
     event.onLoad(client);
     console.info(`[BİLGİ] "${event.name}" adlı event yüklendi. (${Date.now() - start}ms sürdü.)`);
   })
 
-  if (global.events.size) {
-    console.info(`[BİLGİ] ${global.events.size} event yüklendi.`);
+  if (Underline.events.size) {
+    console.info(`[BİLGİ] ${Underline.events.size} event yüklendi.`);
   } else {
     console.warn(`[UYARI] Hiçbir event yüklenmedi, herşey yolunda mı?`);
   }
@@ -145,7 +148,7 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
     let plsargs = plsParseArgs(args);
 
     chillout.forEach(
-      global.commands.array(),
+      Underline.commands.array(),
       /**
        * @param {Command} command
        */
@@ -221,7 +224,7 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
 
   {
     /** @type {Map<string, (import("./types/Event"))[]>} */
-    let eventsMapped = global.events.array().reduce((all, cur) => {
+    let eventsMapped = Underline.events.array().reduce((all, cur) => {
       if (!all.has(cur.eventName)) all.set(cur.eventName, []);
       all.get(cur.eventName).push(cur);
       return all;

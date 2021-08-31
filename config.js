@@ -46,7 +46,7 @@ module.exports = new (require("./types/Config"))({
     }
   },
   // Diğer ayarlar. Bunun içine ne isterseniz koyabilirsiniz.
-  // Ulaşmak için "global.config.other" objesini kullanabilirsiniz.
+  // Ulaşmak için "Underline.config.other" objesini kullanabilirsiniz.
   other: {},
   // Komut ismini otomatik olarak aliasların içine
   // eklersin mi? Varsayılan true.

@@ -1,4 +1,4 @@
-module.exports = new (require("../types/Command"))({
+module.exports = new Underline.Command({
   // onCommand fonksiyonu her komut kullanıldığında çağrılır.
   onCommand(message, other) {
     // Discord.JS Message objesi.

@@ -1,8 +1,9 @@
 >
+> # v13.x
 > Slash ve Sağtık Menü versiyonu için [dcjs-v13](https://github.com/TheArmagan/basit-altyapi/tree/dcjs-v13) dalına bakabilirsiniz.
 >
 
-# Basit Altyapı (Versiyon 1.4.8)
+# Basit Altyapı (Versiyon 1.4.9) (v12.x)
 
 Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran discord bot altyapısı. Sık sık güncelleme alıyor.
 
@@ -16,7 +17,7 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
 - ✅ Mantık hatası uyarı sistemleri.
 - ✅ Bottan kullanıcı yasaklama.
 - ✅ Komutlarda otomatik tamamlama.
-- ✅ Global değişkenlerde otomatik tamamlama. (commands, events, config, client)
+- ✅ Global `Underline` objesi. (config, client, commands, events)
 - ✅ İç içe klasör desteği.
 - ✅ Komut açıp kapama desteği.
 - ✅ Sadece geliştiricilerin kullanabildiği komut desteği.
