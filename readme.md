@@ -1,7 +1,7 @@
 # Basit Altyapı (Versiyon 1.7.1) (v13.x)
 
 Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran discord bot altyapısı. Sık sık güncelleme alıyor. (Slash Commands)
-
+ 
 ## Özellikler
 
 - ✅ **Sağtık menü desteği.**
