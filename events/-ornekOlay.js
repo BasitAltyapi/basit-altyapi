@@ -1,4 +1,4 @@
-module.exports = new (require("../types/Event"))({
+module.exports = new Underline.Event({
   // Event idsi. Opsiyonel, boş bırakıldığında dosya ismini alır.
   // Boşluk içeremez.
   id: "örnekOlay",
