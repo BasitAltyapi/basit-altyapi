@@ -7,7 +7,6 @@ const readdirRecursive = require("recursive-readdir");
 const { makeSureFolderExists } = require("stuffs");
 const client = new Discord.Client(config.clientOptions);
 
-
 const interactions = new Discord.Collection();
 const events = new Discord.Collection();
 

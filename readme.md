@@ -1,4 +1,4 @@
-# Basit Altyapı (Versiyon 1.7.1)
+# Basit Altyapı (Versiyon 1.7.1) (v13.x)
 
 Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran discord bot altyapısı. Sık sık güncelleme alıyor. (Slash Commands)
 
@@ -15,7 +15,7 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
 - ✅ Mantık hatası uyarı sistemleri.
 - ✅ Bottan kullanıcı yasaklama.
 - ✅ interaksiyonlarda otomatik tamamlama.
-- ✅ Global değişkenlerde otomatik tamamlama. (commands, events, config, client)
+- ✅ Global `Underline` objesi. (interactions, events, config, client, Vb.)
 - ✅ İç içe klasör desteği.
 - ✅ interaksiyon açıp kapama desteği.
 - ✅ Sadece geliştiricilerin kullanabildiği interaksiyon desteği.
@@ -47,7 +47,7 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
 - Bütün interaksiyonları temizlemek için `node publishInteractions.js global clear` veya `node publishInteractions.js guild <guildId> clear` interaksiyonunu kullanabilirsiniz.
 
 
-- Olaylar için `events` klasörünün içindeki [`ornekOlay.js`](./events/-ornekOlay.js) dosyasını dikkatlice okuyabilirsiniz.
+- Olaylar için `events` klasörünün içindeki [`-ornekOlay.js`](./events/-ornekOlay.js) dosyasını dikkatlice okuyabilirsiniz.
 - Yeni bir olay dosyası oluşturmak isterseniz `yarn olay` interaksiyonunu kullanabilsiniz. Bu sayede sizi ilk olay altyapısını yazma derdinden kurtaracak ve olay hakkında her türlü soruyu soracaktır.
 
 ## Güncelleme
