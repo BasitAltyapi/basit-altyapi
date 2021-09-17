@@ -1,4 +1,11 @@
-import { ApplicationInteractionOption, ApplicationInteractionType, Client, CommandInteraction, ContextMenuInteraction, PermissionString } from "discord.js";
+import {
+  ApplicationCommandOptionData,
+  ApplicationCommandType,
+  Client,
+  CommandInteraction,
+  ContextMenuInteraction,
+  PermissionString
+} from "discord.js";
 
 export class BaseInteraction {
   private _type: string;
@@ -16,9 +23,9 @@ export class BaseInteraction {
   other?: { [key: string | number]: any };
   coolDown?: number;
   guildOnly?: boolean;
-  options?: ApplicationInteractionOption[];
+  options?: ApplicationCommandOptionData[];
   defaultPermission?: boolean;
-  actionType?: ApplicationInteractionType;
+  actionType?: ApplicationCommandType;
   constructor(arg: TInteractionConstructor)
 }
 
