@@ -1,4 +1,4 @@
-# Basit Altyapı (Versiyon 1.7.1) (v13.x)
+# Basit Altyapı (Versiyon 1.8) (v13.x)
 
 Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran discord bot altyapısı. Sık sık güncelleme alıyor. (Slash Commands)
  
@@ -7,6 +7,7 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
 - ✅ **Sağtık menü desteği.**
 - ✅ **Slash command desteği.**
 - ✅ **Slash subcommand desteği.**
+- ✅ **Slash subcommandgroup desteği.**
 - ✅ Async ve aşırı hızlı. `(interaksiyon başına 1ms kadar sürüyor.)`
 - ✅ interaksiyon başına _değişken_ yavaşlatma desteği.
 - ✅ interaksiyon başına bot gerekli yetki desteği.
@@ -40,7 +41,7 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
 
 ### Kullanımı
 - Botun genel ayarlarını, kullanıcı hata mesajlarını düzenlemek ve diğer olaylarda düzenleme yapmak için [`config.js`](./config.js) config dosyasını dikkatlice okuyup ona göre ayarlayabilirsiniz.
-- interaksiyonlar için `interactions` klasörünün içindeki [`ornekInteraksiyon.js`](./interactions/-ornekInteraksiyon.js) dosyasını dikkatlice okuyabilirsiniz.
+- İnteraksiyonlar için `interactions` klasörünün içindeki [`ornekKomut.js`](./interactions/-ornekKomut.js) ve [`ornekSağtık.js`](./interactions/-ornekSağtık.js) dosyasını dikkatlice okuyabilirsiniz.
 - Yeni bir interaksiyon dosyası oluşturmak isterseniz `yarn interaksiyon` interaksiyonunu kullanabilsiniz. Bu sayede sizi ilk interaksiyon altyapısını yazma derdinden kurtaracak ve interaksiyon hakkında her türlü soruyu soracaktır.
 
 - Slash interaksiyonlarını discord üzerinde global olarak yayınlamak için `node publishInteractions.js global` veya sadece bir sunucu için yayınlamak istiyorsanız `node publishInteractions.js guild <guildId>` interaksiyonunu kullanabilirsiniz. Global interaksiyonların sunuculara gelmesi 1 saat kadar sürebilir. Aksine suncuya ayit interaksiyonlar 5 ile 10 saniye içerisinde gelir. *Not: Botunuzu test ederken global interaksiyonlar akisne sunucu interaksiyonlarını kullanarak debug etmenizi tavsiye ederim. Çünkü global interaksiyonları spam halinde yayınlarsanız ratelimite düşebilirsiniz.*

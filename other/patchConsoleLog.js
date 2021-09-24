@@ -17,7 +17,7 @@ const chalk = require("chalk");
 
   console.info = function (...args) {
     args = args.map(i => {
-      if (typeof i == "string") return chalk.cyanBright(i)
+      if (typeof i == "string") return chalk.blueBright(i)
       return i
     })
     log(...args);
@@ -36,6 +36,10 @@ const chalk = require("chalk");
       if (typeof i == "string") return chalk.redBright(i)
       return i
     })
+    log(...args);
+  }
+
+  console.tlog = function(...args) {
     log(...args);
   }
 }

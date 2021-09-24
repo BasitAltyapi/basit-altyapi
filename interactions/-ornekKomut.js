@@ -1,15 +1,10 @@
-module.exports = new Underline.Interaction({
-  // interaksiyon tipi. COMMAND veya SUB_COMMAND. Gerekli
-  // interaksiyon tipi SUB_COMMAND olması durumunda subName değeri vermek zoundasınız.
-  // Subinteraksiyon örnekleri için moderasyon interaksiyonlarına bakabilirsiniz.
-  type: "COMMAND",
-  // interaksiyonun idsi. Opsiyonel, boş bırakıldığında {type}:{name}:{subName} formatı ile kayıt olur.
-  // Boşluk içeremez.
-  id: "ornekinteraksiyon",
-  // interaksiyonun kullanıcıya gözüken ismi. Opsiyonel, boş bırakıldığında dosya ismini alır.
-  // Boşluk içeremez. Bu interaksiyon kullanıcıya /onnekinteraksiyon şeklinde gözükecektir.
-  // Boşluk, büyük harf, türkçe harf içeremez.
-  name: "ornekinteraksiyon",
+module.exports = new Underline.SlashCommand({
+  // Slah komutun kullanıcıya gözüken ismi. Bu isim bir arraydır (liste)
+  // Bu liste en fazla 3 uzunlukta olabilir. Örneğin;
+  // ["muüzik", "çal"] kullanıcıya /müzik çal olarak gözükecektir.
+  // veya ["muüzik", "liste", "temizle"] kullanıcıya /müzik liste temizle
+  // olarak gözükecektir.
+  name: ["örnekiteraksiyon"],
   // onInteraction fonksiyonu her interaksiyon kullanıldığında çağrılır.
   onInteraction(interaction, other) {
     // Discord.js CommandInteraction objesi.

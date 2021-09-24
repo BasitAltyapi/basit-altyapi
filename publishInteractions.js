@@ -6,219 +6,196 @@ const { makeSureFolderExists, sleep } = require("stuffs");
 const path = require("path");
 const readdirRecursive = require("recursive-readdir");
 const config = require("./config");
-const Discord = require("discord.js");
+const { REST } = require('@discordjs/rest');
+const { Routes } = require('discord-api-types/v9');
+const Discord = require('discord.js');
 
 globalThis.Underline = {
   config,
   Interaction: require('./types/Interaction'),
   Event: require('./types/Event'),
   SlashCommand: require("./types/SlashCommand"),
-  SlashSubCommand: require("./types/SlashSubCommand"),
   MessageAction: require("./types/MessageAction"),
   UserAction: require("./types/UserAction"),
 };
 
 (async () => {
 
-  /** @type {"guild"|"global"} */
-  const LOAD_TYPE = argv.get(0);
-  if (!["guild", "global"].includes(LOAD_TYPE)) {
-    console.error("[HATA] Geçersiz yükleme tipi seçilmiş. Kullanım: node publishInteractions.js <guild/global>");
-    process.exit(-1);
-  }
-  const GUILD_ID = LOAD_TYPE == "guild" ? !!argv.get(1) ? argv.get(1) : undefined : undefined;
+  let dcInters = [];
 
-  const isClearMode = LOAD_TYPE == "guild" ? argv.get(2) == "clear" : argv.get(1) == "clear";
+  let isClearMode = argv.get(0) == "guild" ? argv.get(2) == "clear" : (argv.get(0) == "global" ? argv.get(1) == "clear" : false);
 
-  const client = new Discord.Client(config.clientOptions);
-  
-  if (LOAD_TYPE == "guild" && !GUILD_ID) {
-    console.error("[HATA] Sunucu modunda sunucu idsi belirtilmemiş. Kullanım: node publishInteractions.js guild <guildid>");
-    process.exit(-1);
-  }
+  let publishMode = argv.get(0) == "guild" ? "guild" : argv.get(0) == "global" ? "global" : null;
 
-  if (GUILD_ID) {
-    console.info(`[BİLGİ] ${GUILD_ID} idli sunucu için interaksiyon yüklemsi başlatılıyor..`)
-  } else {
-    console.info(`[BİLGİ] Tüm sunucular için interaksiyon yüklemsi başlatılıyor..`)
+
+
+  if (!publishMode) {
+    console.error(`Geçersiz paylaşım modu! Geçerli modlar: guild, global`);
+    console.error(`Kullanım örneği: node publishInteractions.js guild <guildId> [clear]`);
+    console.error(`Kullanım örneği: node publishInteractions.js global [clear]`);
+    return process.exit(1);
   }
-  
-  /** @type {Map<string, import("./types/Interaction")>} */
-  let commands = new Map();
 
   if (!isClearMode) {
-    let commandsPath = path.resolve("./interactions");
-    await makeSureFolderExists(commandsPath);
+    let interactionsFolder = path.resolve("./interactions");
 
-    let commandFiles = await readdirRecursive(commandsPath);
+    await makeSureFolderExists(interactionsFolder);
 
-    commandFiles = commandFiles.filter(i => {
+    /** @type {(import("./types/Interaction"))[]} */
+    let uInters = [];
+
+    console.info("Interaksiyon dosyaları okunuyor..")
+
+    let interactionFilePaths = await readdirRecursive(interactionsFolder);
+    interactionFilePaths = interactionFilePaths.filter(i => {
       let state = path.basename(i).startsWith("-");
-      if (state) console.warn(`[UYARI] "${i}" dosyası tire ile başladığı için liste dışı bırakıldı.`);
       return !state;
     });
 
-    await chillout.forEach(commandFiles, (interactionFile) => {
-      let start = Date.now();
-      let rltPath = path.relative(__dirname, interactionFile);
-      console.info(`[BİLGİ] "${rltPath}" interaksiyon okunuyor..`)
+    await chillout.forEach(interactionFilePaths, (interactionFilePath) => {
       /** @type {import("./types/Interaction")} */
-      let interaction = require(interactionFile);
-      
-
-      if (interaction?._type != "interaction") {
-        console.warn(`[UYARI] "${rltPath}" interaksiyon dosyası boş. Atlanıyor..`);
-        return;
-      }
-
-      if (!interaction.type) {
-        console.warn(`[UYARI] "${rltPath}" interaksiyon dosyasın için bir type belirtilmemiş. Atlanıyor.`);
-        return;
-      }
-
-      if (!interaction.id) {
-        console.warn(`[UYARI] "${rltPath}" interaksiyon dosyasının bir idsi bulunmuyor. Atlanıyor..`);
-        return;
-      }
-
-      if (typeof interaction.name != "string") {
-        console.warn(`[UYARI] "${rltPath}" interaksiyon dosyasının bir ismi bulunmuyor. Atlanıyor..`);
-        return;
-      }
-      if (interaction.actionType == "CHAT_INPUT") interaction.name = interaction.name.replace(/ /g, "").toLowerCase();
-
-      if (interaction.type == "SUB_COMMAND" && interaction.actionType != "CHAT_INPUT") {
-        console.warn(`[UYARI] "${rltPath}" "SUB_COMMAND" tipi ile sadece "CHAT_INPUT" aksiyon tipi birlikte kullanılabilir. Atlanıyor..`);
-        return;
-      }
-
-      if (interaction.type == "SUB_COMMAND" && !interaction.subName) {
-        console.warn(`[UYARI] "${rltPath}" interaksiyon dosyasının tipi "SUB_COMMAND" ancak bir subName bulundurmuyor. Atlanıyor..`);
-        return;
-      }
-
-
-      if (commands.has(interaction.id)) {
-        console.warn(`[UYARI] "${interaction.id}" idli bir interaksiyon daha önceden zaten yüklenmiş. Atlanıyor.`)
-        return;
-      }
-
-      if (interaction.actionType == "CHAT_INPUT" && !interaction.description) {
-        console.warn(`[UYARI] "${rltPath}" interaksiyon dosyasının "CHAT_INPUT" aksiyon tipinde ve açıklama içermiyor. Atlanıyor..`)
-        return;
-      }
-
-      {
-        let err = false;
-        interaction.options.forEach(i => {
-          if (i.name != i.name.toLowerCase()) {
-            console.error(`[HATA] "${rltPath}" interaksiyon dosyasının, "${i.name}" adlı opsiyon ismi tamamen küçük haflerden oluşmalı. Atlanıyor..`);
-            err = true;
-          }
-          if (i.name.includes(" ")) {
-            console.error(`[HATA] "${rltPath}" interaksiyon dosyasının, "${i.name}" adlı opsiyon ismi boşluk içeremez. Atlanıyor..`);
-            err = true;
-          }
-        });
-        if (err) return;
-      }
-
-      commands.set(interaction.id, interaction);
-      console.info(`[BİLGİ] ("${rltPath}") "${interaction.name}" (${interaction.id}) adlı interaksiyon okundu. (${Date.now() - start}ms sürdü.)`);
+      let uInter = require(interactionFilePath);
+      console.info(`Interaksiyon "${uInter.actionType == "CHAT_INPUT" ? `/${uInter.name.join(" ")}` : `${uInter.name[0]}`}" dönüştürülme listesine eklendi!`);
+      uInters.push(uInter);
     });
 
-    if (commands.size) {
-      console.info(`[BİLGİ] ${commands.size} interaksiyon okundu.`);
-    } else {
-      console.error(`[HATA] Hiçbir interaksiyon yüklenmedi, herşey yolunda mı?`);
-    }
-  } else {
-    console.info(`[BILGI] Temizleme modu açık olduğu için hiç bir interaksiyon yüklenmedi!`);
-  }
-  
-  /** @type {import("discord.js").ApplicationInteractionData[]} */
-  let commandData = [];
+    console.info("Interaksiyonlar discordun anlayacağı dile dönüştürülüyor..")
+    uInters = uInters.sort((a, b) => a.name.length - b.name.length)
 
-
-  if (!isClearMode) {
-    console.info(`[BILGI] interaksiyonlar discord'un anlayacağı dile çevriliyor..`);
-    /** @type {Map<string, import("./types/Interaction")[]>} */
-    let subCommands = new Map();
-    [...commands.values()].forEach((cmd) => {
-      if (cmd.type == "COMMAND") {
-        commandData.push({
-          name: cmd.name,
-          description: cmd.description,
-          options: cmd.options,
-          defaultPermission: cmd.defaultPermission,
-          type: cmd.actionType
-        });
-        console.info(`[BILGI] Normal interaksiyon "/${cmd.name}" (${cmd.actionType}) dönüştürüldü.`);
-      } else if (cmd.type == "SUB_COMMAND") {
-        if (!subCommands.has(cmd.name)) subCommands.set(cmd.name, []);
-        subCommands.get(cmd.name).push(cmd);
-        console.info(`[BILGI] Sub interaksiyon "/${cmd.name} ${cmd.subName}" ikinci aşama için listeye eklendi.`);
-      }
-    })
-
-    console.info(`[BILGI] Sub interaksiyonlar için ikin aşama başlıyor..`);
-    subCommands.forEach((cmds, cmdName) => {
-      commandData.push({
-        type: cmds[0].actionType,
-        name: cmdName,
-        description: `${cmdName} command.`,
-        defaultPermission: cmds[0].defaultPermission,
-        options: cmds.map(i => {
-          console.info(`[BILGI] Sub interaksiyon "/${cmdName} ${i.subName}" dönüştürldü.`);
-          return {
-            type: "SUB_COMMAND",
-            description: i.description,
-            name: i.subName,
-            options: i.options
+    dcInters = uInters.reduce((all, current) => {
+      switch (current.name.length) {
+        case 1: {
+          all.push({
+            type: current.actionType,
+            name: current.name[0],
+            description: current.description,
+            defaultPermission: current.defaultPermission,
+            options: current.options
+          });
+          break;
+        }
+        case 2: {
+          let baseItem = all.find((i) => {
+            return i.name == current.name[0] && i.type == current.actionType
+          });
+          if (!baseItem) {
+            all.push({
+              type: current.actionType,
+              name: current.name[0],
+              description: `${current.name[0]} komutları.`,
+              defaultPermission: current.defaultPermission,
+              options: [
+                {
+                  type: "SUB_COMMAND",
+                  description: current.description,
+                  name: current.name[1],
+                  options: current.options
+                }
+              ]
+            });
+          } else {
+            baseItem.options.push({
+              type: "SUB_COMMAND",
+              description: current.description,
+              name: current.name[1],
+              options: current.options
+            })
           }
-        })
-      });
-    })
+          break;
+        }
+        case 3: {
+          let level1Item = all.find((i) => {
+            return i.name == current.name[0] && i.type == current.actionType
+          });
+          if (!level1Item) {
+            all.push({
+              type: current.actionType,
+              name: current.name[0],
+              description: `${current.name[0]} komutları.`,
+              defaultPermission: current.defaultPermission,
+              options: [
+                {
+                  type: "SUB_COMMAND_GROUP",
+                  description: `${current.name[1]} komutları.`,
+                  name: current.name[1],
+                  options: [
+                    {
+                      type: "SUB_COMMAND",
+                      description: current.description,
+                      name: current.name[2],
+                      options: current.options
+                    }
+                  ]
+                }
+              ]
+            });
+          } else {
+            let level2Item = level1Item.options.find(i => {
+              return i.name == current.name[1] && i.type == "SUB_COMMAND_GROUP"
+            });
+            if (!level2Item) {
+              level1Item.options.push({
+                type: "SUB_COMMAND_GROUP",
+                description: `${current.name[1]} komutları.`,
+                name: current.name[1],
+                options: [
+                  {
+                    type: "SUB_COMMAND",
+                    description: current.description,
+                    name: current.name[2],
+                    options: current.options
+                  }
+                ]
+              })
+            } else {
+              level2Item.options.push({
+                type: "SUB_COMMAND",
+                description: current.description,
+                name: current.name[2],
+                options: current.options
+              })
+            }
+          }
+        }
+          break;
+      }
+
+      return all;
+    }, []);
+    
+    dcInters = dcInters.map(i => Discord.ApplicationCommandManager.transformCommand(i));
+  } else {
+    console.info("Hiçbir interaksiyon okunmadı, bütün var olanlar temizlenicek...");
   }
 
-  console.info("[BİLGİ] Discord hesabına giriş yapılıyor..");
-  await client.login(config.clientToken);
-  console.info("[BİLGİ] Discord hesabına giriş yapıldı.");
+  const rest = new REST({ version: "9" }).setToken(config.clientToken);
 
-  console.info("[BİLGİ] interaksiyonlar gönderiliyor..");
+  console.info("Hesap bilgileri alınıyor!");
+  /** @type {import("discord-api-types/rest/v9/user").RESTGetAPIUserResult} */
+  const me = await rest.get(Routes.user());
+  console.info(`Hesap bilgileri alındı! ${me.username}#${me.discriminator} (${me.id})`);
 
-  try {
-    if (GUILD_ID) {
-      
-      // let oldCommands = [...(await client.guilds.cache.get(GUILD_ID).commands.fetch()).entries()];
-      
-      // console.info(`[BİLGİ] ${GUILD_ID} idli sunucunun interaksiyonları temizleniyor..`);
-      // for (let i = 0; i < oldCommands.length; i++) {
-      //   const [oldCommandId, oldCommand] = oldCommands[i];
-      //   await oldCommand.delete();
-      //   console.info(`[BİLGİ] ${oldCommand.name} isimli interaksiyon silindi.`);
-      // }
+  console.info(`İnteraksiyonlar discorda gönderiliyor!`);
 
-      console.info(`[BİLGİ] ${GUILD_ID} idli sunucunun interaksiyonları gönderiliyor..`);
-      await client.guilds.cache.get(GUILD_ID).commands.set(commandData);
-      console.info(`[BİLGİ] ${GUILD_ID} idli sunucunun interaksiyonları gönderildi!`);
-      console.warn(`[UYARI] ${GUILD_ID} idli sunucuya interaksiyonların gelmesi 5 ila 10 saniye sürebilir. Bu süre discord tarafından verilmiştir.`);
-    } else {
-      console.info("[BİLGİ] Global interaksiyonlar gönderiliyor..");
-      await client.application.commands.set(commandData);
-      console.info("[BİLGİ] Global interaksiyonlar gönderildi!");
-      console.warn("[UYARI] Global yükleme yaptığınız için bütün sunucular interaksiyonların gelmesi 1 saat kadar sürebilir. Bu süre discord tarafından verilmiştir.");
+  switch (publishMode) {
+    case "guild": {
+      let guildId = argv.get(1);
+      console.info(`Paylaşma modu: sunucu (${guildId})`);
+
+      await rest.put(Routes.applicationGuildCommands(me.id, guildId), {body: dcInters});
+
+      console.info(`Paylaşılan komutların gelmesi 3-5 saniye kadar sürebilir.`);
+      break;
     }
-  } catch (err) {
-    console.error("[HATA] Birşeyler çok yanlış gitti!");
-    console.error(err);
-    if (`${err}`.toLowerCase().includes("missing access")) console.warn(`[UYARI] Botu sunucunuza eklerken "applications.commands" scope'unu verdiniz değilmi?`);
-    process.exit(-1);
+    case "global": {
+      console.info(`Paylaşma modu: global`);
+
+      await rest.put(Routes.applicationCommands(me.id), { body: dcInters });
+
+      console.info(`Paylaşılan komutların gelmesi 1 saat kadar sürebilir. Eğer hemen gelmesini istiyorsanız botunuzu sunucunuzdan atıp geri alabilirsiniz.`);
+      break;
+    }
   }
-  
-  await sleep(3000);
-  client.destroy();
-  console.info("[BİLGİ] İşlemler tamamlandı.");
+
+  console.info(`İnteraksiyonlar paylaşıldı!`);
 })();
-
-

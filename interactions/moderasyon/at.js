@@ -1,6 +1,5 @@
-module.exports = new Underline.SlashSubCommand({
-  name: "moderasyon",
-  subName: "at",
+module.exports = new Underline.SlashCommand({
+  name: ["moderasyon", "at"],
   description: "Sunucudan üye atmanızı sağlar.",
   options: [
     {

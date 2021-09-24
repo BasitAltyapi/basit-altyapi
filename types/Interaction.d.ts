@@ -9,10 +9,8 @@ import {
 
 export class BaseInteraction {
   private _type: string;
-  name: string;
+  name: string[];
   id?: string;
-  type: "COMMAND" | "SUB_COMMAND";
-  subName?: string;
   perms?: { bot: PermissionString[], user: PermissionString[] };
   onInteraction: (interaction: CommandInteraction | ContextMenuInteraction, other: IOther ) => void;
   onLoad?(client: Client): void;
@@ -29,8 +27,8 @@ export class BaseInteraction {
   constructor(arg: TInteractionConstructor)
 }
 
-export type TOmittedInteraction = Omit<BaseInteraction, "_type" | "coolDowns" | "name" | "subName" | "type" | "onInteraction" | "actionType">;
-export type TInteractionConstructor = TOmittedInteraction & ((SlashCommand | SlashSubCommand) & (ActionChatCommand | ActionRightClickCommand));
+export type TOmittedInteraction = Omit<BaseInteraction, "_type" | "coolDowns" | "name" | "onInteraction" | "actionType">;
+export type TInteractionConstructor = TOmittedInteraction & (SlashCommand & (ActionChatCommand | ActionRightClickCommand));
 
 export interface IOther {
   setCoolDown(durations: number): void,
@@ -48,14 +46,8 @@ export interface ActionRightClickCommand {
 }
 
 export interface SlashCommand {
-  type: "COMMAND";
-  name: string;
-}
-
-export interface SlashSubCommand {
-  type: "SUB_COMMAND";
-  name: string;
-  subName: string;
+  actionType: "CHAT_INPUT";
+  name: string[];
 }
 
 export = BaseInteraction;

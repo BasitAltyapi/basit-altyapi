@@ -1,6 +1,5 @@
-module.exports = new Underline.SlashSubCommand({
-  name: "moderasyon",
-  subName: "ses-sustur",
+module.exports = new Underline.SlashCommand({
+  name: ["moderasyon", "ses-sustur"],
   description: "Bir kullanıcının ses susturmasını açıp kapamanızı sağlar.",
   options: [
     {

@@ -3,10 +3,9 @@ const Interaction = require("./Interaction");
 
 class SlashCommand extends Interaction {
 
-  /** @param {Interaction.TOmittedInteraction & {name: string, onInteraction(interaction: CommandInteraction, other: Interaction.IOther)}} arg */
+  /** @param {Interaction.TOmittedInteraction & {name: string[], onInteraction(interaction: CommandInteraction, other: Interaction.IOther)}} arg */
   constructor (arg = { }) {
     super({
-      type: "COMMAND",
       actionType: "CHAT_INPUT",
       ...arg
     })

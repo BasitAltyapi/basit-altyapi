@@ -1,8 +1,7 @@
 const sleep = require('stuffs/lib/sleep');
 
-module.exports = new Underline.SlashSubCommand({
-  name: "moderasyon",
-  subName: "temizle",
+module.exports = new Underline.SlashCommand({
+  name: ["moderasyon", "temizle"],
   description: "Belli bir miktar mesaj silemenizi sağlar.",
   options: [
     {

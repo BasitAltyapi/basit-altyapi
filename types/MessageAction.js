@@ -8,6 +8,7 @@ class MessageAction extends Interaction {
     super({
       type: "COMMAND",
       actionType: "MESSAGE",
+      name: [arg.name],
       ...arg
     })
   }

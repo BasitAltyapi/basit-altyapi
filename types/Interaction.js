@@ -1,6 +1,6 @@
 const {defaultify} = require("stuffs");
 
-class Command {
+class Interaction {
 
   /** 
    * @private
@@ -10,10 +10,6 @@ class Command {
   name = "";
 
   id = "";
-
-  type = "COMMAND";
-
-  subName = "";
 
   perms = {bot: [], user: []};
 
@@ -42,19 +38,17 @@ class Command {
   actionType = "CHAT_INPUT"
 
   constructor(arg = {}) {
-    this.name = arg.name;
-    this.type = arg.type || Underline.config.interactionDefaults.type;
-    this.subName = arg.type == "SUB_COMMAND" ? arg.subName : "";
+    this.name = Array.isArray(arg.name) ? arg.name : [arg.name];
     this.actionType = arg.actionType || Underline.config.interactionDefaults.actionType;
 
-    this.id = arg.id || arg.type == "COMMAND" ? `${this.actionType}:COMMAND:${this.name}` : arg.type == "SUB_COMMAND" ? `${this.actionType}:SUB_COMMAND:${this.name}:${this.subName}` : null;
+    this.id = arg.id || `${this.actionType}:${this.name.join(" ")}`;
 
     this.perms.bot = Array.isArray(arg.perms?.bot) && arg.perms.bot.length != 0 ? arg.perms.bot : Underline.config.interactionDefaults.perms.bot;
     this.perms.user = Array.isArray(arg.perms?.user) && arg.perms.user.length != 0 ? arg.perms.user : Underline.config.interactionDefaults.perms.user;
     this.onInteraction = arg.onInteraction;
     if (typeof arg.onLoad == "function") this.onLoad = arg.onLoad;
     this.guildOnly = Boolean(arg.guildOnly ?? Underline.config.interactionDefaults.guildOnly);
-    this.description = this.actionType == "CHAT_INPUT" ? (arg.description || Underline.config.interactionDefaults.description) : undefined;
+    this.description = this.actionType == "CHAT_INPUT" ? (arg.description || Underline.config.interactionDefaults.description) : null;
     this.disabled = Boolean(arg.disabled ?? Underline.config.interactionDefaults.disabled);
     this.developerOnly = Boolean(arg.developerOnly ?? Underline.config.interactionDefaults.developerOnly);
     this.other = defaultify(typeof arg.other == "object" ? arg.other : {}, Underline.config.interactionDefaults.other);
@@ -64,4 +58,4 @@ class Command {
   }
 }
 
-module.exports = Command;
+module.exports = Interaction;

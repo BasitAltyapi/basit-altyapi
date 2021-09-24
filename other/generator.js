@@ -13,16 +13,12 @@ const { prompt, AutoComplete, Toggle, Select } = require("enquirer");
 const fs = require("fs");
 const path = require("path");
 const chalk = require("chalk");
-let mode = process.argv[2];
-
-if (!["event", "interaction"].includes(mode)) {
-  console.error("Geçersiz mod. Modlar: event, interaction");
-  process.exit(-1);
-}
+const makeSureFolderExistsSync = require("stuffs/lib/makeSureFolderExistsSync");
+const mode = process.argv[2];
 
 async function permissionPrompt(message = "") {
   let perms = new Set();
-  
+
   async function _do() {
     console.clear();
     let perm = await (new Select({
@@ -45,184 +41,215 @@ async function permissionPrompt(message = "") {
   return _do();
 }
 
+makeSureFolderExistsSync("./interactions");
+makeSureFolderExistsSync("./events");
+
 (async () => {
-  if (mode == "interaction") {
-    console.clear();
-    let fileName = (await prompt({
-      type: "input",
-      name: "name",
-      message: "interaksiyon dosya ismi ne olsun?",
-      validate(name) {
-        if (name.endsWith(".js")) name = name.slice(-3);
-        return !fs.existsSync(path.resolve("./interactions", `${name}.js`));
-      },
-      required: true
-    })).name;
-    console.clear();
-    let interactionName = (await prompt({
-      type: "input",
-      name: "name",
-      message: "Slash interaksiyon ismi ne olsun? Boşluk, büyük harf, türkçe harf içeremez.",
-      validate(name) {
-        if (name.includes(" ")) return false;
-        if (name != name.toLowerCase()) return false;
-        if (name.length > 32) return false;
-        if (name.length < 1) return false;
-        return true;
-      },
-      result(value) {
-        if (value.startsWith("/")) value = value.slice(1);
-        return value;
-      },
-      required: true
-    })).name;
-    console.clear();
-    let description = (await prompt({
-      type: "input",
-      name: "description",
-      message: "interaksiyon açıklaması ne olsun?",
-      initial: "",
-      required: true,
-    })).description;
-    console.clear();
-    const developerOnly = await (new Toggle({
-      message: "Bu interaksiyon geliştiricilere özel mi?",
-      enabled: "Evet",
-      disabled: "Hayır",
-      initial: false
-    })).run();
-    console.clear();
-    const guildOnly = await (new Toggle({
-      message: "Bu interaksiyon sadece sunuculara özel mi?",
-      enabled: "Evet",
-      disabled: "Hayır",
-      initial: true
-    })).run();
-    console.clear();
-    const usesCoolDown = await (new Toggle({
-      message: "Bu interaksiyon yavaşlatma kullanıyor mu? (coolDown)",
-      enabled: "Evet",
-      disabled: "Hayır",
-      initial: false
-    })).run();
-
-    let coolDown = -1;
-
-    if (usesCoolDown) {
+  switch (mode) {
+    case "interaction": {
       console.clear();
-      coolDown = (await prompt({
+      let interFileName = (await prompt({
         type: "input",
-        name: "coolDown",
-        message: "Bu interaksiyon kaç milisaniye yavaşlatma gerektiriyor? (coolDown, Minimum 0)",
-        initial: 1000,
+        name: 'value',
+        message: "İnteraksiyon dosya adınız ne olsun?",
+        result(val) {
+          if (val.endsWith(".js")) val = val.slice(0, -3);
+          return val;
+        },
+        required: true
+      })).value;
+      console.clear();
+      let interActionType = (await (new AutoComplete({
+        name: 'value',
+        message: 'Ne tip bir interaksiyon istiyorsunuz?',
+        limit: 10,
+        initial: 0,
+        choices: [
+          "Slash Komut",
+          "Üye Sağtık",
+          "Mesaj Sağtık"
+        ],
+        result(val) {
+          let l = {
+            "Slash Komut": "CHAT_INPUT",
+            "Üye Sağtık": "USER",
+            "Mesaj Sağtık": "MESSAGE"
+          };
+          return l[val];
+        },
+        required: true
+      })).run());
+      console.clear();
+
+      let interName = [];
+      let interDesc = "...";
+      switch (interActionType) {
+        case "CHAT_INPUT": {
+          console.clear();
+          interName = (await prompt({
+            type: "input",
+            name: 'value',
+            message: "Slash komutunuz neye banzesin? (Örn; /music ve /music set veya /music set volume)",
+            required: true,
+            result(val) {
+              val = val.trim();
+              if (val.startsWith("/")) val = val.slice(1);
+              return val.split(" ");
+            }
+          })).value;
+
+          console.clear();
+          interDesc = (await prompt({
+            type: "input",
+            name: 'value',
+            message: "Slash komutunuzun açıklaması ne olsun?",
+            required: true
+          })).value;
+          break;
+        };
+        case "USER":
+        case "MESSAGE": {
+          console.clear();
+          interName = (await prompt({
+            type: "input",
+            name: 'value',
+            message: "Sağ tıkladığınız yerde ne yazsın? (Örn; Yasakla)",
+            required: true
+          })).value;
+          break;
+        }
+      }
+      console.clear();
+
+      let interDeveloperOnly = await (new Toggle({
+        message: "Bu interaksiyon geliştiricilere özel mi?",
+        enabled: "Evet",
+        disabled: "Hayır",
+        initial: false
+      })).run();
+      console.clear();
+
+      let interGuildOnly = await (new Toggle({
+        message: "Bu interaksiyon sadece sunuculara özel mi?",
+        enabled: "Evet",
+        disabled: "Hayır",
+        initial: true
+      })).run();
+      console.clear();
+
+      let interCoolDown = parseInt((await prompt({
+        type: "input",
+        name: "value",
+        message: "Bu interaksiyon kaç milisaniye yavaşlatma kullanıyor? Kullanmıyorsa 0 koy.",
+        initial: "0",
         validate(val) {
           if (isNaN(Number(val))) return false;
-          if (Number(val) <= 0) return false;
+          if (Number(val) < 0) return false;
           return true
-        },
-        result(val) {
-          return parseInt(val);
         }
-      })).coolDown;
-    }
-
-    let botPerms = [];
-    let userPerms = [];
-
-    if (guildOnly) {
+      })).value);
       console.clear();
-      if (await (new Toggle({
-        message: "interaksiyon çalışması için botta ek yetkilerin olması gerekiyor mu?",
-        enabled: "Evet",
-        disabled: "Hayır",
-        initial: false
-      })).run()) {
-        console.clear();
-        botPerms = await permissionPrompt("interaksiyonun çalışması için bota gerekli olan yetkileri seç.");
-      }
 
+      let interBotPerms = [];
+      let interUserPerms = [];
+
+      if (interGuildOnly) {
+        console.clear();
+        if (await (new Toggle({
+          message: "Bu interaksiyonun çalışması için botun X yetkilerine ihtiyacı var mı?",
+          enabled: "Evet",
+          disabled: "Hayır",
+          initial: false
+        })).run()) {
+          console.clear();
+          interBotPerms = await permissionPrompt("İnteraksiyionun çalışması için bota gerekli olan yetkileri seç.");
+        }
+
+        console.clear();
+        if (await (new Toggle({
+          message: "Bu interaksiyonu kullanabilmek için kullanıcının X yetkilerine ihtiyacı var mı?",
+          enabled: "Evet",
+          disabled: "Hayır",
+          initial: false
+        })).run()) {
+          console.clear();
+          interUserPerms = await permissionPrompt("Bu interaksiyonu kullanabilmek için kullanıcıya gerekli olan yetkileri seç.");
+        }
+      }
       console.clear();
-      if (await (new Toggle({
-        message: "Bu interaksiyonu kullanabilmek için kullanıcının ek yetkilere ihtiyacı var mı?",
-        enabled: "Evet",
-        disabled: "Hayır",
-        initial: false
-      })).run()) {
-        console.clear();
-        userPerms = await permissionPrompt("Bu interaksiyonu kullanabilmek için kullanıcıya gerekli olan yetkileri seç.");
-      }
-    }
-    console.clear();
 
-    fileName = fileName.replace(/ +/g, "");
-    if (fileName.endsWith(".js")) fileName = fileName.slice(-3);
-    let filePath = path.resolve("./interactions", `${fileName}.js`);
+      console.log(`! Dosyanız oluşturuluyor..`);
 
-    console.log(`√ Dosya "${filePath}" konumuna hazırlanıyor!`);
-    let t = `module.exports = new (require("../types/Command"))({
-  type: "COMMAND",
-  name: "${interactionName.replace(/"/gm, "\\\"")}",
-  onInteraction(interaction, other) {
-    // interaksiyon kullanıldığında burası çalışır.
+      let filePath = path.resolve("./interactions", `${interFileName}.js`);
+      
+      let resultText = `
+module.exports = new Underline.${interActionType == "CHAT_INPUT" ? "SlashCommand" : interActionType == "USER" ? "UserAction" : interActionType == "MESSAGE" ? "MessageAction" : ""}({
+  name: ${JSON.stringify(interName)},
+  ${interDesc ? `description: ${JSON.stringify(interDesc)},` : ""}
+  onInteraction(inter, other) {
+    // Kodunuz buray, kolay gelsin!
   },
-  onLoad(client) {
-    // interaksiyon çalışmaya hazır olduğunda çalışır. Opsiyonel silebilirsiniz.
-  },
-  ${description.trim() ? `description: "${description.replace(/"/gm, "\\\"")}",` : ""}
-  developerOnly: ${developerOnly},
-  guildOnly: ${guildOnly},
-  ${usesCoolDown ? `coolDown: ${coolDown},` : ""}
-  ${botPerms.length != 0 || userPerms.length != 0 ? `perms: {
-    ${botPerms.length != 0 ? `bot: ${JSON.stringify(botPerms)},` : ""}
-    ${userPerms.length != 0 ? `user: ${JSON.stringify(userPerms)}` : ""}
-  },` : ""}
   options: [],
-  disabled: false
-})`.split("\n").filter(i => !!i.trim()).join("\n");
-    console.log(chalk.greenBright(t));
-    await fs.promises.writeFile(filePath, t);
-    console.log("√ Hazır!");
+  ${interCoolDown ? `coolDown: ${interCoolDown},` : ""}
+  guildOnly: ${interGuildOnly},
+  developerOnly: ${interDeveloperOnly}${interBotPerms.length > 0 || interUserPerms.length > 0 ? `,` : ""}
+  ${interBotPerms.length > 0 || interUserPerms.length > 0 ? `perms: {` : ""}
+  ${interBotPerms.length > 0 ? `  bot: ${JSON.stringify(interBotPerms)},` : ""}
+  ${interUserPerms.length > 0 ? `  user: ${JSON.stringify(interUserPerms)}` : ""}
+  ${interBotPerms.length > 0 || interUserPerms.length > 0 ? `}` : ""}
+});
+      `.split("\n").filter(i => !!i.trim()).join("\n");
+      
+      console.log(chalk.blueBright(resultText));
+      fs.writeFileSync(filePath, resultText, "utf8");
+      console.log(`! Dosyanız "${chalk.green(filePath)}" konumuna kaydedildi!`);
+      break;
+    }
+    case "event": {
+      console.clear();
+      let eventFileName = (await prompt({
+        type: "input",
+        name: 'value',
+        message: "Olay dosya adınız ne olsun?",
+        result(val) {
+          if (val.endsWith(".js")) val = val.slice(0, -3);
+          return val;
+        },
+        required: true
+      })).value;
+      console.clear();
+      let eventName = await (new AutoComplete({
+        required: true,
+        message: "Hangi olayı dinleyeceksiniz?",
+        name: "value",
+        limit: 10,
+        index: 0,
+        choices: ["channelCreate", "channelDelete", "channelPinsUpdate", "channelUpdate", "debug", "warn", "disconnect", "emojiCreate", "emojiDelete", "emojiUpdate", "error", "guildBanAdd", "guildBanRemove", "guildCreate", "guildDelete", "guildUnavailable", "guildIntegrationsUpdate", "guildMemberAdd", "guildMemberAvailable", "guildMemberRemove", "guildMembersChunk", "guildMemberSpeaking", "guildMemberUpdate", "guildUpdate", "inviteCreate", "inviteDelete", "message", "messageDelete", "messageReactionRemoveAll", "messageReactionRemoveEmoji", "messageDeleteBulk", "messageReactionAdd", "messageReactionRemove", "messageUpdate", "presenceUpdate", "rateLimit", "ready", "invalidated", "roleCreate", "roleDelete", "roleUpdate", "typingStart", "userUpdate", "voiceStateUpdate", "webhookUpdate", "shardDisconnect", "shardError", "shardReady", "shardReconnecting", "shardResume"]
+      })).run();
+      console.clear();
 
-  } else if (mode == "event") {
-    console.clear();
-    let { name } = await prompt({
-      type: "input",
-      name: "name",
-      message: "Olay dosya ismi ne olsun?",
-      validate(name) {
-        if (name.endsWith(".js")) name = name.slice(-3);
-        return !fs.existsSync(path.resolve("./events", `${name}.js`));
-      },
-      required: true
-    });
-    console.clear();
-    let eventName = await (new AutoComplete({
-      required: true,
-      message: "Discord.js üzerinde hangi olayı dinleyeceksin?",
-      name: "eventName",
-      limit: 7,
-      index: 0,
-      choices: ["channelCreate", "channelDelete", "channelPinsUpdate", "channelUpdate", "debug", "warn", "disconnect", "emojiCreate", "emojiDelete", "emojiUpdate", "error", "guildBanAdd", "guildBanRemove", "guildCreate", "guildDelete", "guildUnavailable", "guildIntegrationsUpdate", "guildMemberAdd", "guildMemberAvailable", "guildMemberRemove", "guildMembersChunk", "guildMemberSpeaking", "guildMemberUpdate", "guildUpdate", "inviteCreate", "inviteDelete", "message", "messageDelete", "messageReactionRemoveAll", "messageReactionRemoveEmoji", "messageDeleteBulk", "messageReactionAdd", "messageReactionRemove", "messageUpdate", "presenceUpdate", "rateLimit", "ready", "invalidated", "roleCreate", "roleDelete", "roleUpdate", "typingStart", "userUpdate", "voiceStateUpdate", "webhookUpdate", "shardDisconnect", "shardError", "shardReady", "shardReconnecting", "shardResume"]
-    })).run();
-    console.clear();
-    name = name.replace(/ +/g, "");
-    if (name.endsWith(".js")) name = name.slice(-3);
-    let filePath = path.resolve("./events", `${name}.js`);
+      console.log(`! Dosyanız oluşturuluyor..`);
 
-    console.log(`√ Dosya "${filePath}" konumuna hazırlanıyor!`);
-    let t = `module.exports = new (require("../types/Event"))({
-  name: "${name}",
-  eventName: "${eventName}"
-  onEvent(message) {
-    // Olay olduğunda burası çalışır.
-  },
-  onLoad(client) {
-    // Olay çalışmaya hazır olduğunda burası çalışır. Opsiyonel silebilrisiniz.
-  },
-  disabled: true
-});`;
-    console.log(chalk.greenBright(t));
-    await fs.promises.writeFile(filePath, t);
-    console.log("√ Hazır!");
+      let filePath = path.resolve("./events", `${eventFileName}.js`);
+
+      let resultText = `
+module.exports = new Underline.Event({
+  eventName: "${eventName}",
+  onEvent(...args) {
+    // Kodunuz buraya, kolay gelsin!
+  }
+});
+      `.split("\n").filter(i => !!i.trim()).join("\n");
+
+      console.log(chalk.blueBright(resultText));
+      fs.writeFileSync(filePath, resultText, "utf8");
+      console.log(`! Dosyanız "${chalk.green(filePath)}" konumuna kaydedildi!`);
+
+      break;
+    }
+    default: {
+      console.error("Geçersiz seçenek girdiniz! Geçerli seçenekler: interaction, event");
+      break;
+    }
   }
 })();

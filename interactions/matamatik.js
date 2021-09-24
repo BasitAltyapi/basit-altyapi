@@ -6,7 +6,7 @@ const expressionMap = {
 };
 
 module.exports = new Underline.SlashCommand({
-  name: "matamatik",
+  name: ["matamatik"],
   onInteraction(interaction, other) {
     let numberOne = interaction.options.getNumber("number_one");
     let expressionName = interaction.options.getString("expression_type");

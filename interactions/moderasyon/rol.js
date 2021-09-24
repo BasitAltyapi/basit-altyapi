@@ -1,6 +1,5 @@
-module.exports = new Underline.SlashSubCommand({
-  name: "moderasyon",
-  subName: "rol",
+module.exports = new Underline.SlashCommand({
+  name: ["moderasyon", "rol"],
   description: "Bir kullanıcıdan rol alamanızı sağlar.",
   options: [
     {

@@ -13,17 +13,16 @@ const events = new Discord.Collection();
 globalThis.Underline = {
   config,
   client,
-  interactions: interactions,
-  events: events,
+  interactions,
+  events,
   Interaction: require('./types/Interaction'),
   Event: require('./types/Event'),
   SlashCommand: require("./types/SlashCommand"),
-  SlashSubCommand: require("./types/SlashSubCommand"),
   MessageAction: require("./types/MessageAction"),
   UserAction: require("./types/UserAction"),
 }
 
-console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
+console.info("[BİLGİ] Basit Altyapı v1.8 - by Kıraç Armağan Önal");
 (async () => {
   let interactionsPath = path.resolve("./interactions");
   await makeSureFolderExists(interactionsPath);
@@ -46,53 +45,46 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
     let rltPath = path.relative(__dirname, interactionFile);
     console.info(`[BİLGİ] "${interactionFile}" konumundaki interaksiyon yükleniyor..`)
     /** @type {import("./types/Interaction")} */
-    let interactionData = require(interactionFile);
+    let uInter = require(interactionFile);
 
-    if (interactionData?._type != "interaction") {
+    if (uInter?._type != "interaction") {
       console.warn(`[UYARI] "${rltPath}" interaksiyon dosyası boş. Atlanıyor..`);
       return;
     }
 
-    if (!interactionData.type) {
-      console.warn(`[UYARI] "${rltPath}" interaksiyon dosyasın için bir type belirtilmemiş. Atlanıyor.`);
-      return;
-    }
-
-    if (!interactionData.id) {
+    if (!uInter.id) {
       console.warn(`[UYARI] "${rltPath}" interaksiyon dosyasının bir idsi bulunmuyor. Atlanıyor..`);
       return;
     }
 
-    if (typeof interactionData.name != "string") {
+    if (uInter.name.length > 3) {
+      console.warn(`[UYARI] "${rltPath}" interaksiyon dosyasının isim listesi çok uzun. (>3) Atlanıyor..`);
+      return;
+    }
+
+    if (!uInter.name?.length) {
       console.warn(`[UYARI] "${rltPath}" interaksiyon dosyasının bir ismi bulunmuyor. Atlanıyor..`);
       return;
     }
-    if (interactionData.actionType == "CHAT_INPUT") interactionData.name = interactionData.name.replace(/ /g, "").toLowerCase();
 
-    if (typeof interactionData.type == "SUB_COMMAND" && !interactionData.subName) {
-      console.warn(`[UYARI] "${rltPath}" interaksiyon dosyasının tipi "SUB_COMMAND" ancak bir subName bulundurmuyor. Atlanıyor..`);
+    if (Underline.interactions.has(uInter.id)) {
+      console.warn(`[UYARI] "${uInter.id}" idli bir interaksiyon daha önceden zaten yüklenmiş. Atlanıyor.`)
       return;
     }
 
-
-    if (Underline.interactions.has(interactionData.id)) {
-      console.warn(`[UYARI] "${interactionData.id}" idli bir interaksiyon daha önceden zaten yüklenmiş. Atlanıyor.`)
-      return;
-    }
-
-    if (typeof interactionData.onInteraction != "function") {
+    if (typeof uInter.onInteraction != "function") {
       console.error(`[HATA] "${rltPath}" interaksiyon dosyası geçerli bir onInteraction fonksiyonuna sahip değil! Atlanıyor.`);
       return;
     };
 
-    if (!interactionData.guildOnly && (interactionData.perms.bot.length != 0 || interactionData.perms.user.length != 0)) {
+    if (!uInter.guildOnly && (uInter.perms.bot.length != 0 || uInter.perms.user.length != 0)) {
       console.warn(`[UYARI] "${rltPath}" interaksiyon dosyası sunuculara özel olmamasına rağmen özel perm kullanıyor.`);
     }
 
 
-    Underline.interactions.set(interactionData.id, interactionData);
-    interactionData.onLoad(client);
-    console.info(`[BİLGİ] "/${interactionData.name}${interactionData.subName ? ` ${interactionData.subName}` : ""}" (${interactionData.id}) adlı interaksiyon yüklendi. (${Date.now() - start}ms sürdü.)`);
+    Underline.interactions.set(uInter.id, uInter);
+    uInter.onLoad(client);
+    console.info(`[BİLGİ] "${uInter.actionType == "CHAT_INPUT" ? `/${uInter.name.join(" ")}` : `${uInter.name[0]}`}" (${uInter.id}) adlı interaksiyon yüklendi. (${Date.now() - start}ms sürdü.)`);
   });
 
   if (Underline.interactions.size) {
@@ -148,11 +140,16 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
   client.on("interactionCreate", async (interaction) => {
     if (!(interaction.isCommand() || interaction.isContextMenu())) return;
     
-    let command = Underline.interactions.find(cmd => {
-      if (cmd.type == "SUB_COMMAND") {
-        return cmd.name == interaction.commandName && cmd.subName == interaction.options.getSubcommand();
-      } else if (cmd.type == "COMMAND") {
-        return cmd.name == interaction.commandName;
+    let subCommandName = "";
+    try {subCommandName = interaction.options.getSubcommand();} catch { };
+    let subCommandGroupName = "";
+    try {subCommandGroupName = interaction.options.getSubcommandGroup();} catch { };
+
+    let command = Underline.interactions.find(uInter => {
+      switch (uInter.name.length) {
+        case 1: return uInter.name[0] == interaction.commandName;
+        case 2: return uInter.name[0] == interaction.commandName && uInter.name[1] == subCommandName;
+        case 3: return uInter.name[0] == interaction.commandName && uInter.name[1] == subCommandGroupName && uInter.name[2] == subCommandName;
       }
     });
 
