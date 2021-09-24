@@ -31,6 +31,9 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
 
 ## Kurlumu
 
+### İndirme
+- Altyapının en son versiyonunu [buradan indirebilirsiniz.](https://github.com/TheArmagan/basit-altyapi/releases/latest)
+
 ### Gerekenler
 - Node.js; `v16.6.1` veya üstü. Ben `v16.6.1` versiyonunda test ettim. Node.js'in kendi sitesinden indirebilirsiniz.
 - Yarn; Yarn benim kullandığım paket yöneticisi npm'e göre 8-10 kat daha hızlı ve sorun çözücü. Kurmak için konsolunuza `npm install -g yarn` yazmanız yeterlidir.
