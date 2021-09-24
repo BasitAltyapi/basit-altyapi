@@ -1,5 +1,5 @@
 module.exports = new Underline.SlashCommand({
-  // Slah komutun kullanıcıya gözüken ismi. Bu isim bir arraydır (liste)
+  // Slash komutun kullanıcıya gözüken ismi. Bu isim bir arraydır (liste)
   // Bu liste en fazla 3 uzunlukta olabilir. Örneğin;
   // ["muüzik", "çal"] kullanıcıya /müzik çal olarak gözükecektir.
   // veya ["muüzik", "liste", "temizle"] kullanıcıya /müzik liste temizle
