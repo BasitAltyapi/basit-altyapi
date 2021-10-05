@@ -182,7 +182,7 @@ globalThis.Underline = {
       let guildId = argv.get(1);
       console.info(`Paylaşma modu: sunucu (${guildId})`);
 
-      await rest.put(Routes.applicationGuildCommands(me.id, guildId), {body: dcInters});
+      await rest.put(Routes.applicationGuildCommands(me.id, guildId), { body: dcInters });
 
       console.info(`Paylaşılan komutların gelmesi 3-5 saniye kadar sürebilir.`);
       break;

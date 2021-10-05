@@ -7,7 +7,6 @@ interface Underline {
   client: import("discord.js").Client;
   Interaction: typeof import("./types/Interaction"),
   SlashCommand: typeof import("./types/SlashCommand"),
-  SlashSubCommand: typeof import("./types/SlashSubCommand"),
   MessageAction: typeof import("./types/MessageAction"),
   UserAction: typeof import("./types/UserAction"),
   Event: typeof import("./types/Event")
