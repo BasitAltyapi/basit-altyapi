@@ -22,7 +22,7 @@ globalThis.Underline = {
   UserAction: require("./types/UserAction"),
 }
 
-console.info("[BİLGİ] Basit Altyapı v1.8.2 - by Kıraç Armağan Önal");
+console.info("[BİLGİ] Basit Altyapı v1.8.3 - by Kıraç Armağan Önal");
 (async () => {
   let interactionsPath = path.resolve("./interactions");
   await makeSureFolderExists(interactionsPath);
@@ -145,7 +145,7 @@ console.info("[BİLGİ] Basit Altyapı v1.8.2 - by Kıraç Armağan Önal");
     let subCommandGroupName = "";
     try {subCommandGroupName = interaction.options.getSubcommandGroup();} catch { };
 
-    let command = Underline.interactions.find(uInter => {
+    let uInter = Underline.interactions.find(uInter => {
       switch (uInter.name.length) {
         case 1: return uInter.name[0] == interaction.commandName;
         case 2: return uInter.name[0] == interaction.commandName && uInter.name[1] == subCommandName;
@@ -153,70 +153,77 @@ console.info("[BİLGİ] Basit Altyapı v1.8.2 - by Kıraç Armağan Önal");
       }
     });
 
-    if (!command) return;
+    if (!uInter) return;
 
-    if (config.autoDefer) interaction.defer();
+    let other = {};
 
-    let shouldRun1 = await config.onInteractionBeforeChecks(command, interaction);
+    let shouldRun1 = await config.onInteractionBeforeChecks(uInter, interaction, other);
 
     if (!shouldRun1) return;
 
-    if (command.developerOnly && !config.developers.has(interaction.user.id)) {
-      config.userErrors.developerOnly(interaction, command);
+    if (uInter.developerOnly && !config.developers.has(interaction.user.id)) {
+      config.userErrors.developerOnly(interaction, uInter, other);
       return;
     }
 
-    if (command.disabled) {
-      config.userErrors.disabled(interaction, command);
+    if (uInter.disabled) {
+      config.userErrors.disabled(interaction, uInter, other);
       return;
     }
 
     if (config.blockedUsers.has(interaction.user.id)) {
-      config.userErrors.blocked(interaction, command);
+      config.userErrors.blocked(interaction, uInter, other);
       return;
     }
 
-    if (command.guildOnly && interaction.channel.type == "dm") {
-      config.userErrors.guildOnly(interaction, command);
+    if (uInter.guildOnly && !interaction.guildId) {
+      config.userErrors.guildOnly(interaction, uInter, other);
       return;
     }
 
-
-    let other = {};
-
-    let userCooldown = command.coolDowns.get(interaction.user.id) || 0;
+    let userCooldown = uInter.coolDowns.get(interaction.user.id) || 0;
     if (Date.now() < userCooldown) {
-      config.userErrors.coolDown(interaction, command, userCooldown - Date.now());
+      config.userErrors.coolDown(interaction, uInter, userCooldown - Date.now(), other);
       return;
     }
 
     function setCoolDown(duration = 0) {
       if (typeof duration == "number" && duration > 0) {
-        return command.coolDowns.set(interaction.user.id, Date.now() + duration);
+        return uInter.coolDowns.set(interaction.user.id, Date.now() + duration);
       } else {
-        return command.coolDowns.delete(interaction.user.id);
+        return uInter.coolDowns.delete(interaction.user.id);
       }
     }
     other.setCoolDown = setCoolDown;
 
-    if (command.coolDown > 0) {
-      setCoolDown(command.coolDown);
+    if (uInter.coolDown > 0) {
+      setCoolDown(uInter.coolDown);
     }
 
-    if (command.guildOnly && command.perms.bot.length != 0 && !command.perms.bot.every(perm => interaction.guild.me.permissions.has(perm))) {
-      config.userErrors.botPermsRequired(interaction, command, command.perms.bot);
+    if (uInter.guildOnly && uInter.perms.bot.length != 0 && !uInter.perms.bot.every(perm => interaction.guild.me.permissions.has(perm))) {
+      config.userErrors.botPermsRequired(interaction, uInter, uInter.perms.bot, other);
       return;
     }
 
-    if (command.guildOnly && command.perms.user.length != 0 && !command.perms.user.every(perm => interaction.member.permissions.has(perm))) {
-      config.userErrors.userPermsRequired(interaction, command, command.perms.user);
+    if (uInter.guildOnly && uInter.perms.user.length != 0 && !uInter.perms.user.every(perm => interaction.member.permissions.has(perm))) {
+      config.userErrors.userPermsRequired(interaction, uInter, uInter.perms.user, other);
       return;
     }
 
     (async () => {
-      let shouldRun2 = await config.onInteraction(command, interaction, other);
+      let shouldRun2 = await config.onInteraction(uInter, interaction, other);
       if (!shouldRun2) return;
-      await command.onInteraction(interaction, other);
+      try {
+        await uInter.onInteraction(interaction, other);
+      } catch (err) {
+        console.error(`[HATA] "${uInter.actionType == "CHAT_INPUT" ? `/${uInter.name.join(" ")}` : `${uInter.name[0]}`}" adlı interaksiyon çalıştırılırken bir hata ile karşılaşıldı!`)
+        if (err.message) console.error(`[HATA] ${err.message}`);
+        if (err.stack) {
+          `${err.stack}`.split("\n").forEach((line) => {
+            console.error(`[HATA] ${line}`);
+          });
+        }
+      }
     })();
 
     return;

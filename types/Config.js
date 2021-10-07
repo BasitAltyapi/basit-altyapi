@@ -12,7 +12,7 @@ class Config {
   /** @type {Discord.ClientOptions} */
   clientOptions = {};
 
-  /** @type {{coolDown(interaction: Discord.CommandInteraction, interaction: Interaction, timeout: number): void, disabled(interaction: Discord.CommandInteraction, interaction: Interaction): void, blocked(interaction: Discord.CommandInteraction, interaction: Interaction): void, botPermsRequired(interaction: Discord.CommandInteraction, interaction: Interaction, perms: string[]): void, userPermsRequired(interaction: Discord.CommandInteraction, interaction: Interaction, perms: string[]): void, developerOnly(interaction: Discord.CommandInteraction, interaction: Interaction): void, guildOnly(interaction: Discord.CommandInteraction, interaction: Interaction): void}} */
+  /** @type {{coolDown(interaction: Discord.CommandInteraction, interaction: Interaction, timeout: number, other: {[key:string|number]: any}): void, disabled(interaction: Discord.CommandInteraction, interaction: Interaction, other: {[key:string|number]: any}): void, blocked(interaction: Discord.CommandInteraction, interaction: Interaction, other: {[key:string|number]: any}): void, botPermsRequired(interaction: Discord.CommandInteraction, interaction: Interaction, perms: string[], other: {setCoolDown(duration:number): void, [key:string|number]: any}): void, userPermsRequired(interaction: Discord.CommandInteraction, interaction: Interaction, perms: string[], other: {setCoolDown(duration:number): void, [key:string|number]: any}): void, developerOnly(interaction: Discord.CommandInteraction, interaction: Interaction, other: {[key:string|number]: any}): void, guildOnly(interaction: Discord.CommandInteraction, interaction: Interaction, other: {[key:string|number]: any}): void}} */
   userErrors = {};
 
   /** @type {{[key: string|number]: any}} */
@@ -27,9 +27,6 @@ class Config {
   /** @type {Set<string>} */
   developers = new Set();
 
-  /** @type {boolean} */
-  autoDefer = false;
-
   /** @type {(client:import("discord.js").Client)=>void} */
   onBeforeLoad = () => { };
 
@@ -39,10 +36,10 @@ class Config {
   /** @type {(client:import("discord.js").Client)=>void} */
   onReady = () => { };
 
-  /** @type {(interaction:Command, interaction: Discord.CommandInteraction} */
+  /** @type {(interaction:Command, interaction: Discord.CommandInteraction, other: {[key:string|number]: any})=>boolean} */
   onInteractionBeforeChecks = async () => { return true; };
 
-  /** @type {(interaction:Command, interaction: Discord.CommandInteraction, other: {setCoolDown(duration:number): void, [key:string|number]: any)=>void} */
+  /** @type {(interaction:Command, interaction: Discord.CommandInteraction, other: {setCoolDown(duration:number): void, [key:string|number]: any})=>boolean} */
   onInteraction = async () => { return true; };
 
   /**
@@ -104,8 +101,6 @@ class Config {
       Array.isArray(arg.developers) ||
       arg.developers instanceof Set
     ) this.developers = new Set([...arg.developers]);
-
-    this.autoDefer = Boolean(arg.autoDefer ?? false);
 
     if (typeof arg.onBeforeLoad == "function") this.onBeforeLoad = arg.onBeforeLoad;
     if (typeof arg.onAfterLoad == "function") this.onAfterLoad = arg.onAfterLoad;
