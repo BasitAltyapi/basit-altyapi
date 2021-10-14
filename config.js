@@ -17,6 +17,14 @@ module.exports = new (require("./types/Config"))({
   other: {
 
   },
+  // Otomatik olarak "Underline" objesinin içine eklenen değerler.
+  // Eklediğiniz değerler "Underline.<anahtar>" şeklinde ulaşabilirsiniz.
+  // Prejeinin herhangi bir yerinde bu işlemi yapabilirsiniz.
+  // Bu obje hiçbir filitrelemeden geçmemektedir. "Başınız yanabilir."
+  // - Bu özellik other objesinin bi amacı kalmamasını sağlıyor
+  globalObjects: {
+
+  },
   // Kullanıcı hatalarındaki uyarı mesajları/olayları.
   userErrors: {
     // Arka arkaya interaksiyon kullanma limiti aşıldığında.

@@ -21,10 +21,10 @@ class Config {
   /** @type {Command} */
   interactionDefaults = {};
 
-  /** @type {Set<string>} */
+  /** @type {Set<string> | Array<string>} */
   blockedUsers = new Set();
 
-  /** @type {Set<string>} */
+  /** @type {Set<string> | Array<string>} */
   developers = new Set();
 
   /** @type {(client:import("discord.js").Client)=>void} */
@@ -41,6 +41,9 @@ class Config {
 
   /** @type {(interaction:Command, interaction: Discord.CommandInteraction, other: {setCoolDown(duration:number): void, [key:string|number]: any})=>boolean} */
   onInteraction = async () => { return true; };
+
+  /** @type {{[key: string|number]: any}} */
+  globalObjects = {};
 
   /**
    * @param {Config} arg 
@@ -101,6 +104,8 @@ class Config {
       Array.isArray(arg.developers) ||
       arg.developers instanceof Set
     ) this.developers = new Set([...arg.developers]);
+
+    this.globalObjects = arg.globalObjects;
 
     if (typeof arg.onBeforeLoad == "function") this.onBeforeLoad = arg.onBeforeLoad;
     if (typeof arg.onAfterLoad == "function") this.onAfterLoad = arg.onAfterLoad;

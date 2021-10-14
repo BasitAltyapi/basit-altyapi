@@ -1,5 +1,6 @@
 require("./other/patchConsoleLog");
 const config = require("./config");
+globalThis.Underline = config.globalObjects;
 const Discord = require("discord.js");
 const chillout = require("chillout");
 const path = require("path");
@@ -11,6 +12,7 @@ const interactions = new Discord.Collection();
 const events = new Discord.Collection();
 
 globalThis.Underline = {
+  ...config.globalObjects,
   config,
   client,
   interactions,

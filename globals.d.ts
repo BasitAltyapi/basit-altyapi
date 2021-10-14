@@ -9,7 +9,9 @@ interface Underline {
   SlashCommand: typeof import("./types/SlashCommand"),
   MessageAction: typeof import("./types/MessageAction"),
   UserAction: typeof import("./types/UserAction"),
-  Event: typeof import("./types/Event")
+  Event: typeof import("./types/Event"),
+
+  [key: string | number]: any,
 }
 
 
