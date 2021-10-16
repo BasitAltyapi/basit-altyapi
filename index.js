@@ -11,6 +11,8 @@ const client = new Discord.Client(config.clientOptions);
 const interactions = new Discord.Collection();
 const events = new Discord.Collection();
 
+let isReady = false;
+
 globalThis.Underline = {
   ...config.globalObjects,
   config,
@@ -247,6 +249,8 @@ console.info("[BİLGİ] Basit Altyapı v1.8.3 - by Kıraç Armağan Önal");
       ([eventName, events]) => {
         console.info(`[BİLGİ] Event "${eventName}" için ${events.length} dinleyici yüklendi!`);
         client.on(eventName, (...args) => {
+          // Random olayların kendi kendine bot hazır olmadan ateşlenmesini engellemek için.
+          if (eventName != "ready" && !isReady) return;
           setTimeout(() => {
             chillout.forEach(events, (event) => {
               if (!event.disabled) {
@@ -271,6 +275,7 @@ console.info("[BİLGİ] Basit Altyapı v1.8.3 - by Kıraç Armağan Önal");
   console.info("[BİLGİ] Discord'a bağlanıldı!", client.user.tag);
 
   config.onReady(client);
+  isReady = true;
 })();
 
 
