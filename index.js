@@ -26,7 +26,7 @@ globalThis.Underline = {
   UserAction: require("./types/UserAction"),
 }
 
-console.info("[BİLGİ] Basit Altyapı v1.8.3 - by Kıraç Armağan Önal");
+console.info("[BİLGİ] Basit Altyapı v1.8.4 - by Kıraç Armağan Önal");
 (async () => {
   let interactionsPath = path.resolve("./interactions");
   await makeSureFolderExists(interactionsPath);

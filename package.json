@@ -16,7 +16,7 @@
     "@types/recursive-readdir": "^2.2.0"
   },
   "name": "armagan-basit-altyapi",
-  "version": "1.8.3",
+  "version": "1.8.4",
   "description": "Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran discord bot altyapısı.",
   "main": "index.js",
   "repository": {
