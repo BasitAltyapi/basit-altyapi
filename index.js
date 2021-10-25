@@ -173,7 +173,7 @@ console.info("[BİLGİ] Basit Altyapı - by Kıraç Armağan Önal");
           return chillout.StopIteration;
         }
 
-        if (command.guildOnly && message.channel.type == "dm") {
+        if (command.guildOnly && !message.guild) {
           config.userErrors.guildOnly(message, command);
           return chillout.StopIteration;
         }
