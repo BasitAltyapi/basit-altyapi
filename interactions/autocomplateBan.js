@@ -18,7 +18,8 @@ module.exports = new Underline.SlashCommand({
       autocomplete: true,
       async onComplete(inter, value) {
         await inter.guild.bans.fetch({ cache: false });
-        return [...inter.guild.bans.cache.values()].map(i => ({ name: i.user.tag, value: i.user.id }));
+        return [...inter.guild.bans.cache.values()]
+          .map(i => ({ name: i.user.tag, value: i.user.id }));
       },
       required: true
     }
