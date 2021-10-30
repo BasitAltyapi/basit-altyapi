@@ -1,9 +1,10 @@
-# Basit Altyapı (Versiyon 1.8.4) (v13.x)
+# Basit Altyapı (Versiyon 1.8.5) (v13.x)
 
 Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran discord bot altyapısı. Sık sık güncelleme alıyor. (Slash Commands)
  
 ## Özellikler
 
+- ✅ **Autocomplate(otomatik tamamlama) desteği.**
 - ✅ **Sağtık menü desteği.**
 - ✅ **Slash command desteği.**
 - ✅ **Slash subcommand desteği.**

@@ -1,11 +1,23 @@
 import {
+  ApplicationCommandChannelOptionData,
+  ApplicationCommandChoicesData,
+  ApplicationCommandNonOptionsData,
+  ApplicationCommandOptionChoice,
   ApplicationCommandOptionData,
   ApplicationCommandType,
+  AutocompleteInteraction,
+  CacheType,
   Client,
   CommandInteraction,
   ContextMenuInteraction,
   PermissionString
 } from "discord.js";
+
+export type CustomApplicationCommandOptionData = (
+    ApplicationCommandNonOptionsData
+  | ApplicationCommandChannelOptionData
+  | ApplicationCommandChoicesData
+) & { onComplete(interaction: AutocompleteInteraction, value: string|number): Promise<ApplicationCommandOptionChoice[]> }
 
 export class BaseInteraction {
   private _type: string;
@@ -21,7 +33,7 @@ export class BaseInteraction {
   other?: { [key: string | number]: any };
   coolDown?: number;
   guildOnly?: boolean;
-  options?: ApplicationCommandOptionData[];
+  options?: CustomApplicationCommandOptionData[];
   defaultPermission?: boolean;
   actionType?: ApplicationCommandType;
   constructor(arg: TInteractionConstructor)

@@ -26,7 +26,7 @@ globalThis.Underline = {
   UserAction: require("./types/UserAction"),
 }
 
-console.info("[BİLGİ] Basit Altyapı v1.8.4 - by Kıraç Armağan Önal");
+console.info("[BİLGİ] Basit Altyapı v1.8.5 - by Kıraç Armağan Önal");
 (async () => {
   let interactionsPath = path.resolve("./interactions");
   await makeSureFolderExists(interactionsPath);
@@ -141,9 +141,7 @@ console.info("[BİLGİ] Basit Altyapı v1.8.4 - by Kıraç Armağan Önal");
     console.warn(`[UYARI] Hiçbir olay yüklenmedi, herşey yolunda mı?`);
   }
 
-  client.on("interactionCreate", async (interaction) => {
-    if (!(interaction.isCommand() || interaction.isContextMenu())) return;
-    
+  client.on("interactionCreate", async (interaction) => {    
     let subCommandName = "";
     try {subCommandName = interaction.options.getSubcommand();} catch { };
     let subCommandGroupName = "";
@@ -158,6 +156,20 @@ console.info("[BİLGİ] Basit Altyapı v1.8.4 - by Kıraç Armağan Önal");
     });
 
     if (!uInter) return;
+
+    if (interaction.isAutocomplete()) {
+      /** @type {Discord.ApplicationCommandOptionChoice} */
+      let focussed = null;
+      try { focussed = interaction.options.getFocused(true) } catch { };
+      let option = uInter.options.find(i => i.autocomplete && i.name == focussed?.name);
+      if (option) {
+        let completeResponse = await option.onComplete(interaction, focussed.value);
+        interaction.respond(completeResponse);
+      }
+      return;
+    }
+
+    if (!(interaction.isCommand() || interaction.isContextMenu())) return;
 
     let other = {};
 
