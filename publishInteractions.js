@@ -17,6 +17,8 @@ globalThis.Underline = {
   SlashCommand: require("./types/SlashCommand"),
   MessageAction: require("./types/MessageAction"),
   UserAction: require("./types/UserAction"),
+  SelectMenu: require("./types/SelectMenu"),
+  Button: require("./types/Button"),
 };
 
 (async () => {
@@ -55,6 +57,7 @@ globalThis.Underline = {
     await chillout.forEach(interactionFilePaths, (interactionFilePath) => {
       /** @type {import("./types/Interaction")} */
       let uInter = require(interactionFilePath);
+      if(uInter?._type != "interaction") return;
       console.info(`Interaksiyon "${uInter.actionType == "CHAT_INPUT" ? `/${uInter.name.join(" ")}` : `${uInter.name[0]}`}" dönüştürülme listesine eklendi!`);
       uInters.push(uInter);
     });

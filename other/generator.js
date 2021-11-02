@@ -67,13 +67,17 @@ makeSureFolderExistsSync("./events");
         choices: [
           "Slash Komut",
           "Üye Sağtık",
-          "Mesaj Sağtık"
+          "Mesaj Sağtık",
+          "Seç Menüsü",
+          "Buton"
         ],
         result(val) {
           let l = {
             "Slash Komut": "CHAT_INPUT",
             "Üye Sağtık": "USER",
-            "Mesaj Sağtık": "MESSAGE"
+            "Mesaj Sağtık": "MESSAGE",
+            "Seç Menüsü": "SELECT_MENU",
+            "Buton": "BUTTON"
           };
           return l[val];
         },
@@ -114,6 +118,26 @@ makeSureFolderExistsSync("./events");
             type: "input",
             name: 'value',
             message: "Sağ tıkladığınız yerde ne yazsın? (Örn; Yasakla)",
+            required: true
+          })).value;
+          break;
+        }
+        case "BUTTON": {
+          console.clear();
+          interName = (await prompt({
+            type: "input",
+            name: 'value',
+            message: "Butonunuzun custom id'si ne olsun? (Örn; bas_bana)",
+            required: true
+          })).value;
+          break;
+        }
+        case "SELECT_MENU": {
+          console.clear();
+          interName = (await prompt({
+            type: "input",
+            name: 'value',
+            message: "Menünüzün custom id'si ne olsun? (Örn; sec_beni)",
             required: true
           })).value;
           break;
@@ -181,15 +205,21 @@ makeSureFolderExistsSync("./events");
       console.log(`! Dosyanız oluşturuluyor..`);
 
       let filePath = path.resolve("./interactions", `${interFileName}.js`);
-      
+      let transformer = {
+        CHAT_INPUT: "SlashCommand",
+        USER: "UserAction",
+        MESSAGE: "MessageAction",
+        BUTTON: "Button",
+        SELECT_MENU: "SelectMenu"
+      }
       let resultText = `
-module.exports = new Underline.${interActionType == "CHAT_INPUT" ? "SlashCommand" : interActionType == "USER" ? "UserAction" : interActionType == "MESSAGE" ? "MessageAction" : ""}({
+module.exports = new Underline.${transformer[interActionType] ?? ""}({
   name: ${JSON.stringify(interName)},
   ${interDesc ? `description: ${JSON.stringify(interDesc)},` : ""}
   onInteraction(inter, other) {
-    // Kodunuz buray, kolay gelsin!
+    // Kodunuz bruh, kolay gelsin!
   },
-  options: [],
+  ${interActionType == "BUTTON" || interActionType == "MESSAGE" || interActionType == "USER" ? "" : "options: [],"}
   ${interCoolDown ? `coolDown: ${interCoolDown},` : ""}
   guildOnly: ${interGuildOnly},
   developerOnly: ${interDeveloperOnly}${interBotPerms.length > 0 || interUserPerms.length > 0 ? `,` : ""}

@@ -10,7 +10,10 @@ import {
   Client,
   CommandInteraction,
   ContextMenuInteraction,
-  PermissionString
+  PermissionString,
+  SelectMenuInteraction,
+  MessageSelectOptionData,
+  ButtonInteraction
 } from "discord.js";
 
 export type CustomApplicationCommandOptionData = (
@@ -39,8 +42,8 @@ export class BaseInteraction {
   constructor(arg: TInteractionConstructor)
 }
 
-export type TOmittedInteraction = Omit<BaseInteraction, "_type" | "coolDowns" | "name" | "onInteraction" | "actionType">;
-export type TInteractionConstructor = TOmittedInteraction & (SlashCommand & (ActionChatCommand | ActionRightClickCommand));
+export type TOmittedInteraction = Omit<BaseInteraction, "_type" | "coolDowns" | "name" | "onInteraction" | "actionType" | "options">;
+export type TInteractionConstructor = TOmittedInteraction & ((ActionChatCommand | ActionRightClickCommand) & SelectMenu);
 
 export interface IOther {
   setCoolDown(durations: number): void,
@@ -48,18 +51,31 @@ export interface IOther {
 }
 
 export interface ActionChatCommand {
+  name: string[];
   actionType: "CHAT_INPUT";
   onInteraction: (interaction: CommandInteraction, other: IOther) => void;
+  options: CustomApplicationCommandOptionData[];
 }
 
 export interface ActionRightClickCommand {
+  name: string;
   actionType: "MESSAGE" | "USER";
   onInteraction: (interaction: ContextMenuInteraction, other: IOther) => void;
+  options: undefined;
 }
 
-export interface SlashCommand {
-  actionType: "CHAT_INPUT";
-  name: string[];
+export interface SelectMenu {
+  name: string;
+  actionType: "SELECT_MENU";
+  onInteraction: (interaction: SelectMenuInteraction, other: IOther) => void;
+  options?: MessageSelectOptionData[]
+}
+
+export interface Button {
+  name: string;
+  actionType: "BUTTON";
+  onInteraction: (interaction: ButtonInteraction, other: IOther) => void;
+  options?: undefined;
 }
 
 export = BaseInteraction;

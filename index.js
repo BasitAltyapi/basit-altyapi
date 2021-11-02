@@ -24,6 +24,8 @@ globalThis.Underline = {
   SlashCommand: require("./types/SlashCommand"),
   MessageAction: require("./types/MessageAction"),
   UserAction: require("./types/UserAction"),
+  SelectMenu: require("./types/SelectMenu"),
+  Button: require("./types/Button"),
 }
 
 console.info("[BİLGİ] Basit Altyapı v1.8.5 - by Kıraç Armağan Önal");
@@ -51,7 +53,7 @@ console.info("[BİLGİ] Basit Altyapı v1.8.5 - by Kıraç Armağan Önal");
     /** @type {import("./types/Interaction")} */
     let uInter = require(interactionFile);
 
-    if (uInter?._type != "interaction") {
+    if (uInter?._type != "interaction" && uInter?._type != "noDeployInteraction") {
       console.warn(`[UYARI] "${rltPath}" interaksiyon dosyası boş. Atlanıyor..`);
       return;
     }
@@ -147,11 +149,16 @@ console.info("[BİLGİ] Basit Altyapı v1.8.5 - by Kıraç Armağan Önal");
     let subCommandGroupName = "";
     try {subCommandGroupName = interaction.options.getSubcommandGroup();} catch { };
 
-    let uInter = Underline.interactions.find(uInter => {
+     let uInter = Underline.interactions.find(uInter => {
       switch (uInter.name.length) {
-        case 1: return uInter.name[0] == interaction.commandName;
-        case 2: return uInter.name[0] == interaction.commandName && uInter.name[1] == subCommandName;
-        case 3: return uInter.name[0] == interaction.commandName && uInter.name[1] == subCommandGroupName && uInter.name[2] == subCommandName;
+        case 1: return (uInter.name[0] == interaction.commandName) || ((uInter.name[0] == interaction.customId) && (
+          (uInter.actionType == "CHAT_INPUT" && (interaction.isCommand() || interaction.isAutocomplete())) ||
+          (uInter.actionType == "SELECT_MENU" && interaction.isSelectMenu()) ||
+          (uInter.actionType == "BUTTON" && interaction.isButton()) ||
+          ((uInter.actionType == "USER" || uInter.actionType == "MESSAGE") && interaction.isContextMenu())
+        ));
+        case 2: return uInter.name[0] == interaction.commandName && uInter.name[1] == subCommandName && (interaction.isCommand() || interaction.isAutocomplete());
+        case 3: return uInter.name[0] == interaction.commandName && uInter.name[1] == subCommandGroupName && uInter.name[2] == subCommandName && (interaction.isCommand() || interaction.isAutocomplete());
       }
     });
 
@@ -168,8 +175,6 @@ console.info("[BİLGİ] Basit Altyapı v1.8.5 - by Kıraç Armağan Önal");
       }
       return;
     }
-
-    if (!(interaction.isCommand() || interaction.isContextMenu())) return;
 
     let other = {};
 

@@ -3,7 +3,7 @@ const Interaction = require("./Interaction");
 
 class MessageAction extends Interaction {
 
-  /** @param {Interaction.TOmittedInteraction & {name: string, onInteraction(interaction: ContextMenuInteraction, other: Interaction.IOther)}} arg */
+  /** @param {Interaction.TOmittedInteraction & Interaction.ActionRightClickCommand} arg */
   constructor (arg = { }) {
     super({
       type: "COMMAND",

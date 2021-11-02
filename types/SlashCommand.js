@@ -3,7 +3,7 @@ const Interaction = require("./Interaction");
 
 class SlashCommand extends Interaction {
 
-  /** @param {Interaction.TOmittedInteraction & {name: string[], onInteraction(interaction: CommandInteraction, other: Interaction.IOther)}} arg */
+  /** @param {Interaction.TOmittedInteraction & Interaction.ActionChatCommand} arg */
   constructor (arg = { }) {
     super({
       actionType: "CHAT_INPUT",
