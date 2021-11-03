@@ -10,7 +10,8 @@ interface Underline {
   MessageAction: typeof import("./types/MessageAction"),
   UserAction: typeof import("./types/UserAction"),
   Event: typeof import("./types/Event"),
-
+  Button: typeof import("./types/Button"),
+  SelectMenu: typeof import("./types/SelectMenu"),
   [key: string | number]: any,
 }
 
