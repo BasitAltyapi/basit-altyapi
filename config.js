@@ -5,7 +5,8 @@ module.exports = new (require("./types/Config"))({
   blockedUsers: new Set([]),
   // Geliştiricilerin idleri.
   developers: new Set([
-    "707309693449535599"
+    "707309693449535599",
+    "319862027571036161"
   ]),
   // Discord.js client ayarları.
   clientOptions: {
