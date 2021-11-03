@@ -1,7 +1,7 @@
+const { MessageSelectMenu } = require("discord.js");
 const Interaction = require("./Interaction");
 
 class SelectMenu extends Interaction {
-
   /** @param {Interaction.TOmittedInteraction & Interaction.SelectMenu} arg */
   constructor (arg = {}) {
     super({
@@ -9,6 +9,17 @@ class SelectMenu extends Interaction {
       actionType: "SELECT_MENU",
       ...arg
     })
+  }
+  isSelectMenu() { return true; }
+  isButton() { return false; }
+  isChatActionCommand() { return false; }
+  isUserActionCommand() { return false; }
+  isMessageActionCommand() { return false; }
+  toJSON() {
+    let menu = new MessageSelectMenu().addOptions( this.options?.onComplete ? this.options.onComplete() : (this.options?.choices ?? []) )
+      .setMinValues(this.options.min ?? 1).setMaxValues(this.options.max ?? this.options.choices.length).setCustomId(this.name)
+    if(this.options.placeholder) menu.setPlaceholder(this.options.placeholder)
+    return menu;
   }
 }
 

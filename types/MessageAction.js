@@ -8,10 +8,15 @@ class MessageAction extends Interaction {
     super({
       type: "COMMAND",
       actionType: "MESSAGE",
-      name: [arg.name],
       ...arg
     })
   }
+  isMessageActionCommand() { return true; }
+  isSelectMenu() { return false; }
+  isButton() { return false; }
+  isChatActionCommand() { return false; }
+  isUserActionCommand() { return false; }
+  toJSON() {}
 }
 
 module.exports = MessageAction;

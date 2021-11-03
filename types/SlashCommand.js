@@ -10,6 +10,12 @@ class SlashCommand extends Interaction {
       ...arg
     })
   }
+  isChatActionCommand() { return true; }
+  isSelectMenu() { return false; }
+  isButton() { return false; }
+  isUserActionCommand() { return false; }
+  isMessageActionCommand() { return false; }
+  toJSON() {}
 }
 
 module.exports = SlashCommand;
