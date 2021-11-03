@@ -5,6 +5,7 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
 ## Özellikler
 
 - ✅ **SelectMenu ve Button desteği.**
+- ✅ **SelectMenu ve Button tam component ve options desteği.**
 - ✅ **Autocomplate(otomatik tamamlama) desteği.**
 - ✅ **Sağtık menü desteği.**
 - ✅ **Slash command desteği.**
