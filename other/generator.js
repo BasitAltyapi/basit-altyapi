@@ -214,12 +214,13 @@ makeSureFolderExistsSync("./events");
       }
       let resultText = `
 module.exports = new Underline.${transformer[interActionType] ?? ""}({
+  ${interActionType == "BUTTON" || interActionType == "SELECT_MENU" ? `id: ${JSON.stringify(interName)},` : ""}
   name: ${JSON.stringify(interName)},
   ${interDesc ? `description: ${JSON.stringify(interDesc)},` : ""}
   onInteraction(inter, other) {
     // Kodunuz bruh, kolay gelsin!
   },
-  ${interActionType == "BUTTON" || interActionType == "MESSAGE" || interActionType == "USER" ? "" : "options: [],"}
+  ${interActionType == "MESSAGE" || interActionType == "USER" ? "" : `options: ${interActionType == "BUTTON" || interActionType == "SELECT_MENU" ? "{}" : "[]"},`}
   ${interCoolDown ? `coolDown: ${interCoolDown},` : ""}
   guildOnly: ${interGuildOnly},
   developerOnly: ${interDeveloperOnly}${interBotPerms.length > 0 || interUserPerms.length > 0 ? `,` : ""}

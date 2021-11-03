@@ -25,7 +25,6 @@ interface CustomSelectMenuOptions {
   max?: number;
   choices: MessageSelectOptionData[];
   placeholder?: string;
-  onComplete?(interaction: SelectMenuInteraction): MessageSelectOptionData[]
 }
 
 interface CustomButtonOptions {

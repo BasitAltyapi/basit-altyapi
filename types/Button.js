@@ -12,7 +12,9 @@ class Button extends Interaction {
   }
   isButton() { return true; }
   toJSON() {
-    let button = new MessageButton().setCustomId(this.name[0]).setStyle(this.options.style)
+    let button = new MessageButton()
+      .setCustomId(this.id)
+      .setStyle(this.options.style);
     if (this.options.emoji) button.setEmoji(this.options.emoji);
     if (this.options.label) button.setLabel(this.options.label);
     if (this.options.url) button.setURL(this.options.url);

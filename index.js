@@ -151,7 +151,7 @@ console.info("[BİLGİ] Basit Altyapı v1.8.6 - by Kıraç Armağan Önal");
 
      let uInter = Underline.interactions.find(uInter => {
       switch (uInter.name.length) {
-        case 1: return (uInter.name[0] == interaction.commandName) || ((uInter.name[0] == interaction.customId) && (
+        case 1: return (uInter.name[0] == interaction.commandName) || ((uInter.id == interaction.customId) && (
           (uInter.actionType == "CHAT_INPUT" && (interaction.isCommand() || interaction.isAutocomplete())) ||
           (uInter.actionType == "SELECT_MENU" && interaction.isSelectMenu()) ||
           (uInter.actionType == "BUTTON" && interaction.isButton()) ||

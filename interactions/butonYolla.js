@@ -8,7 +8,7 @@ module.exports = new Underline.SlashCommand({
         {
           type: "ACTION_ROW",
           components: [
-            Underline.interactions.get("basBana").toJSON()
+            Underline.interactions.get("secBeni").toJSON()
           ]
         }
       ]

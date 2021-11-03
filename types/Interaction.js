@@ -41,7 +41,7 @@ class Interaction {
     this.name = Array.isArray(arg.name) ? arg.name : [arg.name];
     this.actionType = arg.actionType || Underline.config.interactionDefaults.actionType;
 
-    this.id = arg.id || `${this.actionType}:${this.name.join(" ")}`;
+    this.id = arg.id || `${this.actionType}_${this.name.join("_")}`.toLowerCase();
     this._type = arg._type ?? this._type;
     this.perms.bot = Array.isArray(arg.perms?.bot) && arg.perms.bot.length != 0 ? arg.perms.bot : Underline.config.interactionDefaults.perms.bot;
     this.perms.user = Array.isArray(arg.perms?.user) && arg.perms.user.length != 0 ? arg.perms.user : Underline.config.interactionDefaults.perms.user;

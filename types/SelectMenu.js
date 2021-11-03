@@ -16,8 +16,11 @@ class SelectMenu extends Interaction {
   isUserActionCommand() { return false; }
   isMessageActionCommand() { return false; }
   toJSON() {
-    let menu = new MessageSelectMenu().addOptions( this.options?.onComplete ? this.options.onComplete() : (this.options?.choices ?? []) )
-      .setMinValues(this.options.min ?? 1).setMaxValues(this.options.max ?? this.options.choices.length).setCustomId(this.name)
+    let menu = new MessageSelectMenu()
+      .addOptions(this.options?.choices ?? [])
+      .setMinValues(this.options.min ?? 1)
+      .setMaxValues(this.options.max ?? this.options.choices.length)
+      .setCustomId(this.id);
     if(this.options.placeholder) menu.setPlaceholder(this.options.placeholder)
     return menu;
   }
