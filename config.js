@@ -105,14 +105,6 @@ module.exports = new (require("./types/Config"))({
   async onInteraction(uInteraction, interaction, other) {
     return true;
   },
-  // event üzerinde hiçbir kontrol yapılmadan önce çalışır.
-  // Sadece cevap true ise işleme devam eder.
-  //
-  // Other objesini istediğiniz gibi modifiye edebilirsiniz.
-  // Nasılsa altakki fonksiyon her event çalışmadan önce çalışır.
-  async onEventBeforeChecks(eventName, [arg1, arg2], other) {
-    return true;
-  },
   // eventteki bütün kontrolleri geçtikten sonra, event
   // hemen çalıştırılmadan önce çalışır.
   // Sadece cevap true ise işleme devam eder.
