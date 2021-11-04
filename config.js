@@ -110,7 +110,7 @@ module.exports = new (require("./types/Config"))({
   //
   // Other objesini istediğiniz gibi modifiye edebilirsiniz.
   // Nasılsa altakki fonksiyon her event çalışmadan önce çalışır.
-  async onEventBeforeChecks(eventName, args, other) {
+  async onEventBeforeChecks(eventName, [arg1, arg2], other) {
     return true;
   },
   // eventteki bütün kontrolleri geçtikten sonra, event
@@ -119,7 +119,7 @@ module.exports = new (require("./types/Config"))({
   //
   // Other objesini istediğiniz gibi modifiye edebilirsiniz.
   // Nasılsa altakki fonksiyon her event çalışmadan önce çalışır.
-  async onEvent(eventName, args, other) {
+  async onEvent(eventName, [arg1 , arg2], other) {
     return true;
   }
 })
