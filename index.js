@@ -272,10 +272,10 @@ console.info("[BİLGİ] Basit Altyapı v1.9 - by Kıraç Armağan Önal");
 
             let other = {};
 
-            let check = await Underline.config.onEventBeforeChecks(eventName, [...args], other);
+            let check = await Underline.config.onEventBeforeChecks(eventName, args, other);
             if (!check) return;
 
-            let before = await Underline.config.onEvent(eventName, [...args], other);
+            let before = await Underline.config.onEvent(eventName, args, other);
             if (!before) return;
 
             chillout.forEach(events, (event) => {

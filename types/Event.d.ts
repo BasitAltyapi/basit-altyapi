@@ -33,7 +33,7 @@ import {
 } from "discord.js";
 
 interface IOther {
-
+  [key: string | number]: any
 }
 
 class BaseEvent {
