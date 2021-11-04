@@ -30,30 +30,30 @@ module.exports = new (require("./types/Config"))({
   userErrors: {
     // Arka arkaya interaksiyon kullanma limiti aşıldığında.
     coolDown(interaction, uInteraction, coolDown, other) {
-      interaction.reply( { ephemeral: true, content: `Bu interaksiyonu tekrardan ${(coolDown / 1000).toFixed(2)} saniye içerisinde kullanabilirsin.` })
+      interaction.reply({ ephemeral: true, content: `Bu interaksiyonu tekrardan ${(coolDown / 1000).toFixed(2)} saniye içerisinde kullanabilirsin.` })
     },
     // interaksiyon kapalı olduğunda
     disabled(interaction, uInteraction, other) {
-      interaction.reply( { ephemeral: true, content: "Bu interaksiyon kapalı." });
+      interaction.reply({ ephemeral: true, content: "Bu interaksiyon kapalı." });
     },
     // Kullanıcı bottan yasaklı olduğunda.
     blocked(interaction, uInteraction, other) {
-      interaction.reply( { ephemeral: true, content: "Bottan yasaklanmışsınız." });
+      interaction.reply({ ephemeral: true, content: "Bottan yasaklanmışsınız." });
     },
     // interaksiyon sadece geliştiricilere özel olduğunda.
     developerOnly(interaction, uInteraction, other) {
-      interaction.reply( { ephemeral: true, content: `Bu interaksiyonu sadece bot geliştiricileri kullanabilir.` })
+      interaction.reply({ ephemeral: true, content: `Bu interaksiyonu sadece bot geliştiricileri kullanabilir.` })
     },
     guildOnly(interaction, uInteraction, other) {
-      interaction.reply( { ephemeral: true, content: `Bu interaksiyonu sadece sunucularda kullanılabilir.` })
+      interaction.reply({ ephemeral: true, content: `Bu interaksiyonu sadece sunucularda kullanılabilir.` })
     },
     // Botun çalışmak için x yertkilerine ihtiyacı olduğunda.
     botPermsRequired(interaction, uInteraction, perms, other) {
-      interaction.reply( { ephemeral: true, content: `Bu interaksiyonun çalışması için ${perms.join(", ")} yetkilerine ihtiyacım var.` })
+      interaction.reply({ ephemeral: true, content: `Bu interaksiyonun çalışması için ${perms.join(", ")} yetkilerine ihtiyacım var.` })
     },
     // Kullanıcının interaksiyonu kullanabilmek için x yetkilerine ihtiyacı olduğunda.
     userPermsRequired(interaction, uInteraction, perms, other) {
-      interaction.reply( { ephemeral: true, content: `Bu interaksiyonu kullanabilmek için ${perms.join(", ")} yetkilerine ihtiyacın var.`})
+      interaction.reply({ ephemeral: true, content: `Bu interaksiyonu kullanabilmek için ${perms.join(", ")} yetkilerine ihtiyacın var.` })
     },
   },
   // Her interaksiyonun varsayılan ayarları her anahtarın ne
@@ -86,7 +86,7 @@ module.exports = new (require("./types/Config"))({
   async onReady(client) {
     console.log("[CONFIG] Discord hesabına giriş yaptıktan sonra çalıştı.");
     client.user.setActivity(`/help - Basit Altyapı by TheArmagan`, { type: "WATCHING" });
-    
+
   },
   // interaksiyon üzerinde hiçbir kontrol yapılmadan önce çalışır.
   // Sadece cevap true ise işleme devam eder.
@@ -103,6 +103,15 @@ module.exports = new (require("./types/Config"))({
   // Other objesini istediğiniz gibi modifiye edebilirsiniz.
   // Nasılsa altakki fonksiyon her interaksiyon çalışmadan önce çalışır.
   async onInteraction(uInteraction, interaction, other) {
+    return true;
+  },
+  // eventteki bütün kontrolleri geçtikten sonra, event
+  // hemen çalıştırılmadan önce çalışır.
+  // Sadece cevap true ise işleme devam eder.
+  //
+  // Other objesini istediğiniz gibi modifiye edebilirsiniz.
+  // Nasılsa altakki fonksiyon her event çalışmadan önce çalışır.
+  async onEvent(eventName, [arg1 , arg2], other) {
     return true;
   }
 })

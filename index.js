@@ -45,7 +45,7 @@ console.info("[BİLGİ] Basit Altyapı v1.9 - by Kıraç Armağan Önal");
     if (state) console.warn(`[UYARI] "${i}" dosyası tire ile başladığı için liste dışı bırakıldı.`);
     return !state;
   });
-  
+
   await chillout.forEach(interactionFiles, (interactionFile) => {
     let start = Date.now();
     let rltPath = path.relative(__dirname, interactionFile);
@@ -143,13 +143,13 @@ console.info("[BİLGİ] Basit Altyapı v1.9 - by Kıraç Armağan Önal");
     console.warn(`[UYARI] Hiçbir olay yüklenmedi, herşey yolunda mı?`);
   }
 
-  client.on("interactionCreate", async (interaction) => {    
+  client.on("interactionCreate", async (interaction) => {
     let subCommandName = "";
-    try {subCommandName = interaction.options.getSubcommand();} catch { };
+    try { subCommandName = interaction.options.getSubcommand(); } catch { };
     let subCommandGroupName = "";
-    try {subCommandGroupName = interaction.options.getSubcommandGroup();} catch { };
+    try { subCommandGroupName = interaction.options.getSubcommandGroup(); } catch { };
 
-     let uInter = Underline.interactions.find(uInter => {
+    let uInter = Underline.interactions.find(uInter => {
       switch (uInter.name.length) {
         case 1: return (uInter.name[0] == interaction.commandName) || ((uInter.id == interaction.customId) && (
           (uInter.actionType == "CHAT_INPUT" && (interaction.isCommand() || interaction.isAutocomplete())) ||
@@ -268,13 +268,20 @@ console.info("[BİLGİ] Basit Altyapı v1.9 - by Kıraç Armağan Önal");
         client.on(eventName, (...args) => {
           // Random olayların kendi kendine bot hazır olmadan ateşlenmesini engellemek için.
           if (eventName != "ready" && !isReady) return;
-          setTimeout(() => {
+          setTimeout(async () => {
+
+            let other = {};
+
+            let before = await Underline.config.onEvent(eventName, args, other);
+            if (!before) return;
+
             chillout.forEach(events, (event) => {
               if (!event.disabled) {
-                event.onEvent(...args);
+                event.onEvent(...args, other);
               }
             });
-          },0)
+
+          }, 0)
         });
       }
     )
