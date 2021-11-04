@@ -42,6 +42,12 @@ class Config {
   /** @type {(interaction:Command, interaction: Discord.CommandInteraction, other: {setCoolDown(duration:number): void, [key:string|number]: any})=>boolean} */
   onInteraction = async () => { return true; };
 
+  /** @type {(eventName: "applicationCommandCreate" | "applicationCommandDelete" | "applicationCommandUpdate" | "channelCreate" | "channelDelete" | "channelPinsUpdate" | "channelUpdate" | "debug" | "emojiCreate" | "emojiDelete" | "emojiUpdate" | "error" | "guildBanAdd" | "guildBanRemove" | "guildCreate" | "guildDelete" | "guildIntegrationsUpdate" | "guildMemberAdd" | "guildMemberAvailable" | "guildMemberRemove" | "guildMembersChunk" | "guildMemberUpdate" | "guildUnavailable" | "guildUpdate" | "interaction" | "interactionCreate" | "invalidated" | "invalidRequestWarning" | "inviteCreate" | "inviteDelete" | "message" | "messageCreate" | "messageDelete" | "messageDeleteBulk" | "messageReactionAdd" | "messageReactionRemove" | "messageReactionRemoveAll" | "messageReactionRemoveEmoji" | "messageUpdate" | "presenceUpdate" | "rateLimit" | "ready" | "roleCreate" | "roleDelete" | "roleUpdate" | "shardDisconnect" | "shardError" | "shardReady" | "shardReconnecting" | "shardResume" | "stageInstanceCreate" | "stageInstanceDelete" | "stageInstanceUpdate" | "stickerCreate" | "stickerDelete" | "stickerUpdate" | "threadCreate" | "threadDelete" | "threadListSync" | "threadMembersUpdate" | "threadMemberUpdate" | "threadUpdate" | "typingStart" | "userUpdate" | "voiceStateUpdate" | "warn" | "webhookUpdate", args: [], other: {[key:string|number]: any})=>boolean} */
+  onEventBeforeChecks = async () => { return true; };
+
+  /** @type {(eventName: "applicationCommandCreate" | "applicationCommandDelete" | "applicationCommandUpdate" | "channelCreate" | "channelDelete" | "channelPinsUpdate" | "channelUpdate" | "debug" | "emojiCreate" | "emojiDelete" | "emojiUpdate" | "error" | "guildBanAdd" | "guildBanRemove" | "guildCreate" | "guildDelete" | "guildIntegrationsUpdate" | "guildMemberAdd" | "guildMemberAvailable" | "guildMemberRemove" | "guildMembersChunk" | "guildMemberUpdate" | "guildUnavailable" | "guildUpdate" | "interaction" | "interactionCreate" | "invalidated" | "invalidRequestWarning" | "inviteCreate" | "inviteDelete" | "message" | "messageCreate" | "messageDelete" | "messageDeleteBulk" | "messageReactionAdd" | "messageReactionRemove" | "messageReactionRemoveAll" | "messageReactionRemoveEmoji" | "messageUpdate" | "presenceUpdate" | "rateLimit" | "ready" | "roleCreate" | "roleDelete" | "roleUpdate" | "shardDisconnect" | "shardError" | "shardReady" | "shardReconnecting" | "shardResume" | "stageInstanceCreate" | "stageInstanceDelete" | "stageInstanceUpdate" | "stickerCreate" | "stickerDelete" | "stickerUpdate" | "threadCreate" | "threadDelete" | "threadListSync" | "threadMembersUpdate" | "threadMemberUpdate" | "threadUpdate" | "typingStart" | "userUpdate" | "voiceStateUpdate" | "warn" | "webhookUpdate", args: [], other: {[key:string|number]: any})=>boolean} */
+  onEvent = async () => { return true; };
+
   /** @type {{[key: string|number]: any}} */
   globalObjects = {};
 
@@ -54,7 +60,7 @@ class Config {
       console.error("[HATA] Ayarlar dosayasında geçersiz bot tokeni girişi yapılmış.");
       process.exit(-1);
     };
-    
+
     this.clientToken = arg.clientToken;
     this.clientOptions = typeof arg.clientOptions == "object" ? arg.clientOptions : {};
 
@@ -70,7 +76,7 @@ class Config {
     let loadedMessageTypes = Object.keys(arg.userErrors || {});
     if (
       !messageTypes.every(i => loadedMessageTypes.some(j => j == i)) ||
-      Object.values(arg.userErrors || {}).some(i=>typeof i != "function")
+      Object.values(arg.userErrors || {}).some(i => typeof i != "function")
     ) {
       console.error("[HATA] Ayarlar dosyasında kullanıcı hataları (userErrors) kısmı düzgün bir şekilde ayarlanmamış!");
       process.exit(-1);
@@ -110,9 +116,12 @@ class Config {
     if (typeof arg.onBeforeLoad == "function") this.onBeforeLoad = arg.onBeforeLoad;
     if (typeof arg.onAfterLoad == "function") this.onAfterLoad = arg.onAfterLoad;
     if (typeof arg.onReady == "function") this.onReady = arg.onReady;
-    
+
     if (typeof arg.onInteractionBeforeChecks == "function") this.onInteractionBeforeChecks = arg.onInteractionBeforeChecks;
     if (typeof arg.onInteraction == "function") this.onInteraction = arg.onInteraction;
+
+    if (typeof arg.onEventBeforeChecks == "function") this.onEventBeforeChecks = arg.onEventBeforeChecks;
+    if (typeof arg.onEvent == "function") this.onEvent = arg.onEvent;
   }
 }
 

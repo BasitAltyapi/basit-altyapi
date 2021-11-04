@@ -7,7 +7,7 @@ module.exports = new Underline.Event({
   // onEvent belirtiğiniz olay yaşandığında çağrılır.
   // interaksiyon argumentlari normal discord.js'deki gibi ideğişkendir.
   // Otomatik tamamlama eventName değişkenindeki tipe göre değişir.
-  onEvent(message) {
+  onEvent(message, other) {
     console.log(`[MESAJ] ${message.author.tag}: ${message.content}`);
   },
   // Olay çalışmaya hazır olduğunda bot açılırken
