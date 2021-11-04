@@ -274,10 +274,10 @@ console.info("[BİLGİ] Basit Altyapı v1.9 - by Kıraç Armağan Önal");
 
             let before = await Underline.config.onEvent(eventName, args, other);
             if (!before) return;
-
+            args.push(other);
             chillout.forEach(events, (event) => {
               if (!event.disabled) {
-                event.onEvent(...args, other);
+                event.onEvent(...args);
               }
             });
 

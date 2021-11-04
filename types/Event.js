@@ -12,7 +12,7 @@ class Event {
   /**
    * @param  {...any} args 
    */
-  onEvent(...args, other) {
+  onEvent(...args) {
     
   }
 
