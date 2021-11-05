@@ -194,14 +194,14 @@ async function load() {
   loadStart = 0;
 }
 
-async function unloadModule(moduleName) {
-  let nodeModule = require.cache[moduleName];
+async function unloadModule(modulePath) {
+  let nodeModule = require.cache[modulePath];
   if (nodeModule) {
     if (nodeModule.children.length) await chillout.forEach(nodeModule.children, async (child) => {
       if (child.filename) unloadModule(child.filename);
     }); 
   }
-  delete require.cache[moduleName];
+  delete require.cache[modulePath];
 }
 
 async function unload() {
