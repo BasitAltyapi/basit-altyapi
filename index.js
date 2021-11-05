@@ -55,7 +55,7 @@ let eventListeners = [];
 async function load() {
   let loadStart = Date.now();
   console.debug(`[HATA AYIKLAMA] Yüklemeye başlandı!`);
-  
+
   let interactionFiles = await getInteractionFilePaths();
   await chillout.forEach(interactionFiles, (interactionFile) => {
     let start = Date.now();
@@ -163,7 +163,7 @@ async function load() {
        */
       ([eventName, events]) => {
         console.info(`[BİLGİ] Event "${eventName}" için ${events.length} dinleyici yüklendi!`);
-        
+
         let listener = (...args) => {
 
           setTimeout(async () => {
@@ -199,7 +199,7 @@ async function unloadModule(modulePath) {
   if (nodeModule) {
     if (nodeModule.children.length) await chillout.forEach(nodeModule.children, async (child) => {
       if (child.filename) unloadModule(child.filename);
-    }); 
+    });
   }
   delete require.cache[modulePath];
 }
@@ -297,23 +297,44 @@ client.on("interactionCreate", async (interaction) => {
     return;
   }
 
-  let userCooldown = uInter.coolDowns.get(interaction.user.id) || 0;
-  if (Date.now() < userCooldown) {
-    config.userErrors.coolDown(interaction, uInter, userCooldown - Date.now(), other);
-    return;
+  if (typeof uInter.coolDown == "number") uInter.coolDown = {
+    type: "user",
+    amount: uInter.coolDown,
   }
 
-  function setCoolDown(duration = 0) {
-    if (typeof duration == "number" && duration > 0) {
-      return uInter.coolDowns.set(interaction.user.id, Date.now() + duration);
-    } else {
-      return uInter.coolDowns.delete(interaction.user.id);
+  let converter = {
+    "user": interaction.user.id,
+    "member": interaction.user.id + "_" + interaction.guild?.id,
+    "channel": interaction.channel?.id || interaction.user.id + " _c",
+    "guild": interaction.guild?.id || interaction.user.id + "_g",
+    "any": "any"
+  }
+
+  if (uInter.coolDown && !uInter.coolDown.amount) uInter.coolDown.amount = 0;
+  let now = Date.now();
+
+  for (let k in converter) {
+    let key = converter[k];
+    let keyCooldown = uInter.coolDowns.get(key);
+    if (uInter.coolDown?.amount && (now < keyCooldown)) {
+      config.userErrors.coolDown(interaction, uInter, keyCooldown - now, other, k);
+      return;
     }
   }
+
+  function setCoolDown(duration = 0, type = "user") {
+    let ckey = converter[type] || interaction.user.id;
+    if (typeof duration == "number" && duration > 0) {
+      return uInter.coolDowns.set(ckey, Date.now() + duration);
+    } else {
+      return uInter.coolDowns.delete(ckey);
+    }
+  }
+
   other.setCoolDown = setCoolDown;
 
-  if (uInter.coolDown > 0) {
-    setCoolDown(uInter.coolDown);
+  if (uInter.coolDown?.amount > 0) {
+    setCoolDown(uInter.coolDown?.amount, uInter.coolDown?.type);
   }
 
   if (uInter.guildOnly && uInter.perms.bot.length != 0 && !uInter.perms.bot.every(perm => interaction.guild.me.permissions.has(perm))) {
@@ -321,7 +342,7 @@ client.on("interactionCreate", async (interaction) => {
     return;
   }
 
-  if (uInter.guildOnly && uInter.perms.user.length != 0 && !uInter.perms.user.every(perm => interaction.member.permissions.has(perm))) {
+  if (uInter.guildOnly && (!config.developers.has(interaction.user.id)) && uInter.perms.user.length != 0 && !uInter.perms.user.every(perm => interaction.member.permissions.has(perm))) {
     config.userErrors.userPermsRequired(interaction, uInter, uInter.perms.user, other);
     return;
   }
@@ -350,7 +371,7 @@ client.on("interactionCreate", async (interaction) => {
   await config.onBeforeLoad(client);
   await load();
   await config.onAfterLoad(client);
-  
+
   await client.login(config.clientToken);
 
   config.onReady(client);

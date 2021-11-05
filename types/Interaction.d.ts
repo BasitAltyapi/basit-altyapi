@@ -53,7 +53,10 @@ export class BaseInteraction {
   disabled?: boolean;
   developerOnly?: boolean;
   other?: { [key: string | number]: any };
-  coolDown?: number;
+  coolDown?: {
+    type: cooldownType;
+    amount: number;
+  };
   guildOnly?: boolean;
   options?: CustomApplicationCommandOptionData[];
   defaultPermission?: boolean;
@@ -68,9 +71,9 @@ export class BaseInteraction {
 
 export type TOmittedInteraction = Omit<BaseInteraction, "_type" | "coolDowns" | "name" | "onInteraction" | "actionType" | "options" | "toJSON">;
 export type TInteractionConstructor = TOmittedInteraction & ((ActionChatCommand | ActionRightClickCommand | SelectMenu | Button));
-
+type cooldownType = "user" | "member" | "channel" | "guild" | "any";
 export interface IOther {
-  setCoolDown(durations: number): void,
+  setCoolDown(durations: number, type: cooldownType): void,
   [key: string | number]: any
 }
 

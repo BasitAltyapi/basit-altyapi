@@ -2,6 +2,8 @@ module.exports = new Underline.SlashCommand({
   description: "Banlı bir kullanıcının banını açmanızı sağlar.",
   name: ["unban"],
   async onInteraction(inter, other) {
+    other.setCoolDown(30000, "channel")
+    other.setCoolDown(10000, "guild")
     let targetId = inter.options.getString("id", false)
     await inter.guild.bans.fetch({ cache: false });
     if (!inter.guild.bans.cache.has(targetId)) return inter.reply("Yasağını açacak kişiyi bulamadım!");
@@ -25,7 +27,10 @@ module.exports = new Underline.SlashCommand({
     }
   ],
   guildOnly: true,
-  coolDown: 2000,
+  coolDown: {
+    type: "guild",
+    amount: 5000
+  },
   perms: {
     bot: ["BAN_MEMBERS"],
     user: ["BAN_MEMBERS"]

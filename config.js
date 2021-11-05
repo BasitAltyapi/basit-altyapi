@@ -29,8 +29,30 @@ module.exports = new (require("./types/Config"))({
   // Kullanıcı hatalarındaki uyarı mesajları/olayları.
   userErrors: {
     // Arka arkaya interaksiyon kullanma limiti aşıldığında.
-    coolDown(interaction, uInteraction, coolDown, other) {
-      interaction.reply({ ephemeral: true, content: `Bu interaksiyonu tekrardan ${(coolDown / 1000).toFixed(2)} saniye içerisinde kullanabilirsin.` })
+    coolDown(interaction, uInteraction, coolDown, other, type) {
+      switch (type) {
+        case "user": {
+          interaction.reply({ ephemeral: true, content: `Bu interaksiyonu sen tekrardan ${(coolDown / 1000).toFixed(2)} saniye içerisinde kullanabilirsin.` })
+          break;
+        }
+        case "member": {
+          interaction.reply({ ephemeral: true, content: `Bu interaksiyonu bu sunucuda tekrardan senin kullanabilmen için  ${(coolDown / 1000).toFixed(2)} saniye beklemen lazım.` })
+          break;
+        }
+        case "guild": {
+          interaction.reply({ ephemeral: true, content: `Bu interaksiyonu bu sunucuda tekrardan ${(coolDown / 1000).toFixed(2)} saniye içerisinde kullanabilirsin.` })
+          break;
+        }
+        case "channel": {
+          interaction.reply({ ephemeral: true, content: `Bu interaksiyonu bu kanalda tekrardan ${(coolDown / 1000).toFixed(2)} saniye içerisinde kullanabilirsin.` })
+          break;
+        }
+        case "any": {
+          interaction.reply({ ephemeral: true, content: `Bu interaksiyonu tekrardan ${(coolDown / 1000).toFixed(2)} saniye içerisinde kullanabilirsin.` })
+          break;
+        }
+      }
+      
     },
     // interaksiyon kapalı olduğunda
     disabled(interaction, uInteraction, other) {
