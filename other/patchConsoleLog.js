@@ -39,7 +39,15 @@ const chalk = require("chalk");
     log(...args);
   }
 
-  console.tlog = function(...args) {
+  console.debug = function(...args) {
+    args = args.map(i => {
+      if (typeof i == "string") return chalk.magentaBright(i)
+      return i
+    })
+    log(...args);
+  }
+
+  console.log = function(...args) {
     log(...args);
   }
 }

@@ -12,7 +12,10 @@ interface Underline {
   Event: typeof import("./types/Event"),
   Button: typeof import("./types/Button"),
   SelectMenu: typeof import("./types/SelectMenu"),
-  [key: string | number]: any,
+
+  reload(): Promise<any>;
+
+  [key: string | number]: any
 }
 
 

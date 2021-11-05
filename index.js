@@ -1,4 +1,5 @@
 require("./other/patchConsoleLog");
+console.info("[BİLGİ] Basit Altyapı v1.9 - by Kıraç Armağan Önal");
 const config = require("./config");
 globalThis.Underline = config.globalObjects;
 const Discord = require("discord.js");
@@ -10,8 +11,6 @@ const client = new Discord.Client(config.clientOptions);
 
 const interactions = new Discord.Collection();
 const events = new Discord.Collection();
-
-let isReady = false;
 
 globalThis.Underline = {
   ...config.globalObjects,
@@ -28,28 +27,40 @@ globalThis.Underline = {
   Button: require("./types/Button"),
 }
 
-console.info("[BİLGİ] Basit Altyapı v1.9 - by Kıraç Armağan Önal");
-(async () => {
-  let interactionsPath = path.resolve("./interactions");
-  await makeSureFolderExists(interactionsPath);
+async function getEventFilePaths() {
   let eventsPath = path.resolve("./events");
   await makeSureFolderExists(eventsPath);
-
-  await config.onBeforeLoad(client);
-
-  let loadStart = Date.now();
-  let interactionFiles = await readdirRecursive(interactionsPath);
-
-  interactionFiles = interactionFiles.filter(i => {
+  let eventFiles = await readdirRecursive(eventsPath);
+  eventFiles = eventFiles.filter(i => {
     let state = path.basename(i).startsWith("-");
-    if (state) console.warn(`[UYARI] "${i}" dosyası tire ile başladığı için liste dışı bırakıldı.`);
     return !state;
   });
+  return eventFiles;
+}
 
+async function getInteractionFilePaths() {
+  let interactionsPath = path.resolve("./interactions");
+  await makeSureFolderExists(interactionsPath);
+  let interactionFiles = await readdirRecursive(interactionsPath);
+  interactionFiles = interactionFiles.filter(i => {
+    let state = path.basename(i).startsWith("-");
+    return !state;
+  });
+  return interactionFiles;
+}
+
+/** @type {{name:string,listener:()=>any,base:any}[]} */
+let eventListeners = [];
+
+async function load() {
+  let loadStart = Date.now();
+  console.debug(`[HATA AYIKLAMA] Yüklemeye başlandı!`);
+  
+  let interactionFiles = await getInteractionFilePaths();
   await chillout.forEach(interactionFiles, (interactionFile) => {
     let start = Date.now();
     let rltPath = path.relative(__dirname, interactionFile);
-    console.info(`[BİLGİ] "${interactionFile}" konumundaki interaksiyon yükleniyor..`)
+    console.info(`[BİLGİ] "${rltPath}" konumundaki interaksiyon yükleniyor..`)
     /** @type {import("./types/Interaction")} */
     let uInter = require(interactionFile);
 
@@ -99,18 +110,12 @@ console.info("[BİLGİ] Basit Altyapı v1.9 - by Kıraç Armağan Önal");
     console.warn(`[UYARI] Hiçbir interaksiyon yüklenmedi, herşey yolunda mı?`);
   }
 
-  let eventFiles = await readdirRecursive(eventsPath);
-
-  eventFiles = eventFiles.filter(i => {
-    let state = path.basename(i).startsWith("-");
-    if (state) console.warn(`[UYARI] "${i}" dosyası tire ile başladığı için liste dışı bırakıldı.`);
-    return !state;
-  });
+  let eventFiles = await getEventFilePaths();
 
   await chillout.forEach(eventFiles, async (eventFile) => {
     let start = Date.now();
     let rltPath = path.relative(__dirname, eventFile);
-    console.info(`[BİLGİ] "${eventFile}" event yükleniyor..`);
+    console.info(`[BİLGİ] "${rltPath}" event yükleniyor..`);
 
     /** @type {import("./types/Event")} */
     let event = require(eventFile);
@@ -143,113 +148,6 @@ console.info("[BİLGİ] Basit Altyapı v1.9 - by Kıraç Armağan Önal");
     console.warn(`[UYARI] Hiçbir olay yüklenmedi, herşey yolunda mı?`);
   }
 
-  client.on("interactionCreate", async (interaction) => {
-    let subCommandName = "";
-    try { subCommandName = interaction.options.getSubcommand(); } catch { };
-    let subCommandGroupName = "";
-    try { subCommandGroupName = interaction.options.getSubcommandGroup(); } catch { };
-
-    let uInter = Underline.interactions.find(uInter => {
-      switch (uInter.name.length) {
-        case 1: return (uInter.name[0] == interaction.commandName) || ((uInter.id == interaction.customId) && (
-          (uInter.actionType == "CHAT_INPUT" && (interaction.isCommand() || interaction.isAutocomplete())) ||
-          (uInter.actionType == "SELECT_MENU" && interaction.isSelectMenu()) ||
-          (uInter.actionType == "BUTTON" && interaction.isButton()) ||
-          ((uInter.actionType == "USER" || uInter.actionType == "MESSAGE") && interaction.isContextMenu())
-        ));
-        case 2: return uInter.name[0] == interaction.commandName && uInter.name[1] == subCommandName && (interaction.isCommand() || interaction.isAutocomplete());
-        case 3: return uInter.name[0] == interaction.commandName && uInter.name[1] == subCommandGroupName && uInter.name[2] == subCommandName && (interaction.isCommand() || interaction.isAutocomplete());
-      }
-    });
-
-    if (!uInter) return;
-
-    if (interaction.isAutocomplete()) {
-      /** @type {Discord.ApplicationCommandOptionChoice} */
-      let focussed = null;
-      try { focussed = interaction.options.getFocused(true) } catch { };
-      let option = uInter.options.find(i => i.autocomplete && i.name == focussed?.name);
-      if (option) {
-        let completeResponse = await option.onComplete(interaction, focussed.value);
-        interaction.respond(completeResponse);
-      }
-      return;
-    }
-
-    let other = {};
-
-    let shouldRun1 = await config.onInteractionBeforeChecks(uInter, interaction, other);
-
-    if (!shouldRun1) return;
-
-    if (uInter.developerOnly && !config.developers.has(interaction.user.id)) {
-      config.userErrors.developerOnly(interaction, uInter, other);
-      return;
-    }
-
-    if (uInter.disabled) {
-      config.userErrors.disabled(interaction, uInter, other);
-      return;
-    }
-
-    if (config.blockedUsers.has(interaction.user.id)) {
-      config.userErrors.blocked(interaction, uInter, other);
-      return;
-    }
-
-    if (uInter.guildOnly && !interaction.guildId) {
-      config.userErrors.guildOnly(interaction, uInter, other);
-      return;
-    }
-
-    let userCooldown = uInter.coolDowns.get(interaction.user.id) || 0;
-    if (Date.now() < userCooldown) {
-      config.userErrors.coolDown(interaction, uInter, userCooldown - Date.now(), other);
-      return;
-    }
-
-    function setCoolDown(duration = 0) {
-      if (typeof duration == "number" && duration > 0) {
-        return uInter.coolDowns.set(interaction.user.id, Date.now() + duration);
-      } else {
-        return uInter.coolDowns.delete(interaction.user.id);
-      }
-    }
-    other.setCoolDown = setCoolDown;
-
-    if (uInter.coolDown > 0) {
-      setCoolDown(uInter.coolDown);
-    }
-
-    if (uInter.guildOnly && uInter.perms.bot.length != 0 && !uInter.perms.bot.every(perm => interaction.guild.me.permissions.has(perm))) {
-      config.userErrors.botPermsRequired(interaction, uInter, uInter.perms.bot, other);
-      return;
-    }
-
-    if (uInter.guildOnly && uInter.perms.user.length != 0 && !uInter.perms.user.every(perm => interaction.member.permissions.has(perm))) {
-      config.userErrors.userPermsRequired(interaction, uInter, uInter.perms.user, other);
-      return;
-    }
-
-    (async () => {
-      let shouldRun2 = await config.onInteraction(uInter, interaction, other);
-      if (!shouldRun2) return;
-      try {
-        await uInter.onInteraction(interaction, other);
-      } catch (err) {
-        console.error(`[HATA] "${uInter.actionType == "CHAT_INPUT" ? `/${uInter.name.join(" ")}` : `${uInter.name[0]}`}" adlı interaksiyon çalıştırılırken bir hata ile karşılaşıldı!`)
-        if (err.message) console.error(`[HATA] ${err.message}`);
-        if (err.stack) {
-          `${err.stack}`.split("\n").forEach((line) => {
-            console.error(`[HATA] ${line}`);
-          });
-        }
-      }
-    })();
-
-    return;
-  })
-
   {
     /** @type {Map<string, (import("./types/Event"))[]>} */
     let eventsMapped = Underline.events.reduce((all, cur) => {
@@ -259,15 +157,15 @@ console.info("[BİLGİ] Basit Altyapı v1.9 - by Kıraç Armağan Önal");
     }, new Map());
 
     await chillout.forEach(
-      Array.from(eventsMapped.entries()),
+      [...eventsMapped.entries()],
       /**
        * @param {[string, (import("./types/Event"))[]>]} param0
        */
       ([eventName, events]) => {
         console.info(`[BİLGİ] Event "${eventName}" için ${events.length} dinleyici yüklendi!`);
-        client.on(eventName, (...args) => {
-          // Random olayların kendi kendine bot hazır olmadan ateşlenmesini engellemek için.
-          if (eventName != "ready" && !isReady) return;
+        
+        let listener = (...args) => {
+
           setTimeout(async () => {
 
             let other = {};
@@ -282,25 +180,182 @@ console.info("[BİLGİ] Basit Altyapı v1.9 - by Kıraç Armağan Önal");
             });
 
           }, 0)
-        });
+        }
+        client.on(eventName, listener);
+        eventListeners.push({ name: eventName, base: client, listener });
       }
     )
   }
 
-  console.info(`[BİLGİ] Herşey ${Date.now() - loadStart}ms içerisinde yüklendi!`);
+  console.debug(`[HATA AYIKLAMA] Herşey ${Date.now() - loadStart}ms içerisinde yüklendi!`);
 
   interactionFiles = 0;
   eventFiles = 0;
   loadStart = 0;
+}
 
+async function unloadModule(moduleName) {
+  let nodeModule = require.cache[moduleName];
+  if (nodeModule) {
+    if (nodeModule.children.length) await chillout.forEach(nodeModule.children, async (child) => {
+      if (child.filename) unloadModule(child.filename);
+    }); 
+  }
+  delete require.cache[moduleName];
+}
+
+async function unload() {
+  console.debug(`[HATA AYIKLAMA] Önbellek temizle işlemi başladı.`);
+  let unloadStart = Date.now();
+
+  console.info(`[BILGI] İnteraksiyon listesi temizleniyor..`);
+  Underline.interactions.clear();
+
+  console.info(`[BILGI] Olay listesi temizleniyor..`);
+  Underline.events.clear();
+
+  console.info(`[BILGI] Olay dinleyicileri temizleniyor..`);
+  await chillout.forEach(eventListeners, (el) => {
+    el.base.off(el.name, el.listener);
+  })
+
+  let pathsToUnload = [...(await getInteractionFilePaths()), ...(await getEventFilePaths())];
+
+  await chillout.forEach(pathsToUnload, async (pathToUnload) => {
+    console.info(`[BILGI] Modül "${path.relative(__dirname, pathToUnload)}" önbellekten kaldırılıyor!`);
+    await unloadModule(pathToUnload);
+  });
+
+  console.debug(`[HATA AYIKLAMA] Önbellek temizleme ${Date.now() - unloadStart}ms içerisinde tamamlandı!`);
+
+  unloadStart = 0;
+  pathsToUnload = 0;
+
+}
+
+async function reload() {
+  await unload();
+  await load();
+}
+
+client.on("interactionCreate", async (interaction) => {
+  let subCommandName = "";
+  try { subCommandName = interaction.options.getSubcommand(); } catch { };
+  let subCommandGroupName = "";
+  try { subCommandGroupName = interaction.options.getSubcommandGroup(); } catch { };
+
+  let uInter = Underline.interactions.find(uInter => {
+    switch (uInter.name.length) {
+      case 1: return (uInter.name[0] == interaction.commandName) || ((uInter.id == interaction.customId) && (
+        (uInter.actionType == "CHAT_INPUT" && (interaction.isCommand() || interaction.isAutocomplete())) ||
+        (uInter.actionType == "SELECT_MENU" && interaction.isSelectMenu()) ||
+        (uInter.actionType == "BUTTON" && interaction.isButton()) ||
+        ((uInter.actionType == "USER" || uInter.actionType == "MESSAGE") && interaction.isContextMenu())
+      ));
+      case 2: return uInter.name[0] == interaction.commandName && uInter.name[1] == subCommandName && (interaction.isCommand() || interaction.isAutocomplete());
+      case 3: return uInter.name[0] == interaction.commandName && uInter.name[1] == subCommandGroupName && uInter.name[2] == subCommandName && (interaction.isCommand() || interaction.isAutocomplete());
+    }
+  });
+
+  if (!uInter) return;
+
+  if (interaction.isAutocomplete()) {
+    /** @type {Discord.ApplicationCommandOptionChoice} */
+    let focussed = null;
+    try { focussed = interaction.options.getFocused(true) } catch { };
+    let option = uInter.options.find(i => i.autocomplete && i.name == focussed?.name);
+    if (option) {
+      let completeResponse = await option.onComplete(interaction, focussed.value);
+      interaction.respond(completeResponse);
+    }
+    return;
+  }
+
+  let other = {};
+
+  let shouldRun1 = await config.onInteractionBeforeChecks(uInter, interaction, other);
+
+  if (!shouldRun1) return;
+
+  if (uInter.developerOnly && !config.developers.has(interaction.user.id)) {
+    config.userErrors.developerOnly(interaction, uInter, other);
+    return;
+  }
+
+  if (uInter.disabled) {
+    config.userErrors.disabled(interaction, uInter, other);
+    return;
+  }
+
+  if (config.blockedUsers.has(interaction.user.id)) {
+    config.userErrors.blocked(interaction, uInter, other);
+    return;
+  }
+
+  if (uInter.guildOnly && !interaction.guildId) {
+    config.userErrors.guildOnly(interaction, uInter, other);
+    return;
+  }
+
+  let userCooldown = uInter.coolDowns.get(interaction.user.id) || 0;
+  if (Date.now() < userCooldown) {
+    config.userErrors.coolDown(interaction, uInter, userCooldown - Date.now(), other);
+    return;
+  }
+
+  function setCoolDown(duration = 0) {
+    if (typeof duration == "number" && duration > 0) {
+      return uInter.coolDowns.set(interaction.user.id, Date.now() + duration);
+    } else {
+      return uInter.coolDowns.delete(interaction.user.id);
+    }
+  }
+  other.setCoolDown = setCoolDown;
+
+  if (uInter.coolDown > 0) {
+    setCoolDown(uInter.coolDown);
+  }
+
+  if (uInter.guildOnly && uInter.perms.bot.length != 0 && !uInter.perms.bot.every(perm => interaction.guild.me.permissions.has(perm))) {
+    config.userErrors.botPermsRequired(interaction, uInter, uInter.perms.bot, other);
+    return;
+  }
+
+  if (uInter.guildOnly && uInter.perms.user.length != 0 && !uInter.perms.user.every(perm => interaction.member.permissions.has(perm))) {
+    config.userErrors.userPermsRequired(interaction, uInter, uInter.perms.user, other);
+    return;
+  }
+
+  (async () => {
+    let shouldRun2 = await config.onInteraction(uInter, interaction, other);
+    if (!shouldRun2) return;
+    try {
+      await uInter.onInteraction(interaction, other);
+    } catch (err) {
+      console.error(`[HATA] "${uInter.actionType == "CHAT_INPUT" ? `/${uInter.name.join(" ")}` : `${uInter.name[0]}`}" adlı interaksiyon çalıştırılırken bir hata ile karşılaşıldı!`)
+      if (err.message) console.error(`[HATA] ${err.message}`);
+      if (err.stack) {
+        `${err.stack}`.split("\n").forEach((line) => {
+          console.error(`[HATA] ${line}`);
+        });
+      }
+    }
+  })();
+
+  return;
+});
+
+
+(async () => {
+  await config.onBeforeLoad(client);
+  await load();
   await config.onAfterLoad(client);
-
+  
   await client.login(config.clientToken);
-  console.info("[BİLGİ] Discord'a bağlanıldı!", client.user.tag);
 
   config.onReady(client);
-  isReady = true;
 })();
 
+Underline.reload = reload;
 
 
