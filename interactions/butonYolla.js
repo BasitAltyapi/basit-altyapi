@@ -14,6 +14,10 @@ module.exports = new Underline.SlashCommand({
       ]
     })
   },
+  coolDown: {
+    amount: 10000,
+    type: "user"
+  },
   guildOnly: false,
   developerOnly: false
 });

@@ -9,5 +9,9 @@ module.exports = new Underline.SlashCommand({
     await interaction.deferReply();
     await Underline.reload();
     await interaction.editReply("✔ Yeniden yükleme işlemi başarılı.");
+  },
+  coolDown: {
+    type: "any",
+    amount: 180000
   }
 })

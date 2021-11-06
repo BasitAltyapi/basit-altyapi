@@ -52,7 +52,7 @@ class Interaction {
     this.disabled = Boolean(arg.disabled ?? Underline.config.interactionDefaults.disabled);
     this.developerOnly = Boolean(arg.developerOnly ?? Underline.config.interactionDefaults.developerOnly);
     this.other = defaultify(typeof arg.other == "object" ? arg.other : {}, Underline.config.interactionDefaults.other);
-    this.coolDown = typeof arg.coolDown == "number" ? arg.coolDown : Underline.config.interactionDefaults.coolDown;
+    this.coolDown = arg.coolDown ?? Underline.config.interactionDefaults.coolDown;
     this.options = arg.options;
     this.defaultPermission = Boolean(arg.defaultPermission ?? Underline.config.interactionDefaults.defaultPermission);
   }

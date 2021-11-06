@@ -39,7 +39,10 @@ export type CustomApplicationCommandOptionData = (
   | ApplicationCommandChannelOptionData
   | ApplicationCommandChoicesData
 ) & { onComplete(interaction: AutocompleteInteraction, value: string | number): ApplicationCommandOptionChoice[] }
-
+type cooldown = {
+  type: cooldownType;
+  amount: number;
+}
 export class BaseInteraction {
   private _type: string;
   name: string[];
@@ -53,10 +56,7 @@ export class BaseInteraction {
   disabled?: boolean;
   developerOnly?: boolean;
   other?: { [key: string | number]: any };
-  coolDown?: {
-    type: cooldownType;
-    amount: number;
-  };
+  coolDown?: cooldown[] | cooldown | number;
   guildOnly?: boolean;
   options?: CustomApplicationCommandOptionData[];
   defaultPermission?: boolean;

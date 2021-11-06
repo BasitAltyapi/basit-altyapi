@@ -296,12 +296,12 @@ client.on("interactionCreate", async (interaction) => {
     config.userErrors.guildOnly(interaction, uInter, other);
     return;
   }
-
-  if (typeof uInter.coolDown == "number") uInter.coolDown = {
+  
+  if (typeof uInter.coolDown == "number") uInter.coolDown = [{
     type: "user",
     amount: uInter.coolDown,
-  }
-
+  }];
+  if (typeof uInter.coolDown == "object" && !Array.isArray(uInter.coolDown)) uInter.coolDown = [uInter.coolDown]
   let converter = {
     "user": interaction.user.id,
     "member": interaction.user.id + "_" + interaction.guild?.id,
@@ -310,18 +310,17 @@ client.on("interactionCreate", async (interaction) => {
     "any": "any"
   }
 
-  if (uInter.coolDown && !uInter.coolDown.amount) uInter.coolDown.amount = 0;
   let now = Date.now();
 
   for (let k in converter) {
     let key = converter[k];
     let keyCooldown = uInter.coolDowns.get(key);
-    if (uInter.coolDown?.amount && (now < keyCooldown)) {
+    if (now < keyCooldown) {
       config.userErrors.coolDown(interaction, uInter, keyCooldown - now, other, k);
       return;
     }
   }
-
+  
   function setCoolDown(duration = 0, type = "user") {
     let ckey = converter[type] || interaction.user.id;
     if (typeof duration == "number" && duration > 0) {
@@ -330,12 +329,19 @@ client.on("interactionCreate", async (interaction) => {
       return uInter.coolDowns.delete(ckey);
     }
   }
-
+  
   other.setCoolDown = setCoolDown;
+  for (let index = 0; index < uInter.coolDown.length; index++) {
 
-  if (uInter.coolDown?.amount > 0) {
-    setCoolDown(uInter.coolDown?.amount, uInter.coolDown?.type);
+    let cld = uInter.coolDown[index]
+    if (cld && !cld.amount) cld.amount = 0;
+    
+    if (cld?.amount > 0) {
+      setCoolDown(cld?.amount, cld?.type);
+    }
+    
   }
+  
 
   if (uInter.guildOnly && uInter.perms.bot.length != 0 && !uInter.perms.bot.every(perm => interaction.guild.me.permissions.has(perm))) {
     config.userErrors.botPermsRequired(interaction, uInter, uInter.perms.bot, other);

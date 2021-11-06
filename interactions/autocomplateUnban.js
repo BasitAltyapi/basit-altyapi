@@ -27,10 +27,16 @@ module.exports = new Underline.SlashCommand({
     }
   ],
   guildOnly: true,
-  coolDown: {
-    type: "guild",
-    amount: 5000
-  },
+  coolDown: [
+    {
+      type: "member",
+      amount: 20000
+    },
+    {
+      type: "guild",
+      amount: 5000
+    }
+  ],
   perms: {
     bot: ["BAN_MEMBERS"],
     user: ["BAN_MEMBERS"]
