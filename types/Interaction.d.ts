@@ -56,7 +56,7 @@ export class BaseInteraction {
   coolDown?: {
     type: cooldownType;
     amount: number;
-  };
+  } | number;
   guildOnly?: boolean;
   options?: CustomApplicationCommandOptionData[];
   defaultPermission?: boolean;
