@@ -316,7 +316,7 @@ client.on("interactionCreate", async (interaction) => {
     let key = converter[k];
     let keyCooldown = uInter.coolDowns.get(key);
     if (now < keyCooldown) {
-      config.userErrors.coolDown(interaction, uInter, keyCooldown - now, other, k);
+      config.userErrors.coolDown(interaction, uInter, keyCooldown - now, k, other);
       return;
     }
   }
