@@ -29,7 +29,7 @@ module.exports = new (require("./types/Config"))({
   // Kullanıcı hatalarındaki uyarı mesajları/olayları.
   userErrors: {
     // Arka arkaya interaksiyon kullanma limiti aşıldığında.
-    coolDown(interaction, uInteraction, coolDown, other, type) {
+    coolDown(interaction, uInteraction, coolDown, type, other) {
       switch (type) {
         case "user": {
           interaction.reply({ ephemeral: true, content: `Bu interaksiyonu sen tekrardan ${(coolDown / 1000).toFixed(2)} saniye içerisinde kullanabilirsin.` })
