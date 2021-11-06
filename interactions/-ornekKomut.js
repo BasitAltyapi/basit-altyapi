@@ -32,7 +32,10 @@ module.exports = new Underline.SlashCommand({
   // Arka arkaya varsayılan interaksiyon kullanma süre limiti.
   // Opsiyonel. Varsayılan olarak 0.
   // Bu değer other.setCoolDown(1000) fonksiyonu olarak işlem başına değiştirilebilir.
-  coolDown: 1000,
+  coolDown: {
+    amount: 1000,
+    type: "user"
+  },
   // İstediğiniz interaksiyon ile alakalı diğer bütün dataları burada tutabilirsiniz.
   // Opsiyonel. Varsayılan olarak {}.
   other: {},
