@@ -31,7 +31,7 @@ module.exports = new Underline.SlashCommand({
   disabled: false,
   // Arka arkaya varsayılan interaksiyon kullanma süre limiti.
   // Opsiyonel. Varsayılan olarak 0.
-  // Bu değer other.setCoolDown(1000) fonksiyonu olarak işlem başına değiştirilebilir.
+  // Bu değer other.setCoolDown(1000, "user") fonksiyonu olarak işlem başına değiştirilebilir.
   coolDown: {
     amount: 1000,
     type: "user"
