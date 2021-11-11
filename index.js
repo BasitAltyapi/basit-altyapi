@@ -142,6 +142,9 @@ async function load() {
     console.info(`[BİLGİ] ("${rltPath}") "${event.id}" adlı event yüklendi. (${Date.now() - start}ms sürdü.)`);
   })
 
+  // Önce ismi daha uzun olanlar test edilsin diye.
+  Underline.interactions.sort((a, b) => b.name.length - a.name.length);
+
   if (Underline.events.size) {
     console.info(`[BİLGİ] ${Underline.events.size} event yüklendi.`);
   } else {
