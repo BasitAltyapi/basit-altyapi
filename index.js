@@ -192,8 +192,6 @@ async function load() {
 
   console.debug(`[HATA AYIKLAMA] Herşey ${Date.now() - loadStart}ms içerisinde yüklendi!`);
 
-  interactionFiles = 0;
-  eventFiles = 0;
   loadStart = 0;
 }
 
