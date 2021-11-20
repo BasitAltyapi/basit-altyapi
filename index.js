@@ -8,10 +8,10 @@ const path = require("path");
 const readdirRecursive = require("recursive-readdir");
 const { makeSureFolderExists } = require("stuffs");
 const client = new Discord.Client(config.clientOptions);
-
 const interactions = new Discord.Collection();
 const events = new Discord.Collection();
-
+let interactionFiles;
+let eventFiles;
 globalThis.Underline = {
   ...config.globalObjects,
   config,
@@ -30,23 +30,23 @@ globalThis.Underline = {
 async function getEventFilePaths() {
   let eventsPath = path.resolve("./events");
   await makeSureFolderExists(eventsPath);
-  let eventFiles = await readdirRecursive(eventsPath);
-  eventFiles = eventFiles.filter(i => {
+  let VEventFiles = await readdirRecursive(eventsPath);
+  VEventFiles = VEventFiles.filter(i => {
     let state = path.basename(i).startsWith("-");
     return !state;
   });
-  return eventFiles;
+  return VEventFiles;
 }
 
 async function getInteractionFilePaths() {
   let interactionsPath = path.resolve("./interactions");
   await makeSureFolderExists(interactionsPath);
-  let interactionFiles = await readdirRecursive(interactionsPath);
-  interactionFiles = interactionFiles.filter(i => {
+  let VInteractionFiles = await readdirRecursive(interactionsPath);
+  VInteractionFiles = VInteractionFiles.filter(i => {
     let state = path.basename(i).startsWith("-");
     return !state;
   });
-  return interactionFiles;
+  return VInteractionFiles;
 }
 
 /** @type {{name:string,listener:()=>any,base:any}[]} */
@@ -56,7 +56,7 @@ async function load() {
   let loadStart = Date.now();
   console.debug(`[HATA AYIKLAMA] Yüklemeye başlandı!`);
 
-  let interactionFiles = await getInteractionFilePaths();
+  interactionFiles = await getInteractionFilePaths();
   await chillout.forEach(interactionFiles, (interactionFile) => {
     let start = Date.now();
     let rltPath = path.relative(__dirname, interactionFile);
@@ -110,7 +110,7 @@ async function load() {
     console.warn(`[UYARI] Hiçbir interaksiyon yüklenmedi, herşey yolunda mı?`);
   }
 
-  let eventFiles = await getEventFilePaths();
+  eventFiles = await getEventFilePaths();
 
   await chillout.forEach(eventFiles, async (eventFile) => {
     let start = Date.now();
@@ -222,7 +222,7 @@ async function unload() {
     el.base.off(el.name, el.listener);
   })
 
-  let pathsToUnload = [...(await getInteractionFilePaths()), ...(await getEventFilePaths())];
+  let pathsToUnload = [...interactionFiles, ...eventFiles];
 
   await chillout.forEach(pathsToUnload, async (pathToUnload) => {
     console.info(`[BILGI] Modül "${path.relative(__dirname, pathToUnload)}" önbellekten kaldırılıyor!`);
@@ -387,5 +387,3 @@ client.on("interactionCreate", async (interaction) => {
 })();
 
 Underline.reload = reload;
-
-
