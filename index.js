@@ -297,17 +297,19 @@ client.on("interactionCreate", async (interaction) => {
     config.userErrors.guildOnly(interaction, uInter, other);
     return;
   }
-  
+
   if (typeof uInter.coolDown == "number") uInter.coolDown = [{
     type: "user",
     amount: uInter.coolDown,
   }];
-  if (typeof uInter.coolDown == "object" && !Array.isArray(uInter.coolDown)) uInter.coolDown = [uInter.coolDown]
+  if (typeof uInter.coolDown == "object" && !Array.isArray(uInter.coolDown)) uInter.coolDown = [uInter.coolDown];
+
   let converter = {
     "user": interaction.user.id,
     "member": interaction.user.id + "_" + interaction.guild?.id,
-    "channel": interaction.channel?.id || interaction.user.id + " _c",
-    "guild": interaction.guild?.id || interaction.user.id + "_g",
+    "channel": interaction.channelId || interaction.user.id + " _c",
+    "guild": interaction.guildId || interaction.user.id + "_g",
+    "message": interaction.message?.id || (interaction.channelId + "_m") || (interaction.user.id + "_m"),
     "any": "any"
   }
 
@@ -321,7 +323,7 @@ client.on("interactionCreate", async (interaction) => {
       return;
     }
   }
-  
+
   function setCoolDown(duration = 0, type = "user") {
     let ckey = converter[type] || interaction.user.id;
     if (typeof duration == "number" && duration > 0) {
@@ -330,19 +332,19 @@ client.on("interactionCreate", async (interaction) => {
       return uInter.coolDowns.delete(ckey);
     }
   }
-  
+
   other.setCoolDown = setCoolDown;
   for (let index = 0; index < uInter.coolDown.length; index++) {
 
     let cld = uInter.coolDown[index]
     if (cld && !cld.amount) cld.amount = 0;
-    
+
     if (cld?.amount > 0) {
       setCoolDown(cld?.amount, cld?.type);
     }
-    
+
   }
-  
+
 
   if (uInter.guildOnly && uInter.perms.bot.length != 0 && !uInter.perms.bot.every(perm => interaction.guild.me.permissions.has(perm))) {
     config.userErrors.botPermsRequired(interaction, uInter, uInter.perms.bot, other);
