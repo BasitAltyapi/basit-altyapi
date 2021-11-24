@@ -47,6 +47,10 @@ module.exports = new (require("./types/Config"))({
           interaction.reply({ ephemeral: true, content: `Bu interaksiyonu bu kanalda tekrardan ${(coolDown / 1000).toFixed(2)} saniye içerisinde kullanabilirsin.` })
           break;
         }
+        case "message": {
+          interaction.reply({ ephemeral: true, content: `Bu interaksiyonu bu mesajda tekrardan ${(coolDown / 1000).toFixed(2)} saniye içerisinde kullanabilirsin.` })
+          break;
+        }
         case "any": {
           interaction.reply({ ephemeral: true, content: `Bu interaksiyonu tekrardan ${(coolDown / 1000).toFixed(2)} saniye içerisinde kullanabilirsin.` })
           break;
