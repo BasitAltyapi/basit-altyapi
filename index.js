@@ -98,6 +98,10 @@ async function load() {
       console.warn(`[UYARI] "${rltPath}" interaksiyon dosyası sunuculara özel olmamasına rağmen özel perm kullanıyor.`);
     }
 
+    if (!uInter.guildOnly && uInter.guildOwnerOnly) {
+      console.warn(`[UYARI] "${rltPath}" interaksiyon dosyası sunuculara özel olmamasına rağmen sunucu sahibine özel, sunuculara özel açılıyor.`);
+      uInter.guildOnly = true;
+    }
 
     Underline.interactions.set(uInter.id, uInter);
     uInter.onLoad(client);
