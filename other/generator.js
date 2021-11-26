@@ -161,6 +161,15 @@ makeSureFolderExistsSync("./events");
       })).run();
       console.clear();
 
+      let interGuildOwnerOnly;
+      if (interGuildOnly) interGuildOwnerOnly = await (new Toggle({
+        message: "Bu interaksiyon sunucu sahibine özel mi?",
+        enabled: "Evet",
+        disabled: "Hayır",
+        initial: false
+      })).run();
+      console.clear();
+
       let interCoolDown = parseInt((await prompt({
         type: "input",
         name: "value",
@@ -200,6 +209,8 @@ makeSureFolderExistsSync("./events");
           interUserPerms = await permissionPrompt("Bu interaksiyonu kullanabilmek için kullanıcıya gerekli olan yetkileri seç.");
         }
       }
+      if (interDeveloperOnly) interUserPerms.push("DEVELOPER");
+      if (interGuildOwnerOnly) interUserPerms.push("GUILD_OWNER");
       console.clear();
 
       console.log(`! Dosyanız oluşturuluyor..`);
@@ -222,15 +233,14 @@ module.exports = new Underline.${transformer[interActionType] ?? ""}({
   },
   ${interActionType == "MESSAGE" || interActionType == "USER" ? "" : `options: ${interActionType == "BUTTON" || interActionType == "SELECT_MENU" ? "{}" : "[]"},`}
   ${interCoolDown ? `coolDown: ${interCoolDown},` : ""}
-  guildOnly: ${interGuildOnly},
-  developerOnly: ${interDeveloperOnly}${interBotPerms.length > 0 || interUserPerms.length > 0 ? `,` : ""}
+  guildOnly: ${interGuildOnly}${interBotPerms.length > 0 || interUserPerms.length > 0 ? `,` : ""}
   ${interBotPerms.length > 0 || interUserPerms.length > 0 ? `perms: {` : ""}
   ${interBotPerms.length > 0 ? `  bot: ${JSON.stringify(interBotPerms)},` : ""}
   ${interUserPerms.length > 0 ? `  user: ${JSON.stringify(interUserPerms)}` : ""}
   ${interBotPerms.length > 0 || interUserPerms.length > 0 ? `}` : ""}
 });
       `.split("\n").filter(i => !!i.trim()).join("\n");
-      
+
       console.log(chalk.blueBright(resultText));
       fs.writeFileSync(filePath, resultText, "utf8");
       console.log(`! Dosyanız "${chalk.green(filePath)}" konumuna kaydedildi!`);
