@@ -4,7 +4,6 @@ const util = require("util");
 module.exports = new Underline.SlashCommand({
   name: ["eval"],
   description: "Bot yetkilileri için JavaScript çalıştırma komutu.",
-  developerOnly: true,
   async onInteraction(interaction) {
     let codeString = interaction.options.getString("code", true);
     await interaction.deferReply();
@@ -29,6 +28,9 @@ module.exports = new Underline.SlashCommand({
         })
       }
     }
+  },
+  perms: {
+    user: ["DEVELOPER"]
   },
   options: [
     {

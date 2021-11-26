@@ -94,10 +94,38 @@ async function load() {
       return;
     };
 
+    uInter.calculated = {
+      developerOnly: false,
+      guildOwnerOnly: false
+    }
+
+    if (uInter.developerOnly) {
+      uInter.calculated.developerOnly = true;
+      console.warn(`[UYARI] "${uInter.id}" idli interaksiyon'da developerOnly seçeneğini kullanmışsınız, bu seçenek ilerki sürümlerde kaldırılacaktır lütfen bunu yapmak yerine perms.user kısmına "DEVELOPER"'ı koyunuz.`)
+    }
+
+    {
+      let devOnlyIndex = uInter.perms.user.findIndex(p => p == "DEVELOPER");
+      if (devOnlyIndex > -1) {
+        uInter.calculated.developerOnly = true;
+        uInter.perms.user.splice(devOnlyIndex, 1);
+      }
+      
+      let gOwnerOnlyIndex = uInter.perms.user.findIndex(p => p == "GUILD_OWNER");
+      if (gOwnerOnlyIndex > -1) {
+        uInter.calculated.guildOwnerOnly = true;
+        uInter.perms.user.splice(gOwnerOnlyIndex, 1);
+      }
+    }
+    
     if (!uInter.guildOnly && (uInter.perms.bot.length != 0 || uInter.perms.user.length != 0)) {
       console.warn(`[UYARI] "${rltPath}" interaksiyon dosyası sunuculara özel olmamasına rağmen özel perm kullanıyor.`);
     }
 
+    if (!uInter.guildOnly && uInter.calculated.guildOwnerOnly) {
+      console.error(`[HATA] "${rltPath}" interaksiyon dosyası sunuculara özel olmamasına rağmen sunucu sahibine özel! Atlanıyor.`);
+      return;
+    }
 
     Underline.interactions.set(uInter.id, uInter);
     uInter.onLoad(client);
@@ -278,11 +306,6 @@ client.on("interactionCreate", async (interaction) => {
 
   if (!shouldRun1) return;
 
-  if (uInter.developerOnly && !config.developers.has(interaction.user.id)) {
-    config.userErrors.developerOnly(interaction, uInter, other);
-    return;
-  }
-
   if (uInter.disabled) {
     config.userErrors.disabled(interaction, uInter, other);
     return;
@@ -295,6 +318,26 @@ client.on("interactionCreate", async (interaction) => {
 
   if (uInter.guildOnly && !interaction.guildId) {
     config.userErrors.guildOnly(interaction, uInter, other);
+    return;
+  }
+
+  if (uInter.calculated.developerOnly && !config.developers.has(interaction.user.id)) {
+    config.userErrors.developerOnly(interaction, uInter, other);
+    return;
+  }
+
+  if (uInter.calculated.guildOwnerOnly && !config.developers.has(interaction.user.id) && interaction.guild.ownerId != interaction.user.id) {
+    config.userErrors.guildOwnerOnly(interaction, uInter, other);
+    return;
+  }
+
+  if (uInter.guildOnly && uInter.perms.bot.length != 0 && !uInter.perms.bot.every(perm => interaction.guild.me.permissions.has(perm))) {
+    config.userErrors.botPermsRequired(interaction, uInter, uInter.perms.bot, other);
+    return;
+  }
+
+  if (uInter.guildOnly && (!config.developers.has(interaction.user.id)) && uInter.perms.user.length != 0 && !uInter.perms.user.every(perm => interaction.member.permissions.has(perm))) {
+    config.userErrors.userPermsRequired(interaction, uInter, uInter.perms.user, other);
     return;
   }
 
@@ -343,17 +386,6 @@ client.on("interactionCreate", async (interaction) => {
       setCoolDown(cld?.amount, cld?.type);
     }
 
-  }
-
-
-  if (uInter.guildOnly && uInter.perms.bot.length != 0 && !uInter.perms.bot.every(perm => interaction.guild.me.permissions.has(perm))) {
-    config.userErrors.botPermsRequired(interaction, uInter, uInter.perms.bot, other);
-    return;
-  }
-
-  if (uInter.guildOnly && (!config.developers.has(interaction.user.id)) && uInter.perms.user.length != 0 && !uInter.perms.user.every(perm => interaction.member.permissions.has(perm))) {
-    config.userErrors.userPermsRequired(interaction, uInter, uInter.perms.user, other);
-    return;
   }
 
   (async () => {

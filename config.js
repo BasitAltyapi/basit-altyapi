@@ -70,6 +70,10 @@ module.exports = new (require("./types/Config"))({
     developerOnly(interaction, uInteraction, other) {
       interaction.reply({ ephemeral: true, content: `Bu interaksiyonu sadece bot geliştiricileri kullanabilir.` })
     },
+    // interaksiyon sadece sunucu sahiplerine özel olduğunda.
+    guildOwnerOnly(interaction, uInteraction, other) {
+      interaction.reply({ ephemeral: true, content: `Bu interaksiyonu sadece sunucu sahipleri kullanabilir.` })
+    },
     guildOnly(interaction, uInteraction, other) {
       interaction.reply({ ephemeral: true, content: `Bu interaksiyonu sadece sunucularda kullanılabilir.` })
     },
