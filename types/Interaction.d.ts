@@ -58,6 +58,7 @@ export class BaseInteraction {
   other?: { [key: string | number]: any };
   coolDown?: cooldown[] | cooldown | number;
   guildOnly?: boolean;
+  guildOwnerOnly?: boolean;
   options?: CustomApplicationCommandOptionData[];
   defaultPermission?: boolean;
   actionType?: ApplicationCommandType | "SELECT_MENU" | "BUTTON";
