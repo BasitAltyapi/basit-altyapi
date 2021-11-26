@@ -98,10 +98,6 @@ async function load() {
       console.warn(`[UYARI] "${rltPath}" interaksiyon dosyası sunuculara özel olmamasına rağmen özel perm kullanıyor.`);
     }
 
-    if (!uInter.guildOnly && uInter.guildOwnerOnly) {
-      console.error(`[UYARI] "${rltPath}" interaksiyon dosyası sunuculara özel olmamasına rağmen sunucu sahibine özel! Atlanıyor.`);
-      return;
-    }
 
     Underline.interactions.set(uInter.id, uInter);
     uInter.onLoad(client);
@@ -299,11 +295,6 @@ client.on("interactionCreate", async (interaction) => {
 
   if (uInter.guildOnly && !interaction.guildId) {
     config.userErrors.guildOnly(interaction, uInter, other);
-    return;
-  }
-
-  if (!config.developers.has(interaction.user.id) && ( !interaction.guildId || (uInter.guildOwnerOnly && interaction.guild?.ownerId != interaction.user.id) ) ) {
-    config.userErrors.guildOwnerOnly(interaction, uInter, other);
     return;
   }
 

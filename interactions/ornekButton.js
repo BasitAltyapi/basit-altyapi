@@ -5,7 +5,6 @@ module.exports = new Underline.Button({
     inter.reply("oka")
   },
   guildOnly: true,
-  guildOwnerOnly: true,
   developerOnly: false,
   perms: {
     bot: ["CREATE_INSTANT_INVITE"],
