@@ -99,8 +99,8 @@ async function load() {
     }
 
     if (!uInter.guildOnly && uInter.guildOwnerOnly) {
-      console.warn(`[UYARI] "${rltPath}" interaksiyon dosyası sunuculara özel olmamasına rağmen sunucu sahibine özel, sunuculara özel açılıyor.`);
-      uInter.guildOnly = true;
+      console.error(`[UYARI] "${rltPath}" interaksiyon dosyası sunuculara özel olmamasına rağmen sunucu sahibine özel! Atlanıyor.`);
+      return;
     }
 
     Underline.interactions.set(uInter.id, uInter);
