@@ -73,6 +73,9 @@ module.exports = new (require("./types/Config"))({
     guildOnly(interaction, uInteraction, other) {
       interaction.reply({ ephemeral: true, content: `Bu interaksiyonu sadece sunucularda kullanılabilir.` })
     },
+    guildOwnerOnly(interaction, uInteraction, other) {
+      interaction.reply({ ephemeral: true, content: `Bu interaksiyonu sadece sunucu sahipleri kullanılabilir.` })
+    },
     // Botun çalışmak için x yertkilerine ihtiyacı olduğunda.
     botPermsRequired(interaction, uInteraction, perms, other) {
       interaction.reply({ ephemeral: true, content: `Bu interaksiyonun çalışması için ${perms.join(", ")} yetkilerine ihtiyacım var.` })

@@ -298,6 +298,11 @@ client.on("interactionCreate", async (interaction) => {
     return;
   }
 
+  if (!config.developers.has(interaction.user.id) && ( !interaction.guildId || (uInter.guildOwnerOnly && interaction.guild?.ownerId != interaction.user.id) ) ) {
+    config.userErrors.guildOwnerOnly(interaction, uInter, other);
+    return;
+  }
+
   if (typeof uInter.coolDown == "number") uInter.coolDown = [{
     type: "user",
     amount: uInter.coolDown,
