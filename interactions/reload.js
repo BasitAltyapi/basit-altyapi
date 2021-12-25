@@ -13,5 +13,6 @@ module.exports = new Underline.SlashCommand({
   coolDown: {
     type: "any",
     amount: 180000
-  }
+  },
+  publishType: "guildOnly"
 })

@@ -58,6 +58,11 @@ globalThis.Underline = {
       /** @type {import("./types/Interaction")} */
       let uInter = require(interactionFilePath);
       if(uInter?._type != "interaction") return;
+      if (!uInter.publishType) uInter.publishType = "all";
+      if (!(uInter.publishType == "all" || (uInter.publishType == "guildOnly" && publishMode == "global") || (uInter.publishType == "globalOnly" && publishMode == "global"))) {
+        console.warn(`Interaksiyon "${uInter.actionType == "CHAT_INPUT" ? `/${uInter.name.join(" ")}` : `${uInter.name[0]}`}" dönüştürülme listesine eklenmedi çünkü interaksiyon paylaşılma tipi(${uInter.publishType}) ile paylaşma modu(${publishMode}) uyumsuz!`);
+        return;
+      }
       console.info(`Interaksiyon "${uInter.actionType == "CHAT_INPUT" ? `/${uInter.name.join(" ")}` : `${uInter.name[0]}`}" dönüştürülme listesine eklendi!`);
       uInters.push(uInter);
     });
