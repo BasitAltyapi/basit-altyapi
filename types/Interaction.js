@@ -54,6 +54,7 @@ class Interaction {
     this.other = defaultify(typeof arg.other == "object" ? arg.other : {}, Underline.config.interactionDefaults.other);
     this.coolDown = arg.coolDown ?? Underline.config.interactionDefaults.coolDown;
     this.options = arg.options;
+    this.publishType = arg.publishType ?? "all";
     this.defaultPermission = Boolean(arg.defaultPermission ?? Underline.config.interactionDefaults.defaultPermission);
   }
 }
