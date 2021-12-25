@@ -54,6 +54,7 @@ export class BaseInteraction {
   perms?: { bot: PermissionString[], user: UserPermString[] };
   onInteraction(interaction: CommandInteraction | ContextMenuInteraction, other: IOther): void;
   toJSON(): MessageButton | MessageSelectMenu | undefined;
+  publishType?: "globalOnly" | "guildOnly" | "all";
   onLoad?(client: Client): void;
   coolDowns: Map<string, number>;
   description!: string;

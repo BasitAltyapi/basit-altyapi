@@ -233,6 +233,7 @@ module.exports = new Underline.${transformer[interActionType] ?? ""}({
   },
   ${interActionType == "MESSAGE" || interActionType == "USER" ? "" : `options: ${interActionType == "BUTTON" || interActionType == "SELECT_MENU" ? "{}" : "[]"},`}
   ${interCoolDown ? `coolDown: ${interCoolDown},` : ""}
+  ${interActionType == "MESSAGE" || interActionType == "USER" ? "publishType: all" : ""}
   guildOnly: ${interGuildOnly}${interBotPerms.length > 0 || interUserPerms.length > 0 ? `,` : ""}
   ${interBotPerms.length > 0 || interUserPerms.length > 0 ? `perms: {` : ""}
   ${interBotPerms.length > 0 ? `  bot: ${JSON.stringify(interBotPerms)},` : ""}
