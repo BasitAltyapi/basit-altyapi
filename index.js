@@ -1,5 +1,5 @@
 require("./other/patchConsoleLog");
-console.info("[BİLGİ] Basit Altyapı v1.9.4 - by Kıraç Armağan Önal");
+console.info(`[BİLGİ] Basit Altyapı v${require("./package.json").version} - by Kıraç Armağan Önal`);
 const config = require("./config");
 globalThis.Underline = config.globalObjects;
 const Discord = require("discord.js");
