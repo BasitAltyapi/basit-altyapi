@@ -15,7 +15,7 @@ module.exports = new Underline.SlashCommand({
         thumbnail: {
           url: member.user.displayAvatarURL({ dynamic: true })
         },
-        description: `**Açıldığı Tarih:** <t:${Math.floor(member.user.createdTimestamp / 1000)}:F>\n**Katıldığı Tarih:** <t:${Math.floor(member.joinedTimestamp / 1000)}:F>\n**ID:** \`${member.user.id}\``,
+        description: `**Açıldığı Tarih:** <t:${Math.floor(member.user.createdTimestamp / 1000)}:F>\n**Katıldığı Tarih:** <t:${Math.floor(member.joinedTimestamp / 1000)}:F>\n**ID:** \`${member.user.id}\`**Dil:** ${member.user.locale}`,
         createdAt: Date.now(),
         footer: {
           icon_url: interaction.user.displayAvatarURL({ dynamic: true }),

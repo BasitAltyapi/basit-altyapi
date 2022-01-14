@@ -78,6 +78,7 @@ export type TInteractionConstructor = TOmittedInteraction & ((ActionChatCommand 
 type cooldownType = "user" | "member" | "channel" | "guild" | "message" | "any";
 export interface IOther {
   setCoolDown(durations: number, type: cooldownType): void,
+  locale: import("./Locale").Data
   [key: string | number]: any
 }
 

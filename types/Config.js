@@ -27,6 +27,9 @@ class Config {
   /** @type {Set<string> | Array<string>} */
   developers = new Set();
 
+  /** @type {import("./Locale").LocaleString} */
+  defaultLanguage = "tr";
+
   /** @type {(client:import("discord.js").Client)=>void} */
   onBeforeLoad = () => { };
 
@@ -41,6 +44,9 @@ class Config {
 
   /** @type {(interaction:Command, interaction: Discord.CommandInteraction, other: {setCoolDown(duration:number): void, [key:string|number]: any})=>boolean} */
   onInteraction = async () => { return true; };
+
+  /** @type {(interaction:Command, interaction: Discord.CommandInteraction, other: {setCoolDown(duration:number): void, [key:string|number]: any})=>boolean} */
+  onAfterInteraction = async () => { return true; };
 
   /** @type {(eventName: "applicationCommandCreate" | "applicationCommandDelete" | "applicationCommandUpdate" | "channelCreate" | "channelDelete" | "channelPinsUpdate" | "channelUpdate" | "debug" | "emojiCreate" | "emojiDelete" | "emojiUpdate" | "error" | "guildBanAdd" | "guildBanRemove" | "guildCreate" | "guildDelete" | "guildIntegrationsUpdate" | "guildMemberAdd" | "guildMemberAvailable" | "guildMemberRemove" | "guildMembersChunk" | "guildMemberUpdate" | "guildUnavailable" | "guildUpdate" | "interaction" | "interactionCreate" | "invalidated" | "invalidRequestWarning" | "inviteCreate" | "inviteDelete" | "message" | "messageCreate" | "messageDelete" | "messageDeleteBulk" | "messageReactionAdd" | "messageReactionRemove" | "messageReactionRemoveAll" | "messageReactionRemoveEmoji" | "messageUpdate" | "presenceUpdate" | "rateLimit" | "ready" | "roleCreate" | "roleDelete" | "roleUpdate" | "shardDisconnect" | "shardError" | "shardReady" | "shardReconnecting" | "shardResume" | "stageInstanceCreate" | "stageInstanceDelete" | "stageInstanceUpdate" | "stickerCreate" | "stickerDelete" | "stickerUpdate" | "threadCreate" | "threadDelete" | "threadListSync" | "threadMembersUpdate" | "threadMemberUpdate" | "threadUpdate" | "typingStart" | "userUpdate" | "voiceStateUpdate" | "warn" | "webhookUpdate", args: [], other: {[key:string|number]: any})=>boolean} */
   onEvent = async () => { return true; };
@@ -81,6 +87,8 @@ class Config {
 
     this.userErrors = arg.userErrors;
     this.other = arg.other || {};
+
+    this.defaultLanguage = arg.defaultLanguage || "tr";
 
     this.interactionDefaults = typeof arg.interactionDefaults == "object" ? arg.interactionDefaults : {
       actionType: "CHAT_INPUT",

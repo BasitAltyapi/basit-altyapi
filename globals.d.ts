@@ -3,6 +3,7 @@
 interface Underline {
   interactions: import("discord.js").Collection<string, import("./types/Interaction") >
   events: import("discord.js").Collection<string, import("./types/Event") >
+  locales: import("discord.js").Collection<string, import("./types/Locale") >
   config: import("./types/Config");
   client: import("discord.js").Client;
   Interaction: typeof import("./types/Interaction"),
@@ -12,6 +13,7 @@ interface Underline {
   Event: typeof import("./types/Event"),
   Button: typeof import("./types/Button"),
   SelectMenu: typeof import("./types/SelectMenu"),
+  Locale: typeof import("./types/Locale"),
 
   reload(): Promise<any>;
 

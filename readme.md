@@ -4,6 +4,8 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
  
 ## Özellikler
 
+- ✅ **Çoklu dil desteği.**
+- ✅ **Sunucuya özel komut paylaşma tipleri.**
 - ✅ **SelectMenu ve Button desteği.**
 - ✅ **SelectMenu ve Button tam component ve options desteği.**
 - ✅ **Autocomplate(otomatik tamamlama) desteği.**

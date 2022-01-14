@@ -19,6 +19,7 @@ globalThis.Underline = {
   UserAction: require("./types/UserAction"),
   SelectMenu: require("./types/SelectMenu"),
   Button: require("./types/Button"),
+  Locale: require("./types/Locale"),
 };
 
 (async () => {
@@ -28,6 +29,8 @@ globalThis.Underline = {
   let isClearMode = argv.get(0) == "guild" ? argv.get(2) == "clear" : (argv.get(0) == "global" ? argv.get(1) == "clear" : false);
 
   let publishMode = argv.get(0) == "guild" ? "guild" : argv.get(0) == "global" ? "global" : null;
+
+  let publishSpecialType = publishMode == "guild" ? (isClearMode ? "guildOnly" : (argv.get(2) || "guildOnly")) : "globalOnly";
 
 
 
@@ -59,7 +62,7 @@ globalThis.Underline = {
       let uInter = require(interactionFilePath);
       if(uInter?._type != "interaction") return;
       if (!uInter.publishType) uInter.publishType = "all";
-      if (!(uInter.publishType == "all" || (uInter.publishType == "guildOnly" && publishMode == "guild") || (uInter.publishType == "globalOnly" && publishMode == "global"))) {
+      if (!(uInter.publishType == "all" || publishSpecialType == uInter.publishType)) {
         console.warn(`Interaksiyon "${uInter.actionType == "CHAT_INPUT" ? `/${uInter.name.join(" ")}` : `${uInter.name[0]}`}" dönüştürülme listesine eklenmedi çünkü interaksiyon paylaşılma tipi(${uInter.publishType}) ile paylaşma modu(${publishMode}) uyumsuz!`);
         return;
       }

@@ -10,14 +10,17 @@ const { makeSureFolderExists } = require("stuffs");
 const client = new Discord.Client(config.clientOptions);
 const interactions = new Discord.Collection();
 const events = new Discord.Collection();
+const locales = new Discord.Collection();
 let interactionFiles;
 let eventFiles;
+let localeFiles;
 globalThis.Underline = {
   ...config.globalObjects,
   config,
   client,
   interactions,
   events,
+  locales,
   Interaction: require('./types/Interaction'),
   Event: require('./types/Event'),
   SlashCommand: require("./types/SlashCommand"),
@@ -25,6 +28,7 @@ globalThis.Underline = {
   UserAction: require("./types/UserAction"),
   SelectMenu: require("./types/SelectMenu"),
   Button: require("./types/Button"),
+  Locale: require("./types/Locale"),
 }
 
 async function getEventFilePaths() {
@@ -49,12 +53,42 @@ async function getInteractionFilePaths() {
   return VInteractionFiles;
 }
 
+async function getLocaleFilePaths() {
+  let localesPath = path.resolve("./locales");
+  await makeSureFolderExists(localesPath);
+  let VLocaleFiles = await readdirRecursive(localesPath);
+  VLocaleFiles = VLocaleFiles.filter(i => {
+    let state = path.basename(i).startsWith("-");
+    return !state;
+  });
+  return VLocaleFiles;
+}
+
 /** @type {{name:string,listener:()=>any,base:any}[]} */
 let eventListeners = [];
 
 async function load() {
   let loadStart = Date.now();
   console.debug(`[HATA AYIKLAMA] Yüklemeye başlandı!`);
+
+  localeFiles = await getLocaleFilePaths();
+  await chillout.forEach(localeFiles, (localeFile) => {
+    let start = Date.now();
+    let rltPath = path.relative(__dirname, localeFile);
+    console.info(`[BİLGİ] "${rltPath}" konumundaki dil yükleniyor..`)
+    /** @type {import("./types/Locale")} */
+    let locale = require(localeFile);
+
+    if (locale._type != "locale")
+      return console.warn(`[UYARI] "${rltPath}" dil dosyası boş. Atlanıyor..`);
+
+    if (locales.has(locale.locale))
+      return console.warn(`[UYARI] ${locale.locale} dili zaten yüklenmiş. Atlanıyor..`);
+    
+    locales.set(locale.locale, locale);
+    console.info(`[BİLGİ] "${locale.locale}" dili yüklendi. (${Date.now() - start}ms sürdü.)`);
+  })
+
 
   interactionFiles = await getInteractionFilePaths();
   await chillout.forEach(interactionFiles, (interactionFile) => {
@@ -248,7 +282,10 @@ async function unload() {
     el.base.off(el.name, el.listener);
   })
 
-  let pathsToUnload = [...interactionFiles, ...eventFiles];
+  console.info(`[BILGI] Dil listesi temizleniyor..`);
+  Underline.locales.clear();
+
+  let pathsToUnload = [...interactionFiles, ...eventFiles, ...localeFiles];
 
   await chillout.forEach(pathsToUnload, async (pathToUnload) => {
     console.info(`[BILGI] Modül "${path.relative(__dirname, pathToUnload)}" önbellekten kaldırılıyor!`);
@@ -259,7 +296,7 @@ async function unload() {
 
   unloadStart = 0;
   pathsToUnload = 0;
-
+  
 }
 
 async function reload() {
@@ -302,9 +339,15 @@ client.on("interactionCreate", async (interaction) => {
 
   let other = {};
 
-  let shouldRun1 = await config.onInteractionBeforeChecks(uInter, interaction, other);
+  {
+    let locale_id = (interaction.user.locale || interaction.locale)?.split("-")[0];
+    other.locale = (Underline.locales.get(locale_id) || Underline.locales.get(Underline.config.defaultLanguage)).data;
+  }
 
-  if (!shouldRun1) return;
+  {
+    let shouldRun1 = await config.onInteractionBeforeChecks(uInter, interaction, other);
+    if (!shouldRun1) return;
+  }
 
   if (uInter.disabled) {
     config.userErrors.disabled(interaction, uInter, other);
@@ -389,10 +432,18 @@ client.on("interactionCreate", async (interaction) => {
   }
 
   (async () => {
-    let shouldRun2 = await config.onInteraction(uInter, interaction, other);
-    if (!shouldRun2) return;
+
+    {
+      let shouldRun2 = await config.onInteraction(uInter, interaction, other);
+      if (!shouldRun2) return;
+    }
+
     try {
+
       await uInter.onInteraction(interaction, other);
+
+      await config.onAfterInteraction(uInter, interaction, other);
+
     } catch (err) {
       console.error(`[HATA] "${uInter.actionType == "CHAT_INPUT" ? `/${uInter.name.join(" ")}` : `${uInter.name[0]}`}" adlı interaksiyon çalıştırılırken bir hata ile karşılaşıldı!`)
       if (err.message) console.error(`[HATA] ${err.message}`);

@@ -13,6 +13,8 @@ module.exports = new (require("./types/Config"))({
     // Okumanızı tavsiye ederim: https://discordjs.guide/popular-topics/intents.html
     intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_MEMBERS", "GUILD_WEBHOOKS"]
   },
+  // Botunuzun varsayılan dili.
+  defaultLanguage: "tr",
   // Diğer ayarlar. Bunun içine ne isterseniz koyabilirsiniz.
   // Ulaşmak için "Underline.config.other" objesini kullanabilirsiniz.
   other: {
@@ -30,60 +32,37 @@ module.exports = new (require("./types/Config"))({
   userErrors: {
     // Arka arkaya interaksiyon kullanma limiti aşıldığında.
     coolDown(interaction, uInteraction, coolDown, type, other) {
-      switch (type) {
-        case "user": {
-          interaction.reply({ ephemeral: true, content: `Bu interaksiyonu sen tekrardan ${(coolDown / 1000).toFixed(2)} saniye içerisinde kullanabilirsin.` })
-          break;
-        }
-        case "member": {
-          interaction.reply({ ephemeral: true, content: `Bu interaksiyonu bu sunucuda tekrardan senin kullanabilmen için  ${(coolDown / 1000).toFixed(2)} saniye beklemen lazım.` })
-          break;
-        }
-        case "guild": {
-          interaction.reply({ ephemeral: true, content: `Bu interaksiyonu bu sunucuda tekrardan ${(coolDown / 1000).toFixed(2)} saniye içerisinde kullanabilirsin.` })
-          break;
-        }
-        case "channel": {
-          interaction.reply({ ephemeral: true, content: `Bu interaksiyonu bu kanalda tekrardan ${(coolDown / 1000).toFixed(2)} saniye içerisinde kullanabilirsin.` })
-          break;
-        }
-        case "message": {
-          interaction.reply({ ephemeral: true, content: `Bu interaksiyonu bu mesajda tekrardan ${(coolDown / 1000).toFixed(2)} saniye içerisinde kullanabilirsin.` })
-          break;
-        }
-        case "any": {
-          interaction.reply({ ephemeral: true, content: `Bu interaksiyonu tekrardan ${(coolDown / 1000).toFixed(2)} saniye içerisinde kullanabilirsin.` })
-          break;
-        }
-      }
-      
+      interaction.reply({
+        ephemeral: true,
+        content: other.locale.userErrors.coolDown[type]((coolDown / 1000).toFixed(2))
+      });
     },
     // interaksiyon kapalı olduğunda
     disabled(interaction, uInteraction, other) {
-      interaction.reply({ ephemeral: true, content: "Bu interaksiyon kapalı." });
+      interaction.reply({ ephemeral: true, content: other.locale.userErrors.disabled() });
     },
     // Kullanıcı bottan yasaklı olduğunda.
     blocked(interaction, uInteraction, other) {
-      interaction.reply({ ephemeral: true, content: "Bottan yasaklanmışsınız." });
+      interaction.reply({ ephemeral: true, content: other.locale.userErrors.blocked() });
     },
     // interaksiyon sadece geliştiricilere özel olduğunda.
     developerOnly(interaction, uInteraction, other) {
-      interaction.reply({ ephemeral: true, content: `Bu interaksiyonu sadece bot geliştiricileri kullanabilir.` })
+      interaction.reply({ ephemeral: true, content: other.locale.userErrors.developerOnly() });
     },
     // interaksiyon sadece sunucu sahiplerine özel olduğunda.
     guildOwnerOnly(interaction, uInteraction, other) {
-      interaction.reply({ ephemeral: true, content: `Bu interaksiyonu sadece sunucu sahipleri kullanabilir.` })
+      interaction.reply({ ephemeral: true, content: other.locale.userErrors.guildOwnerOnly() });
     },
     guildOnly(interaction, uInteraction, other) {
-      interaction.reply({ ephemeral: true, content: `Bu interaksiyonu sadece sunucularda kullanılabilir.` })
+      interaction.reply({ ephemeral: true, content: other.locale.userErrors.guildOnly() });
     },
     // Botun çalışmak için x yertkilerine ihtiyacı olduğunda.
     botPermsRequired(interaction, uInteraction, perms, other) {
-      interaction.reply({ ephemeral: true, content: `Bu interaksiyonun çalışması için ${perms.join(", ")} yetkilerine ihtiyacım var.` })
+      interaction.reply({ ephemeral: true, content: other.locale.userErrors.botPermsRequired(perms.join(", ")) });
     },
     // Kullanıcının interaksiyonu kullanabilmek için x yetkilerine ihtiyacı olduğunda.
     userPermsRequired(interaction, uInteraction, perms, other) {
-      interaction.reply({ ephemeral: true, content: `Bu interaksiyonu kullanabilmek için ${perms.join(", ")} yetkilerine ihtiyacın var.` })
+      interaction.reply({ ephemeral: true, content: other.locale.userErrors.userPermsRequired(perms.join(", ")) });
     },
   },
   // Her interaksiyonun varsayılan ayarları her anahtarın ne
@@ -135,6 +114,8 @@ module.exports = new (require("./types/Config"))({
   async onInteraction(uInteraction, interaction, other) {
     return true;
   },
+  // İnteraksiyon hatasız bir şekilde çalıştıktan sonra tetikleniyor. (Armağan: peki.)
+  async onAfterInteraction(uInteraction, interaction, other) { },
   // eventteki bütün kontrolleri geçtikten sonra, event
   // hemen çalıştırılmadan önce çalışır.
   // Sadece cevap true ise işleme devam eder.
