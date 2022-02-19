@@ -18,7 +18,7 @@ class Config {
   /** @type {{[key: string|number]: any}} */
   other = {};
 
-  /** @type {Command} */
+  /** @type {import("./Interaction").TOmittedInteraction} */
   interactionDefaults = {};
 
   /** @type {Set<string> | Array<string>} */
@@ -50,6 +50,9 @@ class Config {
 
   /** @type {(eventName: "applicationCommandCreate" | "applicationCommandDelete" | "applicationCommandUpdate" | "channelCreate" | "channelDelete" | "channelPinsUpdate" | "channelUpdate" | "debug" | "emojiCreate" | "emojiDelete" | "emojiUpdate" | "error" | "guildBanAdd" | "guildBanRemove" | "guildCreate" | "guildDelete" | "guildIntegrationsUpdate" | "guildMemberAdd" | "guildMemberAvailable" | "guildMemberRemove" | "guildMembersChunk" | "guildMemberUpdate" | "guildUnavailable" | "guildUpdate" | "interaction" | "interactionCreate" | "invalidated" | "invalidRequestWarning" | "inviteCreate" | "inviteDelete" | "message" | "messageCreate" | "messageDelete" | "messageDeleteBulk" | "messageReactionAdd" | "messageReactionRemove" | "messageReactionRemoveAll" | "messageReactionRemoveEmoji" | "messageUpdate" | "presenceUpdate" | "rateLimit" | "ready" | "roleCreate" | "roleDelete" | "roleUpdate" | "shardDisconnect" | "shardError" | "shardReady" | "shardReconnecting" | "shardResume" | "stageInstanceCreate" | "stageInstanceDelete" | "stageInstanceUpdate" | "stickerCreate" | "stickerDelete" | "stickerUpdate" | "threadCreate" | "threadDelete" | "threadListSync" | "threadMembersUpdate" | "threadMemberUpdate" | "threadUpdate" | "typingStart" | "userUpdate" | "voiceStateUpdate" | "warn" | "webhookUpdate", args: [], other: {[key:string|number]: any})=>boolean} */
   onEvent = async () => { return true; };
+
+  /** @type {(eventName: "applicationCommandCreate" | "applicationCommandDelete" | "applicationCommandUpdate" | "channelCreate" | "channelDelete" | "channelPinsUpdate" | "channelUpdate" | "debug" | "emojiCreate" | "emojiDelete" | "emojiUpdate" | "error" | "guildBanAdd" | "guildBanRemove" | "guildCreate" | "guildDelete" | "guildIntegrationsUpdate" | "guildMemberAdd" | "guildMemberAvailable" | "guildMemberRemove" | "guildMembersChunk" | "guildMemberUpdate" | "guildUnavailable" | "guildUpdate" | "interaction" | "interactionCreate" | "invalidated" | "invalidRequestWarning" | "inviteCreate" | "inviteDelete" | "message" | "messageCreate" | "messageDelete" | "messageDeleteBulk" | "messageReactionAdd" | "messageReactionRemove" | "messageReactionRemoveAll" | "messageReactionRemoveEmoji" | "messageUpdate" | "presenceUpdate" | "rateLimit" | "ready" | "roleCreate" | "roleDelete" | "roleUpdate" | "shardDisconnect" | "shardError" | "shardReady" | "shardReconnecting" | "shardResume" | "stageInstanceCreate" | "stageInstanceDelete" | "stageInstanceUpdate" | "stickerCreate" | "stickerDelete" | "stickerUpdate" | "threadCreate" | "threadDelete" | "threadListSync" | "threadMembersUpdate" | "threadMemberUpdate" | "threadUpdate" | "typingStart" | "userUpdate" | "voiceStateUpdate" | "warn" | "webhookUpdate", args: [], other: {[key:string|number]: any})=>any} */
+  onAfterEvent = async () => { return; };
 
   /** @type {{[key: string|number]: any}} */
   globalObjects = {};
@@ -103,7 +106,8 @@ class Config {
         user: []
       },
       options: [],
-      defaultPermission: true
+      defaultPermission: true,
+      autoDefer: "off"
     };
 
     if (
@@ -126,6 +130,7 @@ class Config {
     if (typeof arg.onInteraction == "function") this.onInteraction = arg.onInteraction;
 
     if (typeof arg.onEvent == "function") this.onEvent = arg.onEvent;
+    if (typeof arg.onAfterEvent == "function") this.onAfterEvent = arg.onAfterEvent;
   }
 }
 

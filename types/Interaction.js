@@ -37,6 +37,10 @@ class Interaction {
 
   actionType = "CHAT_INPUT"
 
+  autoDefer = "off";
+
+  calculated = {};
+
   constructor(arg = {}) {
     this.name = Array.isArray(arg.name) ? arg.name : [arg.name];
     this.actionType = arg.actionType || Underline.config.interactionDefaults.actionType;
@@ -56,6 +60,7 @@ class Interaction {
     this.options = arg.options;
     this.publishType = arg.publishType ?? "all";
     this.defaultPermission = Boolean(arg.defaultPermission ?? Underline.config.interactionDefaults.defaultPermission);
+    this.autoDefer = arg.autoDefer ?? Underline.config.interactionDefaults.autoDefer;
   }
 }
 

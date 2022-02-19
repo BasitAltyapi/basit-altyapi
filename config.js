@@ -16,7 +16,7 @@ module.exports = new (require("./types/Config"))({
   // Botunuzun varsayılan dili.
   defaultLanguage: "tr",
   // Diğer ayarlar. Bunun içine ne isterseniz koyabilirsiniz.
-  // Ulaşmak için "Underline.config.other" objesini kullanabilirsiniz.
+  // Ulaşmak için "Underline.config.other" ve/veya "Underline.other" objesini kullanabilirsiniz.
   other: {
 
   },
@@ -39,25 +39,32 @@ module.exports = new (require("./types/Config"))({
     },
     // interaksiyon kapalı olduğunda
     disabled(interaction, uInteraction, other) {
+      if (interaction.isAutocomplete()) return [];
       interaction.reply({ ephemeral: true, content: other.locale.userErrors.disabled() });
     },
     // Kullanıcı bottan yasaklı olduğunda.
     blocked(interaction, uInteraction, other) {
+      if (interaction.isAutocomplete()) return [];
       interaction.reply({ ephemeral: true, content: other.locale.userErrors.blocked() });
     },
     // interaksiyon sadece geliştiricilere özel olduğunda.
     developerOnly(interaction, uInteraction, other) {
+      if (interaction.isAutocomplete()) return [];
       interaction.reply({ ephemeral: true, content: other.locale.userErrors.developerOnly() });
     },
     // interaksiyon sadece sunucu sahiplerine özel olduğunda.
     guildOwnerOnly(interaction, uInteraction, other) {
+      if (interaction.isAutocomplete()) return [];
       interaction.reply({ ephemeral: true, content: other.locale.userErrors.guildOwnerOnly() });
     },
+    // interaksiyon sadece sunuculara özel olduğunda.
     guildOnly(interaction, uInteraction, other) {
+      if (interaction.isAutocomplete()) return [];
       interaction.reply({ ephemeral: true, content: other.locale.userErrors.guildOnly() });
     },
     // Botun çalışmak için x yertkilerine ihtiyacı olduğunda.
     botPermsRequired(interaction, uInteraction, perms, other) {
+      if (interaction.isAutocomplete()) return [];
       interaction.reply({ ephemeral: true, content: other.locale.userErrors.botPermsRequired(perms.join(", ")) });
     },
     // Kullanıcının interaksiyonu kullanabilmek için x yetkilerine ihtiyacı olduğunda.
@@ -81,7 +88,8 @@ module.exports = new (require("./types/Config"))({
       user: []
     },
     options: [],
-    defaultPermission: true
+    defaultPermission: true,
+    autoDefer: "ephemeral"
   },
   // Bot ilk açıldığında daha hiçbirşey yüklenmeden önce çalışan fonksiyon. Opsiyonel.
   onBeforeLoad(client) {
@@ -122,7 +130,11 @@ module.exports = new (require("./types/Config"))({
   //
   // Other objesini istediğiniz gibi modifiye edebilirsiniz.
   // Nasılsa altakki fonksiyon her event çalışmadan önce çalışır.
-  async onEvent(eventName, [arg1 , arg2], other) {
+  async onEvent(eventName, [arg1, arg2], other) {
     return true;
-  }
+  },
+  // Olay hatasız bir şekilde çalıştıktan sonra çalışır.
+  async onAfterEvent(eventName, [arg1, arg2], other) {
+
+  },
 })

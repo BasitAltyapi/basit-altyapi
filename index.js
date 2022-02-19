@@ -1,6 +1,7 @@
 require("./other/patchConsoleLog");
 console.info(`[BİLGİ] Basit Altyapı v${require("./package.json").version} - by Kıraç Armağan Önal`);
 const config = require("./config");
+const utils = require("./other/utils");
 globalThis.Underline = config.globalObjects;
 const Discord = require("discord.js");
 const chillout = require("chillout");
@@ -17,10 +18,12 @@ let localeFiles;
 globalThis.Underline = {
   ...config.globalObjects,
   config,
+  other: config.other,
   client,
   interactions,
   events,
   locales,
+  utils,
   Interaction: require('./types/Interaction'),
   Event: require('./types/Event'),
   SlashCommand: require("./types/SlashCommand"),
@@ -238,9 +241,22 @@ async function load() {
             let before = await Underline.config.onEvent(eventName, args, other);
             if (!before) return;
             args.push(other);
-            chillout.forEach(events, (event) => {
+            chillout.forEach(events,
+              /** @param {import("./types/Event")} event */
+              (event) => {
               if (!event.disabled) {
-                event.onEvent(...args);
+                try {
+                  event.onEvent(...args);
+                  Underline.config.onAfterEvent(eventName, args, other);
+                } catch (err) {
+                  console.error(`[HATA] "${event.id}" idli ve "${eventName}" isimli olayda bir hata oluştu!`);
+                  if (err.message) console.error(`[HATA] ${err.message}`);
+                  if (err.stack) {
+                    `${err.stack}`.split("\n").forEach((line) => {
+                      console.error(`[HATA] ${line}`);
+                    });
+                  }
+                }
               }
             });
 
@@ -281,6 +297,7 @@ async function unload() {
   await chillout.forEach(eventListeners, (el) => {
     el.base.off(el.name, el.listener);
   })
+  eventListeners.length = 0;
 
   console.info(`[BILGI] Dil listesi temizleniyor..`);
   Underline.locales.clear();
@@ -325,19 +342,59 @@ client.on("interactionCreate", async (interaction) => {
 
   if (!uInter) return;
 
+  let other = {};
+
   if (interaction.isAutocomplete()) {
+    if (uInter.disabled) {
+      let r = await config.userErrors.disabled(interaction, uInter, other);
+      interaction.respond(r);
+      return;
+    }
+    if (config.blockedUsers.has(interaction.user.id)) {
+      let r = await config.userErrors.blocked(interaction, uInter, other);
+      interaction.respond(r);
+      return;
+    }
+    if (uInter.guildOnly && !interaction.guildId) {
+      let r = await config.userErrors.guildOnly(interaction, uInter, other);
+      interaction.respond(r);
+      return;
+    }
+    if (uInter.calculated.developerOnly && !config.developers.has(interaction.user.id)) {
+      let r = await config.userErrors.developerOnly(interaction, uInter, other);
+      interaction.respond(r);
+      return;
+    }
+    if (uInter.calculated.guildOwnerOnly && !config.developers.has(interaction.user.id) && interaction.guild.ownerId != interaction.user.id) {
+      let r = await config.userErrors.guildOwnerOnly(interaction, uInter, other);
+      interaction.respond(r);
+      return;
+    }
+    if (uInter.guildOnly && (!config.developers.has(interaction.user.id)) && uInter.perms.user.length != 0 && !uInter.perms.user.every(perm => interaction.member.permissions.has(perm))) {
+      let r = await config.userErrors.userPermsRequired(interaction, uInter, uInter.perms.user, other);
+      interaction.respond(r);
+      return;
+    }
     /** @type {Discord.ApplicationCommandOptionChoice} */
     let focussed = null;
     try { focussed = interaction.options.getFocused(true) } catch { };
     let option = uInter.options.find(i => i.autocomplete && i.name == focussed?.name);
     if (option) {
-      let completeResponse = await option.onComplete(interaction, focussed.value);
-      interaction.respond(completeResponse);
+      try {
+        let completeResponse = await option.onComplete(interaction, focussed.value);
+        interaction.respond(completeResponse);
+      } catch (err) {
+        console.error(`[HATA] "${uInter.actionType == "CHAT_INPUT" ? `/${uInter.name.join(" ")}` : `${uInter.name[0]}`}" adlı interaksiyon için otomatik tamamlama çalıştırılırken bir hata ile karşılaşıldı!`)
+        if (err.message) console.error(`[HATA] ${err.message}`);
+        if (err.stack) {
+          `${err.stack}`.split("\n").forEach((line) => {
+            console.error(`[HATA] ${line}`);
+          });
+        }
+      }
     }
     return;
   }
-
-  let other = {};
 
   {
     let locale_id = (interaction.user.locale || interaction.locale)?.split("-")[0];
@@ -384,9 +441,30 @@ client.on("interactionCreate", async (interaction) => {
     return;
   }
 
+  if (uInter.autoDefer != "off") {
+    const newDefer = () => {
+      console.warn(`[UYARI] "${uInter.actionType == "CHAT_INPUT" ? `/${uInter.name.join(" ")}` : `${uInter.name[0]}`}" adlı interaksiyon için "deferReply" umursanmadı, interaksiyon zaten otomatik olarak bekleme moduna alınmış.`);
+    };
+    if (
+      interaction.isCommand() || interaction.isApplicationCommand() || interaction.isMessageContextMenu() || interaction.isUserContextMenu()
+    ) {
+      await interaction.deferReply(uInter.autoDefer == "ephemeral" ? { ephemeral: true } : null);
+      interaction.deferReply = newDefer;
+      interaction.reply = interaction.editReply;
+    } else if (
+      interaction.isButton() || interaction.isSelectMenu()
+    ) {
+      await utils.nullDefer(interaction);
+      interaction.deferReply = newDefer;
+      interaction.reply = interaction.editReply = interaction.followUp = () => {
+        console.warn(`[UYARI] "${uInter.name[0]}" adlı interaksiyon için "reply" umursanmadı, interaksiyona zaten otomatik olarak boş cevap verilmiş.`);
+      };
+    }
+  }
+
   if (typeof uInter.coolDown == "number") uInter.coolDown = [{
     type: "user",
-    amount: uInter.coolDown,
+    amount: uInter.coolDown
   }];
   if (typeof uInter.coolDown == "object" && !Array.isArray(uInter.coolDown)) uInter.coolDown = [uInter.coolDown];
 

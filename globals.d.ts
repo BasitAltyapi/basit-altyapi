@@ -5,6 +5,8 @@ interface Underline {
   events: import("discord.js").Collection<string, import("./types/Event") >
   locales: import("discord.js").Collection<string, import("./types/Locale") >
   config: import("./types/Config");
+  other: { [key: string | number]: any; },
+  utils: typeof import("./other/utils.js");
   client: import("discord.js").Client;
   Interaction: typeof import("./types/Interaction"),
   SlashCommand: typeof import("./types/SlashCommand"),

@@ -38,7 +38,7 @@ export type CustomApplicationCommandOptionData = (
   ApplicationCommandNonOptionsData
   | ApplicationCommandChannelOptionData
   | ApplicationCommandChoicesData
-) & { onComplete(interaction: AutocompleteInteraction, value: string | number): ApplicationCommandOptionChoice[] }
+) & { onComplete(interaction: AutocompleteInteraction, value: string | number, other: IOther): ApplicationCommandOptionChoice[] }
 
 type cooldown = {
   type: cooldownType;
@@ -54,7 +54,7 @@ export class BaseInteraction {
   perms?: { bot: PermissionString[], user: UserPermString[] };
   onInteraction(interaction: CommandInteraction | ContextMenuInteraction, other: IOther): void;
   toJSON(): MessageButton | MessageSelectMenu | undefined;
-  publishType?: "globalOnly" | "guildOnly" | "all";
+  publishType?: "globalOnly" | "guildOnly" | "all" | string;
   onLoad?(client: Client): void;
   coolDowns: Map<string, number>;
   description!: string;
@@ -65,6 +65,8 @@ export class BaseInteraction {
   options?: CustomApplicationCommandOptionData[];
   defaultPermission?: boolean;
   actionType?: ApplicationCommandType | "SELECT_MENU" | "BUTTON";
+  autoDefer?: "off" | "on" | "ephemeral";
+  calculated?: { [key: string | number]: any };
   isSelectMenu(): this is import("./SelectMenu");
   isButton(): this is import("./Button");
   isChatActionCommand(): this is import("./SlashCommand");
@@ -73,7 +75,7 @@ export class BaseInteraction {
   constructor(arg: TInteractionConstructor);
 }
 
-export type TOmittedInteraction = Omit<BaseInteraction, "_type" | "coolDowns" | "name" | "onInteraction" | "actionType" | "options" | "toJSON">;
+export type TOmittedInteraction = Omit<BaseInteraction, "_type" | "coolDowns" | "name" | "onInteraction" | "actionType" | "options" | "toJSON" | "calculated">;
 export type TInteractionConstructor = TOmittedInteraction & ((ActionChatCommand | ActionRightClickCommand | SelectMenu | Button));
 type cooldownType = "user" | "member" | "channel" | "guild" | "message" | "any";
 export interface IOther {
