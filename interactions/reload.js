@@ -1,10 +1,6 @@
-const { Util } = require("discord.js");
-const util = require("util");
-
 module.exports = new Underline.SlashCommand({
   name: ["reload"],
   description: "Bot yetkilileri için Underline reload komutu.",
-  developerOnly: true,
   async onInteraction(interaction) {
     await interaction.deferReply();
     await Underline.reload();
@@ -13,6 +9,9 @@ module.exports = new Underline.SlashCommand({
   coolDown: {
     type: "any",
     amount: 180000
+  },
+  perms: {
+    user: ["DEVELOPER"]
   },
   publishType: "guildOnly"
 })

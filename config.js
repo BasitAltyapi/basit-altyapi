@@ -89,7 +89,7 @@ module.exports = new (require("./types/Config"))({
     },
     options: [],
     defaultPermission: true,
-    autoDefer: "ephemeral"
+    autoDefer: "off"
   },
   // Bot ilk açıldığında daha hiçbirşey yüklenmeden önce çalışan fonksiyon. Opsiyonel.
   onBeforeLoad(client) {
@@ -135,6 +135,6 @@ module.exports = new (require("./types/Config"))({
   },
   // Olay hatasız bir şekilde çalıştıktan sonra çalışır.
   async onAfterEvent(eventName, [arg1, arg2], other) {
-
+    
   },
 })
