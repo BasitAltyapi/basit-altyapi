@@ -65,4 +65,5 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
 
 ## Yardım
 
+- Eğer buradaki herşeyi okudunuz ama bir şey anlamadıysanız, salaklar için tasarlanmış olan [Basit Altyapı Rehberi](https://www.youtube.com/watch?v=bQ9ZLpfyCyY&list=PLONuYdOGaaL3m705lBXLAp2okk0TE5EiO) serimizi izleyebilirsiniz.
 - Yardım için discord sunucuma katılıp, benden yardım alabirsiniz: https://discord.gg/CFbGS6kXfD
