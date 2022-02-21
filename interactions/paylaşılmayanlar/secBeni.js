@@ -1,6 +1,7 @@
 module.exports = new Underline.SelectMenu({
   id: "secBeni",
   name: "secBeni",
+  nullError: false,
   description: "...",
   onInteraction(inter, other) {
     inter.reply({

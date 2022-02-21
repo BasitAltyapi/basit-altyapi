@@ -30,7 +30,7 @@ module.exports = new Underline.SlashCommand({
     }
   },
   perms: {
-    user: ["DEVELOPER"]
+    user: ["DEVELOPER"],
   },
   options: [
     {

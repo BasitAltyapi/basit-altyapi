@@ -407,36 +407,43 @@ client.on("interactionCreate", async (interaction) => {
   }
 
   if (uInter.disabled) {
+    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(() => {})) : null;
     config.userErrors.disabled(interaction, uInter, other);
     return;
   }
 
   if (config.blockedUsers.has(interaction.user.id)) {
+    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(() => { })) : null;
     config.userErrors.blocked(interaction, uInter, other);
     return;
   }
 
   if (uInter.guildOnly && !interaction.guildId) {
+    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(() => { })) : null;
     config.userErrors.guildOnly(interaction, uInter, other);
     return;
   }
 
   if (uInter.calculated.developerOnly && !config.developers.has(interaction.user.id)) {
+    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(() => { })) : null;
     config.userErrors.developerOnly(interaction, uInter, other);
     return;
   }
 
   if (uInter.calculated.guildOwnerOnly && !config.developers.has(interaction.user.id) && interaction.guild.ownerId != interaction.user.id) {
+    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(() => { })) : null;
     config.userErrors.guildOwnerOnly(interaction, uInter, other);
     return;
   }
 
   if (uInter.guildOnly && uInter.perms.bot.length != 0 && !uInter.perms.bot.every(perm => interaction.guild.me.permissions.has(perm))) {
+    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(() => { })) : null;
     config.userErrors.botPermsRequired(interaction, uInter, uInter.perms.bot, other);
     return;
   }
 
   if (uInter.guildOnly && (!config.developers.has(interaction.user.id)) && uInter.perms.user.length != 0 && !uInter.perms.user.every(perm => interaction.member.permissions.has(perm))) {
+    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(() => { })) : null;
     config.userErrors.userPermsRequired(interaction, uInter, uInter.perms.user, other);
     return;
   }

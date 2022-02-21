@@ -1,6 +1,8 @@
 module.exports = new Underline.Button({
   id: "basBana",
   name: "basBana",
+  nullError: true,
+  // nullError: false,
   description: "...",
   onInteraction(inter, other) {
     inter.reply("Evet")

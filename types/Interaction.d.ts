@@ -66,6 +66,7 @@ export class BaseInteraction {
   defaultPermission?: boolean;
   actionType?: ApplicationCommandType | "SELECT_MENU" | "BUTTON";
   autoDefer?: "off" | "on" | "ephemeral";
+  nullError?: undefined;
   calculated?: { [key: string | number]: any };
   isSelectMenu(): this is import("./SelectMenu");
   isButton(): this is import("./Button");
@@ -75,7 +76,7 @@ export class BaseInteraction {
   constructor(arg: TInteractionConstructor);
 }
 
-export type TOmittedInteraction = Omit<BaseInteraction, "_type" | "coolDowns" | "name" | "onInteraction" | "actionType" | "options" | "toJSON" | "calculated">;
+export type TOmittedInteraction = Omit<BaseInteraction, "_type" | "coolDowns" | "name" | "onInteraction" | "actionType" | "options" | "toJSON" | "calculated" | "nullError">;
 export type TInteractionConstructor = TOmittedInteraction & ((ActionChatCommand | ActionRightClickCommand | SelectMenu | Button));
 type cooldownType = "user" | "member" | "channel" | "guild" | "message" | "any";
 export interface IOther {
@@ -106,6 +107,7 @@ export interface SelectMenu {
   onInteraction(interaction: SelectMenuInteraction, other: IOther): void;
   options?: CustomSelectMenuOptions;
   toJSON(): MessageSelectMenu;
+  nullError?: Boolean;
 }
 
 export interface Button {
@@ -114,6 +116,7 @@ export interface Button {
   onInteraction(interaction: ButtonInteraction, other: IOther): void;
   options?: CustomButtonOptions;
   toJSON(): MessageButton;
+  nullError?: Boolean;
 }
 
 export = BaseInteraction;
