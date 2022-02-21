@@ -9,6 +9,9 @@ class Config {
   /** @type {string} */
   clientToken = "";
 
+  /** @type {Number} */
+  debugLevel = 0;
+
   /** @type {Discord.ClientOptions} */
   clientOptions = {};
 
@@ -61,6 +64,7 @@ class Config {
    * @param {Config} arg 
    */
   constructor(arg = {}) {
+    this.debugLevel = arg.debugLevel ?? 0;
 
     if (!(typeof arg.clientToken == "string" && arg.clientToken.length != 0)) {
       console.error("[HATA] Ayarlar dosayasında geçersiz bot tokeni girişi yapılmış.");

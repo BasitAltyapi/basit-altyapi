@@ -87,7 +87,7 @@ async function load() {
 
     if (locales.has(locale.locale))
       return console.warn(`[UYARI] ${locale.locale} dili zaten yüklenmiş. Atlanıyor..`);
-    
+
     locales.set(locale.locale, locale);
     console.info(`[BİLGİ] "${locale.locale}" dili yüklendi. (${Date.now() - start}ms sürdü.)`);
   })
@@ -102,32 +102,32 @@ async function load() {
     let uInter = require(interactionFile);
 
     if (uInter?._type != "interaction" && uInter?._type != "noDeployInteraction") {
-      console.warn(`[UYARI] "${rltPath}" interaksiyon dosyası boş. Atlanıyor..`);
+      if (Underline.config.debugLevel >= 1) console.warn(`[UYARI] "${rltPath}" interaksiyon dosyası boş. Atlanıyor..`);
       return;
     }
 
     if (!uInter.id) {
-      console.warn(`[UYARI] "${rltPath}" interaksiyon dosyasının bir idsi bulunmuyor. Atlanıyor..`);
+      if (Underline.config.debugLevel >= 1) console.warn(`[UYARI] "${rltPath}" interaksiyon dosyasının bir idsi bulunmuyor. Atlanıyor..`);
       return;
     }
 
     if (uInter.name.length > 3) {
-      console.warn(`[UYARI] "${rltPath}" interaksiyon dosyasının isim listesi çok uzun. (>3) Atlanıyor..`);
+      if (Underline.config.debugLevel >= 1) console.warn(`[UYARI] "${rltPath}" interaksiyon dosyasının isim listesi çok uzun. (>3) Atlanıyor..`);
       return;
     }
 
     if (!uInter.name?.length) {
-      console.warn(`[UYARI] "${rltPath}" interaksiyon dosyasının bir ismi bulunmuyor. Atlanıyor..`);
+      if (Underline.config.debugLevel >= 1) console.warn(`[UYARI] "${rltPath}" interaksiyon dosyasının bir ismi bulunmuyor. Atlanıyor..`);
       return;
     }
 
     if (Underline.interactions.has(uInter.id)) {
-      console.warn(`[UYARI] "${uInter.id}" idli bir interaksiyon daha önceden zaten yüklenmiş. Atlanıyor.`)
+      if (Underline.config.debugLevel >= 1) console.warn(`[UYARI] "${uInter.id}" idli bir interaksiyon daha önceden zaten yüklenmiş. Atlanıyor.`)
       return;
     }
 
     if (typeof uInter.onInteraction != "function") {
-      console.error(`[HATA] "${rltPath}" interaksiyon dosyası geçerli bir onInteraction fonksiyonuna sahip değil! Atlanıyor.`);
+      if (Underline.config.debugLevel >= 1) console.error(`[HATA] "${rltPath}" interaksiyon dosyası geçerli bir onInteraction fonksiyonuna sahip değil! Atlanıyor.`);
       return;
     };
 
@@ -138,7 +138,7 @@ async function load() {
 
     if (uInter.developerOnly) {
       uInter.calculated.developerOnly = true;
-      console.warn(`[UYARI] "${uInter.id}" idli interaksiyon'da developerOnly seçeneğini kullanmışsınız, bu seçenek ilerki sürümlerde kaldırılacaktır lütfen bunu yapmak yerine perms.user kısmına "DEVELOPER"'ı koyunuz.`)
+      if (Underline.config.debugLevel >= 1) console.warn(`[UYARI] "${uInter.id}" idli interaksiyon'da developerOnly seçeneğini kullanmışsınız, bu seçenek ilerki sürümlerde kaldırılacaktır lütfen bunu yapmak yerine perms.user kısmına "DEVELOPER"'ı koyunuz.`)
     }
 
     {
@@ -147,20 +147,20 @@ async function load() {
         uInter.calculated.developerOnly = true;
         uInter.perms.user.splice(devOnlyIndex, 1);
       }
-      
+
       let gOwnerOnlyIndex = uInter.perms.user.findIndex(p => p == "GUILD_OWNER");
       if (gOwnerOnlyIndex > -1) {
         uInter.calculated.guildOwnerOnly = true;
         uInter.perms.user.splice(gOwnerOnlyIndex, 1);
       }
     }
-    
+
     if (!uInter.guildOnly && (uInter.perms.bot.length != 0 || uInter.perms.user.length != 0)) {
-      console.warn(`[UYARI] "${rltPath}" interaksiyon dosyası sunuculara özel olmamasına rağmen özel perm kullanıyor.`);
+      if (Underline.config.debugLevel >= 1) console.warn(`[UYARI] "${rltPath}" interaksiyon dosyası sunuculara özel olmamasına rağmen özel perm kullanıyor.`);
     }
 
     if (!uInter.guildOnly && uInter.calculated.guildOwnerOnly) {
-      console.error(`[HATA] "${rltPath}" interaksiyon dosyası sunuculara özel olmamasına rağmen sunucu sahibine özel! Atlanıyor.`);
+      if (Underline.config.debugLevel >= 1) console.error(`[HATA] "${rltPath}" interaksiyon dosyası sunuculara özel olmamasına rağmen sunucu sahibine özel! Atlanıyor.`);
       return;
     }
 
@@ -172,7 +172,7 @@ async function load() {
   if (Underline.interactions.size) {
     console.info(`[BİLGİ] ${Underline.interactions.size} interaksiyon yüklendi.`);
   } else {
-    console.warn(`[UYARI] Hiçbir interaksiyon yüklenmedi, herşey yolunda mı?`);
+    if (Underline.config.debugLevel >= 1) console.warn(`[UYARI] Hiçbir interaksiyon yüklenmedi, herşey yolunda mı?`);
   }
 
   eventFiles = await getEventFilePaths();
@@ -186,19 +186,19 @@ async function load() {
     let event = require(eventFile);
 
     if (event?._type != "event") {
-      console.warn(`[UYARI] "${rltPath}" event dosyası boş. Atlanıyor..`);
+      if (Underline.config.debugLevel >= 1) console.warn(`[UYARI] "${rltPath}" event dosyası boş. Atlanıyor..`);
       return;
     }
 
     if (typeof event.id != "string") event.id = path.basename(eventFile).slice(0, -3).replace(/ /g, "");
 
     if (Underline.events.has(event.id)) {
-      console.warn(`[UYARI] "${event.id}" adlı bir event daha önceden zaten yüklenmiş. Atlanıyor.`);
+      if (Underline.config.debugLevel >= 1) console.warn(`[UYARI] "${event.id}" adlı bir event daha önceden zaten yüklenmiş. Atlanıyor.`);
       return;
     }
 
     if (typeof event.onEvent != "function") {
-      console.error(`[HATA] "${rltPath}" olay dosyası geçerli bir onEvent fonksiyonuna sahip değil! Atlanıyor.`);
+      if (Underline.config.debugLevel >= 1) console.error(`[HATA] "${rltPath}" olay dosyası geçerli bir onEvent fonksiyonuna sahip değil! Atlanıyor.`);
       return;
     };
 
@@ -213,7 +213,7 @@ async function load() {
   if (Underline.events.size) {
     console.info(`[BİLGİ] ${Underline.events.size} event yüklendi.`);
   } else {
-    console.warn(`[UYARI] Hiçbir olay yüklenmedi, herşey yolunda mı?`);
+    if (Underline.config.debugLevel >= 1) console.warn(`[UYARI] Hiçbir olay yüklenmedi, herşey yolunda mı?`);
   }
 
   {
@@ -244,21 +244,23 @@ async function load() {
             chillout.forEach(events,
               /** @param {import("./types/Event")} event */
               (event) => {
-              if (!event.disabled) {
-                try {
-                  event.onEvent(...args);
-                  Underline.config.onAfterEvent(eventName, args, other);
-                } catch (err) {
-                  console.error(`[HATA] "${event.id}" idli ve "${eventName}" isimli olayda bir hata oluştu!`);
-                  if (err.message) console.error(`[HATA] ${err.message}`);
-                  if (err.stack) {
-                    `${err.stack}`.split("\n").forEach((line) => {
-                      console.error(`[HATA] ${line}`);
-                    });
+                if (!event.disabled) {
+                  try {
+                    event.onEvent(...args);
+                    Underline.config.onAfterEvent(eventName, args, other);
+                  } catch (err) {
+                    if (Underline.config.debugLevel >= 1) {
+                      console.error(`[HATA] "${event.id}" idli ve "${eventName}" isimli olayda bir hata oluştu!`);
+                      if (err.message) console.error(`[HATA] ${err.message}`);
+                      if (err.stack) {
+                        `${err.stack}`.split("\n").forEach((line) => {
+                          console.error(`[HATA] ${line}`);
+                        });
+                      }
+                    }
                   }
                 }
-              }
-            });
+              });
 
           }, 0)
         }
@@ -313,7 +315,7 @@ async function unload() {
 
   unloadStart = 0;
   pathsToUnload = 0;
-  
+
 }
 
 async function reload() {
@@ -347,32 +349,32 @@ client.on("interactionCreate", async (interaction) => {
   if (interaction.isAutocomplete()) {
     if (uInter.disabled) {
       let r = await config.userErrors.disabled(interaction, uInter, other);
-      interaction.respond(r);
+      interaction.respond(r).catch(Underline.config.debugLevel >= 2 ? console.error : () => { })
       return;
     }
     if (config.blockedUsers.has(interaction.user.id)) {
       let r = await config.userErrors.blocked(interaction, uInter, other);
-      interaction.respond(r);
+      interaction.respond(r).catch(Underline.config.debugLevel >= 2 ? console.error : () => { })
       return;
     }
     if (uInter.guildOnly && !interaction.guildId) {
       let r = await config.userErrors.guildOnly(interaction, uInter, other);
-      interaction.respond(r);
+      interaction.respond(r).catch(Underline.config.debugLevel >= 2 ? console.error : () => { })
       return;
     }
     if (uInter.calculated.developerOnly && !config.developers.has(interaction.user.id)) {
       let r = await config.userErrors.developerOnly(interaction, uInter, other);
-      interaction.respond(r);
+      interaction.respond(r).catch(Underline.config.debugLevel >= 2 ? console.error : () => { })
       return;
     }
     if (uInter.calculated.guildOwnerOnly && !config.developers.has(interaction.user.id) && interaction.guild.ownerId != interaction.user.id) {
       let r = await config.userErrors.guildOwnerOnly(interaction, uInter, other);
-      interaction.respond(r);
+      interaction.respond(r).catch(Underline.config.debugLevel >= 2 ? console.error : () => { })
       return;
     }
     if (uInter.guildOnly && (!config.developers.has(interaction.user.id)) && uInter.perms.user.length != 0 && !uInter.perms.user.every(perm => interaction.member.permissions.has(perm))) {
       let r = await config.userErrors.userPermsRequired(interaction, uInter, uInter.perms.user, other);
-      interaction.respond(r);
+      interaction.respond(r).catch(Underline.config.debugLevel >= 2 ? console.error : () => { })
       return;
     }
     /** @type {Discord.ApplicationCommandOptionChoice} */
@@ -382,14 +384,16 @@ client.on("interactionCreate", async (interaction) => {
     if (option) {
       try {
         let completeResponse = await option.onComplete(interaction, focussed.value);
-        interaction.respond(completeResponse);
+        interaction.respond(completeResponse).catch(Underline.config.debugLevel >= 2 ? console.error : () => { });
       } catch (err) {
-        console.error(`[HATA] "${uInter.actionType == "CHAT_INPUT" ? `/${uInter.name.join(" ")}` : `${uInter.name[0]}`}" adlı interaksiyon için otomatik tamamlama çalıştırılırken bir hata ile karşılaşıldı!`)
-        if (err.message) console.error(`[HATA] ${err.message}`);
-        if (err.stack) {
-          `${err.stack}`.split("\n").forEach((line) => {
-            console.error(`[HATA] ${line}`);
-          });
+        if (Underline.config.debugLevel >= 1) {
+          console.error(`[HATA] "${uInter.actionType == "CHAT_INPUT" ? `/${uInter.name.join(" ")}` : `${uInter.name[0]}`}" adlı interaksiyon için otomatik tamamlama çalıştırılırken bir hata ile karşılaşıldı!`)
+          if (err.message) console.error(`[HATA] ${err.message}`);
+          if (err.stack) {
+            `${err.stack}`.split("\n").forEach((line) => {
+              console.error(`[HATA] ${line}`);
+            });
+          }
         }
       }
     }
@@ -407,72 +411,74 @@ client.on("interactionCreate", async (interaction) => {
   }
 
   if (uInter.disabled) {
-    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(() => {})) : null;
+    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(Underline.config.debugLevel >= 2 ? console.error : () => { })) : null;
     config.userErrors.disabled(interaction, uInter, other);
     return;
   }
 
   if (config.blockedUsers.has(interaction.user.id)) {
-    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(() => { })) : null;
+    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(Underline.config.debugLevel >= 2 ? console.error : () => {} )) : null;
     config.userErrors.blocked(interaction, uInter, other);
     return;
   }
 
   if (uInter.guildOnly && !interaction.guildId) {
-    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(() => { })) : null;
+    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(Underline.config.debugLevel >= 2 ? console.error : () => {} )) : null;
     config.userErrors.guildOnly(interaction, uInter, other);
     return;
   }
 
   if (uInter.calculated.developerOnly && !config.developers.has(interaction.user.id)) {
-    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(() => { })) : null;
+    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(Underline.config.debugLevel >= 2 ? console.error : () => {} )) : null;
     config.userErrors.developerOnly(interaction, uInter, other);
     return;
   }
 
   if (uInter.calculated.guildOwnerOnly && !config.developers.has(interaction.user.id) && interaction.guild.ownerId != interaction.user.id) {
-    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(() => { })) : null;
+    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(Underline.config.debugLevel >= 2 ? console.error : () => {} )) : null;
     config.userErrors.guildOwnerOnly(interaction, uInter, other);
     return;
   }
 
   if (uInter.guildOnly && uInter.perms.bot.length != 0 && !uInter.perms.bot.every(perm => interaction.guild.me.permissions.has(perm))) {
-    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(() => { })) : null;
+    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(Underline.config.debugLevel >= 2 ? console.error : () => {} )) : null;
     config.userErrors.botPermsRequired(interaction, uInter, uInter.perms.bot, other);
     return;
   }
 
   if (uInter.guildOnly && (!config.developers.has(interaction.user.id)) && uInter.perms.user.length != 0 && !uInter.perms.user.every(perm => interaction.member.permissions.has(perm))) {
-    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(() => { })) : null;
+    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(Underline.config.debugLevel >= 2 ? console.error : () => {} )) : null;
     config.userErrors.userPermsRequired(interaction, uInter, uInter.perms.user, other);
     return;
   }
 
   if (uInter.autoDefer != "off") {
     const newDefer = () => {
-      console.warn(`[UYARI] "${uInter.actionType == "CHAT_INPUT" ? `/${uInter.name.join(" ")}` : `${uInter.name[0]}`}" adlı interaksiyon için "deferReply" umursanmadı, interaksiyon zaten otomatik olarak bekleme moduna alınmış.`);
+      if (Underline.config.debugLevel >= 1) console.warn(`[UYARI] "${uInter.actionType == "CHAT_INPUT" ? `/${uInter.name.join(" ")}` : `${uInter.name[0]}`}" adlı interaksiyon için "deferReply" umursanmadı, interaksiyon zaten otomatik olarak bekleme moduna alınmış.`);
     };
     if (
       interaction.isCommand() || interaction.isApplicationCommand() || interaction.isMessageContextMenu() || interaction.isUserContextMenu()
     ) {
-      await interaction.deferReply(uInter.autoDefer == "ephemeral" ? { ephemeral: true } : null);
+      await interaction.deferReply(uInter.autoDefer == "ephemeral" ? { ephemeral: true } : null).catch(Underline.config.debugLevel >= 2 ? console.error : () => { });
       interaction.deferReply = newDefer;
       interaction.reply = interaction.editReply;
     } else if (
       interaction.isButton() || interaction.isSelectMenu()
     ) {
-      await utils.nullDefer(interaction);
+      await interaction.update().catch(Underline.config.debugLevel >= 2 ? console.error : () => { });
+      // await utils.nullDefer(interaction);
       interaction.deferReply = newDefer;
       interaction.reply = interaction.editReply = interaction.followUp = () => {
-        console.warn(`[UYARI] "${uInter.name[0]}" adlı interaksiyon için "reply" umursanmadı, interaksiyona zaten otomatik olarak boş cevap verilmiş.`);
+        if (Underline.config.debugLevel >= 1) console.warn(`[UYARI] "${uInter.name[0]}" adlı interaksiyon için "reply" umursanmadı, interaksiyona zaten otomatik olarak boş cevap verilmiş.`);
       };
     }
   }
 
   if (typeof uInter.coolDown == "number") uInter.coolDown = [{
     type: "user",
-    amount: uInter.coolDown
+    amount: uInter.coolDown,
   }];
+
   if (typeof uInter.coolDown == "object" && !Array.isArray(uInter.coolDown)) uInter.coolDown = [uInter.coolDown];
 
   let converter = {
@@ -530,12 +536,14 @@ client.on("interactionCreate", async (interaction) => {
       await config.onAfterInteraction(uInter, interaction, other);
 
     } catch (err) {
-      console.error(`[HATA] "${uInter.actionType == "CHAT_INPUT" ? `/${uInter.name.join(" ")}` : `${uInter.name[0]}`}" adlı interaksiyon çalıştırılırken bir hata ile karşılaşıldı!`)
-      if (err.message) console.error(`[HATA] ${err.message}`);
-      if (err.stack) {
-        `${err.stack}`.split("\n").forEach((line) => {
-          console.error(`[HATA] ${line}`);
-        });
+      if (Underline.config.debugLevel >= 1) {
+        console.error(`[HATA] "${uInter.actionType == "CHAT_INPUT" ? `/${uInter.name.join(" ")}` : `${uInter.name[0]}`}" adlı interaksiyon çalıştırılırken bir hata ile karşılaşıldı!`)
+        if (err.message) console.error(`[HATA] ${err.message}`);
+        if (err.stack) {
+          `${err.stack}`.split("\n").forEach((line) => {
+            console.error(`[HATA] ${line}`);
+          });
+        }
       }
     }
   })();

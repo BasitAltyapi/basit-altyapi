@@ -8,6 +8,8 @@ module.exports = new (require("./types/Config"))({
     "707309693449535599",
     "319862027571036161"
   ]),
+  // 0: No Debug, 1: Minimal Debug 2: Maximum Debug
+  debugLevel: 1,
   // Discord.js client ayarları.
   clientOptions: {
     // Okumanızı tavsiye ederim: https://discordjs.guide/popular-topics/intents.html
