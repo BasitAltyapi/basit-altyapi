@@ -12,6 +12,7 @@ module.exports = new Underline.Locale({
       },
       disabled: "Bu interkasiyon kapalı",
       blocked: "Bottan yasaklısınız.",
+      guildOnly: "Bu sunuculara özel bir interaksiyon.",
       developerOnly: "Bu interaksiyon sadece bot geliştiricilerine özel",
       guildOwnerOnly: "Bu interaksiyon sadece sunucu sahipleri kullanabilir",
       botPermsRequired: "Botun bu komutu kullanması için {0} yetkilerine ihtiyacı vardır.",
