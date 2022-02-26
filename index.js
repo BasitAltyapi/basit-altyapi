@@ -329,6 +329,17 @@ client.on("interactionCreate", async (interaction) => {
   let subCommandGroupName = "";
   try { subCommandGroupName = interaction.options.getSubcommandGroup(); } catch { };
 
+  let data = [];
+
+  if (interaction.isButton() || interaction.isSelectMenu()) {
+    data = interaction.customId.split("§");
+    interaction.customId = data.shift();
+    data = data.map(key => {
+      if (key.startsWith("©") || !isNaN(key.slice(1))) return Number(key.slice(1));
+      return key;
+    })
+  }
+
   let uInter = Underline.interactions.find(uInter => {
     switch (uInter.name.length) {
       case 1: return (uInter.name[0] == interaction.commandName) || ((uInter.id == interaction.customId) && (
@@ -344,7 +355,9 @@ client.on("interactionCreate", async (interaction) => {
 
   if (!uInter) return;
 
-  let other = {};
+  let other = {
+    data
+  };
 
   if (interaction.isAutocomplete()) {
     if (uInter.disabled) {

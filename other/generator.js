@@ -228,7 +228,7 @@ module.exports = new Underline.${transformer[interActionType] ?? ""}({
   ${interActionType == "BUTTON" || interActionType == "SELECT_MENU" ? `id: ${JSON.stringify(interName)},` : ""}
   name: ${JSON.stringify(interName)},
   ${interDesc ? `description: ${JSON.stringify(interDesc)},` : ""}
-  onInteraction(inter, other) {
+  async onInteraction(inter, other) {
     // Kodunuz bruh, kolay gelsin!
   },
   ${interActionType == "MESSAGE" || interActionType == "USER" ? "" : `options: ${interActionType == "BUTTON" || interActionType == "SELECT_MENU" ? "{}" : "[]"},`}
@@ -277,7 +277,7 @@ module.exports = new Underline.${transformer[interActionType] ?? ""}({
       let resultText = `
 module.exports = new Underline.Event({
   eventName: "${eventName}",
-  onEvent(...args) {
+  async onEvent(...args) {
     // Kodunuz buraya, kolay gelsin!
   }
 });

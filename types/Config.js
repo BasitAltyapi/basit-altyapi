@@ -111,7 +111,8 @@ class Config {
       },
       options: [],
       defaultPermission: true,
-      autoDefer: "off"
+      autoDefer: "off",
+      nullError: false
     };
 
     if (

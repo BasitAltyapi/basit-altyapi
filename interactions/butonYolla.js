@@ -8,7 +8,7 @@ module.exports = new Underline.SlashCommand({
         {
           type: "ACTION_ROW",
           components: [
-            Underline.interactions.get("ornek").toJSON()
+            Underline.interactions.get("ornek").toJSON([inter.user.id])
           ]
         }
       ]

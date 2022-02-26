@@ -1,6 +1,6 @@
 module.exports = new (require("./types/Config"))({
   // E tabi, bot tokeni buraya.
-  clientToken: "",
+  clientToken: "ODI0MjEwMTMyMzUwMDA5MzY2.YFsDgA.qPbnFZ6yuUvob43hrXJ43SxAbRg",
   // Yasaklı kullanıcıların idleri.
   blockedUsers: new Set([]),
   // Geliştiricilerin idleri.
@@ -9,7 +9,7 @@ module.exports = new (require("./types/Config"))({
     "319862027571036161"
   ]),
   // 0: No Debug, 1: Minimal Debug 2: Maximum Debug
-  debugLevel: 1,
+  debugLevel: 2,
   // Discord.js client ayarları.
   clientOptions: {
     // Okumanızı tavsiye ederim: https://discordjs.guide/popular-topics/intents.html
@@ -71,6 +71,7 @@ module.exports = new (require("./types/Config"))({
     },
     // Kullanıcının interaksiyonu kullanabilmek için x yetkilerine ihtiyacı olduğunda.
     userPermsRequired(interaction, uInteraction, perms, other) {
+      if (interaction.isAutocomplete()) return [];
       interaction.reply({ ephemeral: true, content: other.locale.userErrors.userPermsRequired(perms.join(", ")) });
     },
   },
@@ -91,7 +92,8 @@ module.exports = new (require("./types/Config"))({
     },
     options: [],
     defaultPermission: true,
-    autoDefer: "off"
+    autoDefer: "off",
+    nullError: false
   },
   // Bot ilk açıldığında daha hiçbirşey yüklenmeden önce çalışan fonksiyon. Opsiyonel.
   onBeforeLoad(client) {

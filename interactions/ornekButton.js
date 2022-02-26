@@ -3,10 +3,9 @@ module.exports = new Underline.Button({
   id: "ornek",
   description: "...",
   onInteraction(inter, other) {
-    inter.reply("oka")
+
+    inter.reply(`düğme sahibi ${other.data[0]}`)
   },
-  guildOnly: true,
-  developerOnly: false,
   perms: {
     bot: ["CREATE_INSTANT_INVITE"],
     user: ["KICK_MEMBERS", "GUILD_OWNER"]

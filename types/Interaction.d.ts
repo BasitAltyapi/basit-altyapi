@@ -53,7 +53,7 @@ export class BaseInteraction {
   id?: string;
   perms?: { bot: PermissionString[], user: UserPermString[] };
   onInteraction(interaction: CommandInteraction | ContextMenuInteraction, other: IOther): void;
-  toJSON(): MessageButton | MessageSelectMenu | undefined;
+  toJSON(data: Array<string | number>): MessageButton | MessageSelectMenu | undefined;
   publishType?: "globalOnly" | "guildOnly" | "all" | string;
   onLoad?(client: Client): void;
   coolDowns: Map<string, number>;
@@ -66,7 +66,7 @@ export class BaseInteraction {
   defaultPermission?: boolean;
   actionType?: ApplicationCommandType | "SELECT_MENU" | "BUTTON";
   autoDefer?: "off" | "on" | "ephemeral";
-  nullError?: undefined;
+  nullError?: boolean;
   calculated?: { [key: string | number]: any };
   isSelectMenu(): this is import("./SelectMenu");
   isButton(): this is import("./Button");
@@ -76,12 +76,13 @@ export class BaseInteraction {
   constructor(arg: TInteractionConstructor);
 }
 
-export type TOmittedInteraction = Omit<BaseInteraction, "_type" | "coolDowns" | "name" | "onInteraction" | "actionType" | "options" | "toJSON" | "calculated" | "nullError">;
+export type TOmittedInteraction = Omit<BaseInteraction, "_type" | "coolDowns" | "name" | "onInteraction" | "actionType" | "options" | "toJSON" | "calculated">;
 export type TInteractionConstructor = TOmittedInteraction & ((ActionChatCommand | ActionRightClickCommand | SelectMenu | Button));
 type cooldownType = "user" | "member" | "channel" | "guild" | "message" | "any";
 export interface IOther {
   setCoolDown(durations: number, type: cooldownType): void,
-  locale: import("./Locale").Data
+  locale: import("./Locale").Data,
+  data: (string | number)[],
   [key: string | number]: any
 }
 
@@ -106,7 +107,7 @@ export interface SelectMenu {
   actionType: "SELECT_MENU";
   onInteraction(interaction: SelectMenuInteraction, other: IOther): void;
   options?: CustomSelectMenuOptions;
-  toJSON(): MessageSelectMenu;
+  toJSON(data: Array<string | number>): MessageSelectMenu;
   nullError?: Boolean;
 }
 
@@ -115,7 +116,7 @@ export interface Button {
   actionType: "BUTTON";
   onInteraction(interaction: ButtonInteraction, other: IOther): void;
   options?: CustomButtonOptions;
-  toJSON(): MessageButton;
+  toJSON(data: Array<string | number>): MessageButton;
   nullError?: Boolean;
 }
 
