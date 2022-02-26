@@ -1,6 +1,6 @@
 module.exports = new (require("./types/Config"))({
   // E tabi, bot tokeni buraya.
-  clientToken: "ODI0MjEwMTMyMzUwMDA5MzY2.YFsDgA.qPbnFZ6yuUvob43hrXJ43SxAbRg",
+  clientToken: "",
   // Yasaklı kullanıcıların idleri.
   blockedUsers: new Set([]),
   // Geliştiricilerin idleri.
