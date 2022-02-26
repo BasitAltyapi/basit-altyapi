@@ -11,6 +11,7 @@ module.exports = new Underline.Locale({
         any: `You can use this interaction in {0} seconds.`,
       },
       disabled: "This interaction is disabled.",
+      guildOnly: "This is a guild only interaction.",
       blocked: "You are banned from the bot.",
       developerOnly: "This is a developer only interaction.",
       guildOwnerOnly: "This is a guild owner only interaction.",
