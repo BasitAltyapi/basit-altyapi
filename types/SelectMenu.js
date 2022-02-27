@@ -1,5 +1,6 @@
 const { MessageSelectMenu } = require("discord.js");
 const Interaction = require("./Interaction");
+const stuffs = require("stuffs");
 
 class SelectMenu extends Interaction {
   /** @param {Interaction.TOmittedInteraction & Interaction.SelectMenu} arg */
@@ -22,12 +23,17 @@ class SelectMenu extends Interaction {
   toJSON(data = []) {
     if (!Array.isArray(data)) throw Error(`SelectMenu#toJSON data type must be an array.`);
     data = data.map((key) => {
-      if (typeof key != "string" && typeof key != "number") throw Error(`SelectMenu#toJSON data type must be an array of strings or numbers.`);  
-      if (typeof key === "number") return `©${key}`;
-      return key;
+      if (typeof key === "string") return key;
+      if (typeof key === "number") return `π${key}`;
+      let referenceId = stuffs.randomString(16);
+      key.$unRef = () => {
+        return Underline._references.delete(referenceId);
+      }
+      Underline._references.set(referenceId, key);
+      return `¤${referenceId}`;
     });
     data.unshift(this.id);
-    let customId = data.join("§");
+    let customId = data.join("—");
     if (customId.length > 100) throw Error(`SelectMenu#toJSON id and data length must be less than 100.`);
     let menu = new MessageSelectMenu()
       .addOptions(this.options?.choices ?? [])

@@ -1,4 +1,4 @@
-# Basit Altyapı (Versiyon 1.9.8) (v13.x)
+# Basit Altyapı (Versiyon 1.9.9) (v13.x)
 
 Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran discord bot altyapısı. Sık sık güncelleme alıyor. (Slash Commands)
  
@@ -33,7 +33,7 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
 - ✅ Kolay bir şekilde interaksiyon öncesi işlem ekleyebilme.
 - ✅ Kolay bir şekilde interaksiyon veya olay altyapsı oluşturabilme.
 - ✅ Kolayca dosya devre dışı bırakılabilme. İsmi tire (-) ile başlayan interaksiyonlar ve olaylar umursanmaz.
-- ✅ Düğme ve Seç menülerda değer taşıyabilme.
+- ✅ Düğme ve Seç menülerde değer/referans taşıyabilme.
 - ✅ Other objesi ile her işlemden önce değer belirtebilme.
 - ✅ Full otomatik dil desteği. Komutu kullanan kişinin dilini otomatik belirleme.
 

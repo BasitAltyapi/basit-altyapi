@@ -82,7 +82,7 @@ type cooldownType = "user" | "member" | "channel" | "guild" | "message" | "any";
 export interface IOther {
   setCoolDown(durations: number, type: cooldownType): void,
   locale: import("./Locale").Data,
-  data: (string | number)[],
+  data: (string | number | { [string | number]: any, $unRef(): boolean })[],
   [key: string | number]: any
 }
 

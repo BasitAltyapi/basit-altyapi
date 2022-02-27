@@ -24,6 +24,7 @@ globalThis.Underline = {
   events,
   locales,
   utils,
+  _references: new Discord.Collection(),
   Interaction: require('./types/Interaction'),
   Event: require('./types/Event'),
   SlashCommand: require("./types/SlashCommand"),
@@ -332,10 +333,11 @@ client.on("interactionCreate", async (interaction) => {
   let data = [];
 
   if (interaction.isButton() || interaction.isSelectMenu()) {
-    data = interaction.customId.split("§");
+    data = interaction.customId.split("—");
     interaction.customId = data.shift();
     data = data.map(key => {
-      if (key.startsWith("©") || !isNaN(key.slice(1))) return Number(key.slice(1));
+      if (key.startsWith("π") || !isNaN(key.slice(1))) return Number(key.slice(1));
+      if (key.startsWith("¤")) return Underline._references.get(key.slice(1)) || null;
       return key;
     })
   }

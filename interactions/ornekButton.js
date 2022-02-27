@@ -3,8 +3,13 @@ module.exports = new Underline.Button({
   id: "ornek",
   description: "...",
   onInteraction(inter, other) {
-
-    inter.reply(`düğme sahibi ${other.data[0]}`)
+    let user = other.data[0];
+    console.log(user);
+    if (!user) return inter.reply(`tıklayanı bulamadım.`);
+    inter.reply(`düğme sahibi: ${user.tag} ${user.id}`);
+    // Eğer düğmeye tıklayan kişi düğmenin sahibi ise sahip referansı ram'den sil.
+    // bu sayede tekrardan tıklayamayacak.
+    if (user.id == inter.user.id) user.$unRef();
   },
   perms: {
     bot: ["CREATE_INSTANT_INVITE"],
