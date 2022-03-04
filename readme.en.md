@@ -48,9 +48,9 @@ A discord bot infrastructure that is simple to use but has many features. It rec
 
 ### Setup
 - It is enough to go to the project file location and write `yarn install`.
-- After [install](#use) the project, you can start the project by typing `node index.js`.
+- After [install](#installation) the project, you can start the project by typing `node index.js`.
 
-### Use of
+### Installation
 - You can carefully read the [`config.js`](./config.js) config file and adjust the bot's general settings to edit user error messages and other events.
 - For interactions, you can carefully read the [`ornekKomut.js`](./interactions/-ornekKomut.js) and [`-ornekSağtık.js`](./interactions/-ornekSağtık.js) file inside the `interactions` folder.
 - If you want to create a new interaction file, you can use the `yarn interaksiyon` interaction. In this way, it will save you the trouble of writing the first interaction infrastructure and will ask all kinds of questions about the interaction.
