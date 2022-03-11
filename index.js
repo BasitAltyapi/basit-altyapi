@@ -336,7 +336,7 @@ client.on("interactionCreate", async (interaction) => {
     data = interaction.customId.split("—");
     interaction.customId = data.shift();
     data = data.map(key => {
-      if (key.startsWith("π") || !isNaN(key.slice(1))) return Number(key.slice(1));
+      if (key.startsWith("π") && !isNaN(key.slice(1))) return Number(key.slice(1));
       if (key.startsWith("¤")) return Underline._references.get(key.slice(1)) || null;
       return key;
     })
