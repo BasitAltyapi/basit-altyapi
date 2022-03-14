@@ -6,15 +6,25 @@ globalThis.Underline = config.globalObjects;
 const Discord = require("discord.js");
 const chillout = require("chillout");
 const path = require("path");
+const fs = require("fs");
 const readdirRecursive = require("recursive-readdir");
 const { makeSureFolderExists } = require("stuffs");
 const client = new Discord.Client(config.clientOptions);
 const interactions = new Discord.Collection();
 const events = new Discord.Collection();
 const locales = new Discord.Collection();
+const { quickMap, quickForEach } = require("async-and-quick");
 let interactionFiles;
 let eventFiles;
 let localeFiles;
+let pluginFiles;
+let onFunctions = {
+  onInteractionBeforeChecks: [config.onInteractionBeforeChecks],
+  onInteraction: [config.onInteraction],
+  onAfterInteraction: [config.onAfterInteraction],
+  onEvent: [config.onEvent],
+  onAfterEvent: [config.onAfterEvent]
+};
 globalThis.Underline = {
   ...config.globalObjects,
   config,
@@ -24,6 +34,7 @@ globalThis.Underline = {
   events,
   locales,
   utils,
+  plugins: {},
   _references: new Discord.Collection(),
   Interaction: require('./types/Interaction'),
   Event: require('./types/Event'),
@@ -33,6 +44,36 @@ globalThis.Underline = {
   SelectMenu: require("./types/SelectMenu"),
   Button: require("./types/Button"),
   Locale: require("./types/Locale"),
+}
+
+const extractZip = require("extract-zip");
+
+async function getPluginFilePaths() {
+  let pluginsPath = path.resolve("./plugins");
+  await makeSureFolderExists(pluginsPath);
+  let folderOrZips = await fs.promises.readdir(pluginsPath, { withFileTypes: true });
+  let result = [];
+  for (let i = 0; i < folderOrZips.length; i++) {
+    const folderOrZip = folderOrZips[i];
+    if (folderOrZip.isDirectory()) {
+      if (folderOrZip.name.startsWith("-")) continue;
+      result.push(path.resolve(pluginsPath, folderOrZip.name, "index.js"));
+    } else if (folderOrZip.name.endsWith(".up.js")) {
+      if (folderOrZip.name.startsWith("-")) continue;
+      result.push(path.resolve(pluginsPath, folderOrZip.name));
+    } else if (folderOrZip.name.endsWith(".up.zip")) {
+      let folderPath = path.resolve(pluginsPath, folderOrZip.name.replace(".up.zip", ".up"));
+      let zipPath = path.resolve(pluginsPath, folderOrZip.name);
+
+      await fs.promises.rmdir(folderPath, {recursive: true}).catch(() => {});
+      await makeSureFolderExists(folderPath);
+      await extractZip(zipPath, { dir: folderPath });
+      fs.promises.unlink(zipPath).catch(() => null);
+      if (folderOrZip.name.startsWith("-")) continue;
+      result.push(path.resolve(folderPath, "index.js"));
+    }
+  }
+  return result;
 }
 
 async function getEventFilePaths() {
@@ -72,6 +113,15 @@ async function getLocaleFilePaths() {
 let eventListeners = [];
 
 async function load() {
+
+  onFunctions = {
+    onInteractionBeforeChecks: [config.onInteractionBeforeChecks],
+    onInteraction: [config.onInteraction],
+    onAfterInteraction: [config.onAfterInteraction],
+    onEvent: [config.onEvent],
+    onAfterEvent: [config.onAfterEvent]
+  };
+
   let loadStart = Date.now();
   console.debug(`[HATA AYIKLAMA] Yüklemeye başlandı!`);
 
@@ -93,6 +143,56 @@ async function load() {
     console.info(`[BİLGİ] "${locale.locale}" dili yüklendi. (${Date.now() - start}ms sürdü.)`);
   })
 
+  pluginFiles = await getPluginFilePaths();
+  await chillout.forEach(pluginFiles, (pluginFile) => {
+    let start = Date.now();
+    let rltPath = path.relative(__dirname, pluginFile);
+    console.info(`[BİLGİ] "${rltPath}" konumundaki plugin yükleniyor..`)
+    /** @type {import("./types/Plugin")} */
+    let plugin = require(pluginFile);
+    let isReady = false;
+
+    if (plugin._type != "plugin")
+      return console.warn(`[UYARI] "${rltPath}" plugin dosyası boş. Atlanıyor..`);
+
+    if (Underline.plugins[plugin.namespace])
+      return console.warn(`[UYARI] ${plugin.name} plugini zaten yüklenmiş. Atlanıyor..`);
+
+    const pluginApi = {};
+
+    pluginApi.ready = async () => { 
+      if (isReady) throw new Error("Plugin already ready!")
+      isReady = true;
+    }
+
+    Underline.plugins[plugin.namespace] = {};
+
+    pluginApi.define = (name, value) => {
+      Underline.plugins[plugin.namespace][name] = value;
+    }
+
+    pluginApi.emit = (name, ...args) => { 
+      client.emit(`${plugin.namespace}:${name}`, ...args);
+    }
+
+    pluginApi.onInteractionBeforeChecks = onFunctions.onInteractionBeforeChecks.push;
+    pluginApi.onInteraction = onFunctions.onInteraction.push;
+    pluginApi.onAfterInteraction = onFunctions.onAfterInteraction.push;
+
+    pluginApi.onEvent = onFunctions.onEvent.push;
+    pluginApi.onAfterEvent = onFunctions.onAfterEvent.push;
+
+    pluginApi.client = client;
+    
+    plugin.onLoad(pluginApi);
+    await chillout.waitUntil(() => {
+      if (isReady) return chillout.StopIteration;
+    })
+    
+    console.info(`[BİLGİ] "${plugin.name}" plugini yüklendi. (${Date.now() - start}ms sürdü.)`);
+  })
+
+  
 
   interactionFiles = await getInteractionFilePaths();
   await chillout.forEach(interactionFiles, (interactionFile) => {
@@ -239,8 +339,8 @@ async function load() {
 
             let other = {};
 
-            let before = await Underline.config.onEvent(eventName, args, other);
-            if (!before) return;
+            let before = (await quickMap(onFunctions.onEvent, async (func) => { return await func(eventName, args, other); })).findIndex(v => v === false);
+            if (before != -1) return;
             args.push(other);
             chillout.forEach(events,
               /** @param {import("./types/Event")} event */
@@ -248,7 +348,7 @@ async function load() {
                 if (!event.disabled) {
                   try {
                     event.onEvent(...args);
-                    Underline.config.onAfterEvent(eventName, args, other);
+                    quickForEach(onFunctions.onAfterEvent, async (func) => { func(...args); });
                   } catch (err) {
                     if (Underline.config.debugLevel >= 1) {
                       console.error(`[HATA] "${event.id}" idli ve "${eventName}" isimli olayda bir hata oluştu!`);
@@ -290,6 +390,9 @@ async function unload() {
   console.debug(`[HATA AYIKLAMA] Önbellek temizle işlemi başladı.`);
   let unloadStart = Date.now();
 
+  console.info(`[BILGI] Plugin listesi temizleniyor..`);
+  Underline.plugins = {};
+
   console.info(`[BILGI] İnteraksiyon listesi temizleniyor..`);
   Underline.interactions.clear();
 
@@ -305,7 +408,7 @@ async function unload() {
   console.info(`[BILGI] Dil listesi temizleniyor..`);
   Underline.locales.clear();
 
-  let pathsToUnload = [...interactionFiles, ...eventFiles, ...localeFiles];
+  let pathsToUnload = [...interactionFiles, ...eventFiles, ...localeFiles, ...pluginFiles];
 
   await chillout.forEach(pathsToUnload, async (pathToUnload) => {
     console.info(`[BILGI] Modül "${path.relative(__dirname, pathToUnload)}" önbellekten kaldırılıyor!`);
@@ -421,8 +524,8 @@ client.on("interactionCreate", async (interaction) => {
   }
 
   {
-    let shouldRun1 = await config.onInteractionBeforeChecks(uInter, interaction, other);
-    if (!shouldRun1) return;
+    let shouldRun1 = (await quickMap(onFunctions.onInteractionBeforeChecks, async (func) => { return await func(uInter, interaction, other); })).findIndex(v => v === false);
+    if (shouldRun1 != -1) return;
   }
 
   if (uInter.disabled) {
@@ -483,6 +586,7 @@ client.on("interactionCreate", async (interaction) => {
       await interaction.update().catch(Underline.config.debugLevel >= 2 ? console.error : () => { });
       // await utils.nullDefer(interaction);
       interaction.deferReply = newDefer;
+    let key = converter[k];
       interaction.reply = interaction.editReply = interaction.followUp = () => {
         if (Underline.config.debugLevel >= 1) console.warn(`[UYARI] "${uInter.name[0]}" adlı interaksiyon için "reply" umursanmadı, interaksiyona zaten otomatik olarak boş cevap verilmiş.`);
       };
@@ -508,7 +612,6 @@ client.on("interactionCreate", async (interaction) => {
   let now = Date.now();
 
   for (let k in converter) {
-    let key = converter[k];
     let keyCooldown = uInter.coolDowns.get(key);
     if (now < keyCooldown) {
       config.userErrors.coolDown(interaction, uInter, keyCooldown - now, k, other);
@@ -540,15 +643,14 @@ client.on("interactionCreate", async (interaction) => {
   (async () => {
 
     {
-      let shouldRun2 = await config.onInteraction(uInter, interaction, other);
-      if (!shouldRun2) return;
+      let shouldRun2 = (await quickMap(onFunctions.onInteraction, async (func) => { try {return await func(uInter, interaction, other);} catch (e) { onfig.debugLevel > 2 ? console.error(e) : null; } })).findIndex(v => v === false);
+      if (shouldRun2 != -1) return;
     }
 
     try {
 
       await uInter.onInteraction(interaction, other);
-
-      await config.onAfterInteraction(uInter, interaction, other);
+      quickForEach(onFunctions.onAfterInteraction, async (func) => { try { func(uInter, interaction, other)?.catch(config.debugLevel > 2 ? console.error : () => null); } catch (err) { (config.debugLevel > 2 ? console.error : () => null)(err) } })
 
     } catch (err) {
       if (Underline.config.debugLevel >= 1) {
