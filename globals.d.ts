@@ -16,6 +16,8 @@ interface Underline {
   Button: typeof import("./types/Button"),
   SelectMenu: typeof import("./types/SelectMenu"),
   Locale: typeof import("./types/Locale"),
+  plugins: import("./generated/pluginTypes").Types,
+  Plugin: typeof import("./types/Plugin"),
 
   reload(): Promise<any>;
 

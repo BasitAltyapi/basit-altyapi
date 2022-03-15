@@ -1,9 +1,11 @@
-# Basit Altyapı (Versiyon 1.9.9) (v13.x)
+# Basit Altyapı (Versiyon 2.0.0) (v13.x)
 
 Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran discord bot altyapısı. Sık sık güncelleme alıyor. (Slash Commands)
  
 ## Özellikler
 
+- ✅ **Plugin sistemi!** *- Altyapıya istediğiniz özellikleri parça parça ekleyin!*
+- ✅ Pluginler TAM tip desteği! `yarn plugin-tipleri`
 - ✅ **Çoklu dil desteği.**
 - ✅ **Sunucuya özel komut paylaşma tipleri.**
 - ✅ **SelectMenu ve Button desteği.**
@@ -61,10 +63,6 @@ Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran disco
 
 - Olaylar için `events` klasörünün içindeki [`-ornekOlay.js`](./events/-ornekOlay.js) dosyasını dikkatlice okuyabilirsiniz.
 - Yeni bir olay dosyası oluşturmak isterseniz `yarn olay` interaksiyonunu kullanabilsiniz. Bu sayede sizi ilk olay altyapısını yazma derdinden kurtaracak ve olay hakkında her türlü soruyu soracaktır.
-
-## Güncelleme
-
-- Güncelleme yaparken yapmanız gereken sadece `types klasörünü`, `other klasörünü`, `index.js dosyası`, `package.json dosyasını` eskisi ile değiştirmek.
 
 ## Yardım
 

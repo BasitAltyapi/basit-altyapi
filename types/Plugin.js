@@ -1,5 +1,10 @@
+
 class Plugin {
   _type = "plugin";
+
+  /**
+   * @param {} obj 
+   */
   constructor(obj = {}) {
 
     if (!obj.name) {

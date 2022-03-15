@@ -33,7 +33,8 @@
   "scripts": {
     "interaksiyon": "node ./other/generator.js interaction",
     "olay": "node ./other/generator.js event",
-    "baslat": "node index.js"
+    "baslat": "node index.js",
+    "plugin-tipleri": "node ./other/pluginTypesGenerator.js"
   },
   "bugs": {
     "url": "https://github.com/TheArmagan/basit-altyapi/issues"

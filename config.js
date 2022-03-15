@@ -107,7 +107,6 @@ module.exports = new (require("./types/Config"))({
   async onReady(client) {
     console.log("[CONFIG] Discord hesabına giriş yaptıktan sonra çalıştı.");
     client.user.setActivity(`/help - Basit Altyapı by TheArmagan`, { type: "WATCHING" });
-
   },
   // interaksiyon üzerinde hiçbir kontrol yapılmadan önce çalışır.
   // Sadece cevap true ise işleme devam eder.

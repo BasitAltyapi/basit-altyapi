@@ -23,7 +23,8 @@ let onFunctions = {
   onInteraction: [config.onInteraction],
   onAfterInteraction: [config.onAfterInteraction],
   onEvent: [config.onEvent],
-  onAfterEvent: [config.onAfterEvent]
+  onAfterEvent: [config.onAfterEvent],
+  onReady: [config.onReady],
 };
 globalThis.Underline = {
   ...config.globalObjects,
@@ -44,6 +45,7 @@ globalThis.Underline = {
   SelectMenu: require("./types/SelectMenu"),
   Button: require("./types/Button"),
   Locale: require("./types/Locale"),
+  Plugin: require("./types/Plugin"),
 }
 
 const extractZip = require("extract-zip");
@@ -65,7 +67,7 @@ async function getPluginFilePaths() {
       let folderPath = path.resolve(pluginsPath, folderOrZip.name.replace(".up.zip", ".up"));
       let zipPath = path.resolve(pluginsPath, folderOrZip.name);
 
-      await fs.promises.rmdir(folderPath, {recursive: true}).catch(() => {});
+      await fs.promises.rm(folderPath, {recursive: true}).catch(() => {});
       await makeSureFolderExists(folderPath);
       await extractZip(zipPath, { dir: folderPath });
       fs.promises.unlink(zipPath).catch(() => null);
@@ -119,7 +121,8 @@ async function load() {
     onInteraction: [config.onInteraction],
     onAfterInteraction: [config.onAfterInteraction],
     onEvent: [config.onEvent],
-    onAfterEvent: [config.onAfterEvent]
+    onAfterEvent: [config.onAfterEvent],
+    onReady: [config.onReady],
   };
 
   let loadStart = Date.now();
@@ -144,6 +147,7 @@ async function load() {
   })
 
   pluginFiles = await getPluginFilePaths();
+  let pluginCache = [];
   await chillout.forEach(pluginFiles, (pluginFile) => {
     let start = Date.now();
     let rltPath = path.relative(__dirname, pluginFile);
@@ -158,10 +162,25 @@ async function load() {
     if (Underline.plugins[plugin.namespace])
       return console.warn(`[UYARI] ${plugin.name} plugini zaten yüklenmiş. Atlanıyor..`);
 
-    const pluginApi = {};
+    pluginCache.push(plugin);
+    console.info(`[BİLGİ] "${plugin.name}" plugini yüklenme sırasına alındı. (${Date.now() - start}ms sürdü.)`);
+    
+  })
 
-    pluginApi.ready = async () => { 
-      if (isReady) throw new Error("Plugin already ready!")
+  pluginCache = pluginCache.sort((plugin, dependency) => plugin?.requires?.plugins?.includes(dependency) ? 1 : 0);
+
+  let pluginSort = utils.sortDependant(pluginCache.map(i=>i.namespace), Object.fromEntries(pluginCache.map(i => [i.namespace, i?.requires?.plugins || []])))
+
+  await chillout.forEach(pluginSort, async (pluginNamespace) => {
+    let start = Date.now();
+
+    const plugin = pluginCache.find(x => x.namespace === pluginNamespace);
+    
+    const pluginApi = {};
+    let isReady = false;
+
+    pluginApi.setPluginReady = async () => { 
+      if (isReady) throw new Error("Plugin is already ready!")
       isReady = true;
     }
 
@@ -181,18 +200,20 @@ async function load() {
 
     pluginApi.onEvent = onFunctions.onEvent.push;
     pluginApi.onAfterEvent = onFunctions.onAfterEvent.push;
+    pluginApi.onBotReady = onFunctions.onReady.push;
 
     pluginApi.client = client;
     
     plugin.onLoad(pluginApi);
+    console.info(`[BİLGİ] "${plugin.name}" pluginin yüklenmesi bekleniyor!`);	
     await chillout.waitUntil(() => {
       if (isReady) return chillout.StopIteration;
     })
-    
-    console.info(`[BİLGİ] "${plugin.name}" plugini yüklendi. (${Date.now() - start}ms sürdü.)`);
+    console.info(`[BİLGİ] "${plugin.name}" plugini yüklendi! (${Date.now() - start}ms sürdü.)`);	
   })
 
-  
+
+  for (let ind in onFunctions) onFunctions[ind] = onFunctions[ind].filter(x => typeof x === "function");
 
   interactionFiles = await getInteractionFilePaths();
   await chillout.forEach(interactionFiles, (interactionFile) => {
@@ -612,7 +633,7 @@ client.on("interactionCreate", async (interaction) => {
   let now = Date.now();
 
   for (let k in converter) {
-    let keyCooldown = uInter.coolDowns.get(key);
+    let keyCooldown = uInter.coolDowns.get(k);
     if (now < keyCooldown) {
       config.userErrors.coolDown(interaction, uInter, keyCooldown - now, k, other);
       return;
@@ -677,6 +698,16 @@ client.on("interactionCreate", async (interaction) => {
   await client.login(config.clientToken);
 
   config.onReady(client);
+  quickForEach(onFunctions.onReady, async (func) => {
+    try {
+      func?.catch?.(() => {
+
+      });
+    } catch (err) {
+
+    }
+    
+  })
 })();
 
 Underline.reload = reload;
