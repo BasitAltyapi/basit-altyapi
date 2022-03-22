@@ -133,11 +133,11 @@ module.exports = new (require("./types/Config"))({
   //
   // Other objesini istediğiniz gibi modifiye edebilirsiniz.
   // Nasılsa altakki fonksiyon her event çalışmadan önce çalışır.
-  async onEvent(eventName, [arg1, arg2], other) {
+  async onEvent(eventName, args, other) {
     return true;
   },
   // Olay hatasız bir şekilde çalıştıktan sonra çalışır.
-  async onAfterEvent(eventName, [arg1, arg2], other) {
+  async onAfterEvent(eventName, args, other) {
     
   },
 })
