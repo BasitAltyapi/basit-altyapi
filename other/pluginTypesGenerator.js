@@ -22,7 +22,7 @@ globalThis.Underline = {
     console.info(`[BİLGİ] "${rltPath}" konumundaki plugin yükleniyor..`)
     /** @type {import("../types/Plugin")} */
     let plugin = require(pluginFile);
-    console.info("Plugin:", plugin._type, plugin.namespace,plugin);
+    console.info("Plugin:", plugin._type, plugin.namespace, plugin);
     // console.log(plugin)
 
     if (plugin._type != "plugin")
@@ -32,10 +32,10 @@ globalThis.Underline = {
       return console.warn(`[UYARI] ${plugin.name} plugini zaten yüklenmiş. Atlanıyor..`);
 
     loadedNamespaces.push(plugin.namespace);
-    
+
     let parsedPluginPath = path.parse(pluginFile);
     // console.log(parsedPluginPath)
-    
+
     let dtsPath = "";
 
     switch (parsedPluginPath.dir.split(path.sep).pop()) {
@@ -50,7 +50,7 @@ globalThis.Underline = {
     }
     console.log(dtsPath);
     let isDTS = fs.existsSync(dtsPath);
-  
+
     if (isDTS) {
       pluginTypes.push(`["${plugin.namespace}"]: import("${path.relative(process.cwd(), dtsPath).replace(".d.ts", "").replaceAll(path.sep, "/")}").Plugin`);
     } else {
@@ -75,12 +75,12 @@ globalThis.Underline = {
 
       }
     }
-    
+
     console.info(`[BİLGİ] "${plugin.name}" plugini tipi çıkartıldı.`);
   });
 
   await makeSureFolderExists(path.resolve(__dirname, "../generated"));
-  let result = `export class Types {\n${pluginTypes.map(i => `  ${i};`).join("\n")}\n};\n${`export type TEventNames = ${TEventNames.join(" | ").trim() || "any"};`}\n${`export type TEvents = ${TEvents.join(" | ").trim() || "any"};`}\n${TInterfaces.join("\n")}\n`.trim();
+  let result = `export class Types {\n${pluginTypes.map(i => `  ${i};`).join("\n")}\n};\n${`export type TEventNames = ${TEventNames.join(" | ").trim() || '""'};`}\n${`export type TEvents = ${TEvents.join(" | ").trim() || "[]"};`}\n${TInterfaces.join("\n")}\n`.trim();
   console.info(result);
   await fs.promises.writeFile(path.resolve(__dirname, "../generated/pluginTypes.d.ts"), result);
 
@@ -126,7 +126,7 @@ async function getPluginFilePaths() {
       let folderPath = path.resolve(pluginsPath, folderOrZip.name.replace(".up.zip", ".up"));
       let zipPath = path.resolve(pluginsPath, folderOrZip.name);
 
-      await fs.promises.rm(folderPath, {recursive: true}).catch(() => {});
+      await fs.promises.rm(folderPath, { recursive: true }).catch(() => { });
       await makeSureFolderExists(folderPath);
       await extractZip(zipPath, { dir: folderPath });
       fs.promises.unlink(zipPath).catch(() => null);
