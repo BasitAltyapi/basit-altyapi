@@ -80,7 +80,7 @@ globalThis.Underline = {
   });
 
   await makeSureFolderExists(path.resolve(__dirname, "../generated"));
-  let result = `export class Types {\n${pluginTypes.map(i => `  ${i};`).join("\n")}\n};\n${TEventNames.length ? `export type TEventNames = ${TEventNames.join(" | ")};` : ""}\n${TEvents.length ? `export type TEvents = ${TEvents.join(" | ")};` : ""}\n${TInterfaces.join("\n")}\n`.trim();
+  let result = `export class Types {\n${pluginTypes.map(i => `  ${i};`).join("\n")}\n};\n${`export type TEventNames = ${TEventNames.join(" | ").trim() || "any"};`}\n${`export type TEvents = ${TEvents.join(" | ").trim() || "any"};`}\n${TInterfaces.join("\n")}\n`.trim();
   console.info(result);
   await fs.promises.writeFile(path.resolve(__dirname, "../generated/pluginTypes.d.ts"), result);
 
