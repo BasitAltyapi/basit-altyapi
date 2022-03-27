@@ -67,7 +67,7 @@ async function getPluginFilePaths() {
       let folderPath = path.resolve(pluginsPath, folderOrZip.name.replace(".up.zip", ".up"));
       let zipPath = path.resolve(pluginsPath, folderOrZip.name);
 
-      await fs.promises.rm(folderPath, {recursive: true}).catch(() => {});
+      await fs.promises.rm(folderPath, { recursive: true }).catch(() => { });
       await makeSureFolderExists(folderPath);
       await extractZip(zipPath, { dir: folderPath });
       fs.promises.unlink(zipPath).catch(() => null);
@@ -148,6 +148,7 @@ async function load() {
 
   pluginFiles = await getPluginFilePaths();
   let pluginCache = [];
+  let pluginEventCache = [];
   await chillout.forEach(pluginFiles, (pluginFile) => {
     let start = Date.now();
     let rltPath = path.relative(__dirname, pluginFile);
@@ -164,23 +165,31 @@ async function load() {
 
     pluginCache.push(plugin);
     console.info(`[BİLGİ] "${plugin.name}" plugini yüklenme sırasına alındı. (${Date.now() - start}ms sürdü.)`);
-    
+
   })
 
   pluginCache = pluginCache.sort((plugin, dependency) => plugin?.requires?.plugins?.includes(dependency) ? 1 : 0);
 
-  let pluginSort = utils.sortDependant(pluginCache.map(i=>i.namespace), Object.fromEntries(pluginCache.map(i => [i.namespace, i?.requires?.plugins || []])))
+  let pluginSort = utils.sortDependant(pluginCache.map(i => i.namespace), Object.fromEntries(pluginCache.map(i => [i.namespace, i?.requires?.plugins || []])))
 
   await chillout.forEach(pluginSort, async (pluginNamespace) => {
     let start = Date.now();
 
     const plugin = pluginCache.find(x => x.namespace === pluginNamespace);
-    
+
     const pluginApi = {};
     let isReady = false;
 
-    pluginApi.setPluginReady = async () => { 
-      if (isReady) throw new Error("Plugin is already ready!")
+    pluginApi.addEvent = async (event) => {
+      if (event?._type !== "event") throw new Error(`Non-event object tried to add it self into events by "${pluginNamespace}" plugin.`);
+      event.pluginNamespace = pluginNamespace;
+      pluginEventCache.push(event);
+      return true;
+    }
+
+    pluginApi.setPluginReady = async () => {
+      if (isReady) throw new Error("Plugin is already ready!");
+      pluginApi.addEvent = async () => { throw new Error("Plugin is ready you can not add event."); };
       isReady = true;
     }
 
@@ -190,7 +199,7 @@ async function load() {
       Underline.plugins[plugin.namespace][name] = value;
     }
 
-    pluginApi.emit = (name, ...args) => { 
+    pluginApi.emit = (name, ...args) => {
       client.emit(`${plugin.namespace}:${name}`, ...args);
     }
 
@@ -203,13 +212,13 @@ async function load() {
     pluginApi.onBotReady = onFunctions.onReady.push;
 
     pluginApi.client = client;
-    
+
     plugin.onLoad(pluginApi);
-    console.info(`[BİLGİ] "${plugin.name}" pluginin yüklenmesi bekleniyor!`);	
+    console.info(`[BİLGİ] "${plugin.name}" pluginin yüklenmesi bekleniyor!`);
     await chillout.waitUntil(() => {
       if (isReady) return chillout.StopIteration;
     })
-    console.info(`[BİLGİ] "${plugin.name}" plugini yüklendi! (${Date.now() - start}ms sürdü.)`);	
+    console.info(`[BİLGİ] "${plugin.name}" plugini yüklendi! (${Date.now() - start}ms sürdü.)`);
   })
 
 
@@ -327,7 +336,30 @@ async function load() {
     Underline.events.set(event.id, event);
     event.onLoad(client);
     console.info(`[BİLGİ] ("${rltPath}") "${event.id}" adlı event yüklendi. (${Date.now() - start}ms sürdü.)`);
-  })
+  });
+
+  await chillout.forEach(pluginEventCache, async (pluginEvent) => {
+    let start = Date.now();
+
+    let plEventPath = `up.plugins/${pluginEvent.pluginNamespace}/${pluginEvent.id}`
+    console.info(`[BİLGİ] "${plEventPath}" event yükleniyor..`);
+
+    if (typeof pluginEvent.id != "string") pluginEvent.id = path.basename(pluginEvent).slice(0, -3).replace(/ /g, "");
+
+    if (Underline.events.has(pluginEvent.id)) {
+      if (Underline.config.debugLevel >= 1) console.warn(`[UYARI] "${pluginEvent.id}" adlı bir plugin eventi daha önceden zaten yüklenmiş. Atlanıyor.`);
+      return;
+    }
+
+    if (typeof pluginEvent.onEvent != "function") {
+      if (Underline.config.debugLevel >= 1) console.error(`[HATA] "${plEventPath}" plugin eventi geçerli bir onEvent fonksiyonuna sahip değil! Atlanıyor.`);
+      return;
+    };
+
+    Underline.events.set(pluginEvent.id, pluginEvent);
+    pluginEvent.onLoad(client);
+    console.info(`[BİLGİ] ("${plEventPath}") "${pluginEvent.id}" adlı plugin eventi yüklendi. (${Date.now() - start}ms sürdü.)`);
+  });
 
   // Önce ismi daha uzun olanlar test edilsin diye.
   Underline.interactions.sort((a, b) => b.name.length - a.name.length);
@@ -556,37 +588,37 @@ client.on("interactionCreate", async (interaction) => {
   }
 
   if (config.blockedUsers.has(interaction.user.id)) {
-    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(Underline.config.debugLevel >= 2 ? console.error : () => {} )) : null;
+    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(Underline.config.debugLevel >= 2 ? console.error : () => { })) : null;
     config.userErrors.blocked(interaction, uInter, other);
     return;
   }
 
   if (uInter.guildOnly && !interaction.guildId) {
-    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(Underline.config.debugLevel >= 2 ? console.error : () => {} )) : null;
+    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(Underline.config.debugLevel >= 2 ? console.error : () => { })) : null;
     config.userErrors.guildOnly(interaction, uInter, other);
     return;
   }
 
   if (uInter.calculated.developerOnly && !config.developers.has(interaction.user.id)) {
-    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(Underline.config.debugLevel >= 2 ? console.error : () => {} )) : null;
+    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(Underline.config.debugLevel >= 2 ? console.error : () => { })) : null;
     config.userErrors.developerOnly(interaction, uInter, other);
     return;
   }
 
   if (uInter.calculated.guildOwnerOnly && !config.developers.has(interaction.user.id) && interaction.guild.ownerId != interaction.user.id) {
-    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(Underline.config.debugLevel >= 2 ? console.error : () => {} )) : null;
+    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(Underline.config.debugLevel >= 2 ? console.error : () => { })) : null;
     config.userErrors.guildOwnerOnly(interaction, uInter, other);
     return;
   }
 
   if (uInter.guildOnly && uInter.perms.bot.length != 0 && !uInter.perms.bot.every(perm => interaction.guild.me.permissions.has(perm))) {
-    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(Underline.config.debugLevel >= 2 ? console.error : () => {} )) : null;
+    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(Underline.config.debugLevel >= 2 ? console.error : () => { })) : null;
     config.userErrors.botPermsRequired(interaction, uInter, uInter.perms.bot, other);
     return;
   }
 
   if (uInter.guildOnly && (!config.developers.has(interaction.user.id)) && uInter.perms.user.length != 0 && !uInter.perms.user.every(perm => interaction.member.permissions.has(perm))) {
-    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(Underline.config.debugLevel >= 2 ? console.error : () => {} )) : null;
+    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(Underline.config.debugLevel >= 2 ? console.error : () => { })) : null;
     config.userErrors.userPermsRequired(interaction, uInter, uInter.perms.user, other);
     return;
   }
@@ -607,7 +639,7 @@ client.on("interactionCreate", async (interaction) => {
       await interaction.update().catch(Underline.config.debugLevel >= 2 ? console.error : () => { });
       // await utils.nullDefer(interaction);
       interaction.deferReply = newDefer;
-    let key = converter[k];
+      let key = converter[k];
       interaction.reply = interaction.editReply = interaction.followUp = () => {
         if (Underline.config.debugLevel >= 1) console.warn(`[UYARI] "${uInter.name[0]}" adlı interaksiyon için "reply" umursanmadı, interaksiyona zaten otomatik olarak boş cevap verilmiş.`);
       };
@@ -664,7 +696,7 @@ client.on("interactionCreate", async (interaction) => {
   (async () => {
 
     {
-      let shouldRun2 = (await quickMap(onFunctions.onInteraction, async (func) => { try {return await func(uInter, interaction, other);} catch (e) { onfig.debugLevel > 2 ? console.error(e) : null; } })).findIndex(v => v === false);
+      let shouldRun2 = (await quickMap(onFunctions.onInteraction, async (func) => { try { return await func(uInter, interaction, other); } catch (e) { onfig.debugLevel > 2 ? console.error(e) : null; } })).findIndex(v => v === false);
       if (shouldRun2 != -1) return;
     }
 
@@ -706,7 +738,7 @@ client.on("interactionCreate", async (interaction) => {
     } catch (err) {
 
     }
-    
+
   })
 })();
 

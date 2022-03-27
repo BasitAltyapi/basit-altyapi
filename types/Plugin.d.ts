@@ -40,6 +40,8 @@ export class PluginAPI {
 
   onBotReady(cb: (client: import("discord.js").Client) => any): void;
 
+  addEvent(event: import("./Event")): boolean;
+
   client: import("discord.js").Client;
 }
 
