@@ -25,7 +25,9 @@ class SelectMenu extends Interaction {
     data = data.map((key) => {
       if (typeof key === "string") return key;
       if (typeof key === "number") return `π${key}`;
+      if (key.referenceId) return `¤${key.referenceId}`;
       let referenceId = stuffs.randomString(16);
+      key.referenceId = referenceId;
       key.$unRef = () => {
         return Underline._references.delete(referenceId);
       }
