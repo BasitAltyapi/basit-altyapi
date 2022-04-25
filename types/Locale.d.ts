@@ -1,8 +1,10 @@
-class Locale {
+export class Locale {
   private _type: string;
   locale: LocaleString;
   private _data: object;
   data: Data;
+  commands: {originalName: string[], description: string, name:string[]}[];
+
   constructor(obj: TLocaleConstructor);
 }
 

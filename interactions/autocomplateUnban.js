@@ -15,7 +15,7 @@ module.exports = new Underline.SlashCommand({
   options: [
     {
       name: "id",
-      type: "STRING",
+      type: "String",
       description: "...",
       autocomplete: true,
       async onComplete(inter, value) {

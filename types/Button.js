@@ -1,4 +1,4 @@
-const { MessageButton } = require("discord.js");
+const { ButtonBuilder } = require("discord.js");
 const Interaction = require("./Interaction");
 const stuffs = require("stuffs");
 
@@ -7,10 +7,11 @@ class Button extends Interaction {
   constructor (arg = { }) {
     super({
       _type: "noDeployInteraction",
-      actionType: "BUTTON",
+      actionType: "Button",
       ...arg
     })
   }
+  isModal() { return false; }
   isButton() { return true; }
   /**
    * @param {Array<string | number | any>} data
@@ -22,16 +23,18 @@ class Button extends Interaction {
       if (typeof key === "string") return key;  
       if (typeof key === "number") return `π${key}`;
       let referenceId = stuffs.randomString(16);
+      if (key.$key) return key.$key;
+      key.$key = `¤${referenceId}`;
       key.$unRef = () => {
         return Underline._references.delete(referenceId);
       }
       Underline._references.set(referenceId, key);
-      return `¤${referenceId}`;
+      return key.$key;
     });
     data.unshift(this.id);
     let customId = data.join("—");
     if (customId.length > 100) throw Error(`SelectMenu#toJSON id and data length must be less than 100.`);
-    let button = new MessageButton()
+    let button = new ButtonBuilder()
       .setCustomId(customId)
       .setStyle(this.options.style);
     if (this.options.emoji) button.setEmoji(this.options.emoji);

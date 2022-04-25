@@ -3,13 +3,13 @@ module.exports = new Underline.SlashCommand({
   description: "Bir kullanıcının ses susturmasını açıp kapamanızı sağlar.",
   options: [
     {
-      type: "USER",
+      type: "User",
       name: "uye",
       description: "Rol verceğeniz kişi.",
       required: true
     },
     {
-      type: "STRING",
+      type: "String",
       name: "durum",
       description: "Susturulma durumu.",
       required: true,

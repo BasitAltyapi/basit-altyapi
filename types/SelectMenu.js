@@ -7,7 +7,7 @@ class SelectMenu extends Interaction {
   constructor (arg = {}) {
     super({
       _type: "noDeployInteraction",
-      actionType: "SELECT_MENU",
+      actionType: "SelectMenu",
       ...arg
     })
   }
@@ -15,6 +15,7 @@ class SelectMenu extends Interaction {
   isButton() { return false; }
   isChatActionCommand() { return false; }
   isUserActionCommand() { return false; }
+  isModal() { return false; }
   isMessageActionCommand() { return false; }
   /**
    * @param {Array<string | number>} data
@@ -25,12 +26,14 @@ class SelectMenu extends Interaction {
     data = data.map((key) => {
       if (typeof key === "string") return key;
       if (typeof key === "number") return `π${key}`;
+      if (key.$key) return key.$key;
       let referenceId = stuffs.randomString(16);
       key.$unRef = () => {
         return Underline._references.delete(referenceId);
       }
+      key.$key = `¤${referenceId}`;
       Underline._references.set(referenceId, key);
-      return `¤${referenceId}`;
+      return key.$key;
     });
     data.unshift(this.id);
     let customId = data.join("—");

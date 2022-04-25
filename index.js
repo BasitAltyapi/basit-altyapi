@@ -44,6 +44,7 @@ globalThis.Underline = {
   UserAction: require("./types/UserAction"),
   SelectMenu: require("./types/SelectMenu"),
   Button: require("./types/Button"),
+  Modal: require("./types/Modal"),
   Locale: require("./types/Locale"),
   Plugin: require("./types/Plugin"),
 }
@@ -288,7 +289,7 @@ async function load() {
 
     Underline.interactions.set(uInter.id, uInter);
     uInter.onLoad(client);
-    console.info(`[BİLGİ] "${uInter.actionType == "CHAT_INPUT" ? `/${uInter.name.join(" ")}` : `${uInter.name[0]}`}" (${uInter.id}) adlı interaksiyon yüklendi. (${Date.now() - start}ms sürdü.)`);
+    console.info(`[BİLGİ] "${uInter.actionType == "ChatInput" ? `/${uInter.name.join(" ")}` : `${uInter.name[0]}`}" (${uInter.id}) adlı interaksiyon yüklendi. (${Date.now() - start}ms sürdü.)`);
   });
 
   if (Underline.interactions.size) {
@@ -469,10 +470,11 @@ client.on("interactionCreate", async (interaction) => {
   let uInter = Underline.interactions.find(uInter => {
     switch (uInter.name.length) {
       case 1: return (uInter.name[0] == interaction.commandName) || ((uInter.id == interaction.customId) && (
-        (uInter.actionType == "CHAT_INPUT" && (interaction.isCommand() || interaction.isAutocomplete())) ||
-        (uInter.actionType == "SELECT_MENU" && interaction.isSelectMenu()) ||
-        (uInter.actionType == "BUTTON" && interaction.isButton()) ||
-        ((uInter.actionType == "USER" || uInter.actionType == "MESSAGE") && interaction.isContextMenu())
+        (uInter.actionType == "ChatInput" && (interaction.isCommand() || interaction.isAutocomplete())) ||
+        (uInter.actionType == "SelectMenu" && interaction.isSelectMenu()) ||
+        (uInter.actionType == "Button" && interaction.isButton()) ||
+        (uInter.actionType == "Modal" && interaction.isModalSubmit()) ||
+        ((uInter.actionType == "User" || uInter.actionType == "Message") && interaction.isContextMenu())
       ));
       case 2: return uInter.name[0] == interaction.commandName && uInter.name[1] == subCommandName && (interaction.isCommand() || interaction.isAutocomplete());
       case 3: return uInter.name[0] == interaction.commandName && uInter.name[1] == subCommandGroupName && uInter.name[2] == subCommandName && (interaction.isCommand() || interaction.isAutocomplete());
@@ -526,7 +528,7 @@ client.on("interactionCreate", async (interaction) => {
         interaction.respond(completeResponse).catch(Underline.config.debugLevel >= 2 ? console.error : () => { });
       } catch (err) {
         if (Underline.config.debugLevel >= 1) {
-          console.error(`[HATA] "${uInter.actionType == "CHAT_INPUT" ? `/${uInter.name.join(" ")}` : `${uInter.name[0]}`}" adlı interaksiyon için otomatik tamamlama çalıştırılırken bir hata ile karşılaşıldı!`)
+          console.error(`[HATA] "${uInter.actionType == "ChatInput" ? `/${uInter.name.join(" ")}` : `${uInter.name[0]}`}" adlı interaksiyon için otomatik tamamlama çalıştırılırken bir hata ile karşılaşıldı!`)
           if (err.message) console.error(`[HATA] ${err.message}`);
           if (err.stack) {
             `${err.stack}`.split("\n").forEach((line) => {
@@ -593,7 +595,7 @@ client.on("interactionCreate", async (interaction) => {
 
   if (uInter.autoDefer != "off") {
     const newDefer = () => {
-      if (Underline.config.debugLevel >= 1) console.warn(`[UYARI] "${uInter.actionType == "CHAT_INPUT" ? `/${uInter.name.join(" ")}` : `${uInter.name[0]}`}" adlı interaksiyon için "deferReply" umursanmadı, interaksiyon zaten otomatik olarak bekleme moduna alınmış.`);
+      if (Underline.config.debugLevel >= 1) console.warn(`[UYARI] "${uInter.actionType == "ChatInput" ? `/${uInter.name.join(" ")}` : `${uInter.name[0]}`}" adlı interaksiyon için "deferReply" umursanmadı, interaksiyon zaten otomatik olarak bekleme moduna alınmış.`);
     };
     if (
       interaction.isCommand() || interaction.isApplicationCommand() || interaction.isMessageContextMenu() || interaction.isUserContextMenu()
@@ -675,7 +677,7 @@ client.on("interactionCreate", async (interaction) => {
 
     } catch (err) {
       if (Underline.config.debugLevel >= 1) {
-        console.error(`[HATA] "${uInter.actionType == "CHAT_INPUT" ? `/${uInter.name.join(" ")}` : `${uInter.name[0]}`}" adlı interaksiyon çalıştırılırken bir hata ile karşılaşıldı!`)
+        console.error(`[HATA] "${uInter.actionType == "ChatInput" ? `/${uInter.name.join(" ")}` : `${uInter.name[0]}`}" adlı interaksiyon çalıştırılırken bir hata ile karşılaşıldı!`)
         if (err.message) console.error(`[HATA] ${err.message}`);
         if (err.stack) {
           `${err.stack}`.split("\n").forEach((line) => {

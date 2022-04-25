@@ -35,7 +35,7 @@ class Interaction {
 
   defaultPermission = true;
 
-  actionType = "CHAT_INPUT"
+  actionType = "ChatInput"
 
   autoDefer = "off";
 
@@ -45,7 +45,7 @@ class Interaction {
     this.name = Array.isArray(arg.name) ? arg.name : [arg.name];
     this.actionType = arg.actionType || Underline.config.interactionDefaults.actionType;
 
-    this.id = arg.id || `${this.actionType}_${this.name.join("_")}`.toLowerCase();
+    this.id = arg.id || `${this.actionType}_${this.name.join("_")}`.toLowerCase().replace(/\s+/g, "_");
     this._type = arg._type ?? this._type;
     this.nullError = (this._type === "noDeployInteraction") ? (arg.nullError ?? false) : false;
     this.perms.bot = Array.isArray(arg.perms?.bot) && arg.perms.bot.length != 0 ? arg.perms.bot : Underline.config.interactionDefaults.perms.bot;
@@ -53,7 +53,7 @@ class Interaction {
     this.onInteraction = arg.onInteraction;
     if (typeof arg.onLoad == "function") this.onLoad = arg.onLoad;
     this.guildOnly = Boolean(arg.guildOnly ?? Underline.config.interactionDefaults.guildOnly);
-    this.description = this.actionType == "CHAT_INPUT" ? (arg.description || Underline.config.interactionDefaults.description) : null;
+    this.description = this.actionType == "ChatInput" ? (arg.description || Underline.config.interactionDefaults.description) : null;
     this.disabled = Boolean(arg.disabled ?? Underline.config.interactionDefaults.disabled);
     this.developerOnly = Boolean(arg.developerOnly ?? Underline.config.interactionDefaults.developerOnly);
     this.other = defaultify(typeof arg.other == "object" ? arg.other : {}, Underline.config.interactionDefaults.other);

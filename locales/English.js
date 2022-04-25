@@ -1,5 +1,12 @@
 module.exports = new Underline.Locale({
   locale: "en",
+  commands: [
+    {
+      originalName: ["profil"],
+      name: ["profile"],
+      description: "Shows the profile of the user.",
+    }
+  ],
   data: {
     userErrors: {
       coolDown: {

@@ -98,7 +98,7 @@ class Config {
     this.defaultLanguage = arg.defaultLanguage || "tr";
 
     this.interactionDefaults = typeof arg.interactionDefaults == "object" ? arg.interactionDefaults : {
-      actionType: "CHAT_INPUT",
+      actionType: "ChatInput",
       description: "...",
       developerOnly: false,
       guildOnly: true,

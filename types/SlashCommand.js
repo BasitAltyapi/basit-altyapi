@@ -6,7 +6,7 @@ class SlashCommand extends Interaction {
   /** @param {Interaction.TOmittedInteraction & Interaction.ActionChatCommand} arg */
   constructor (arg = { }) {
     super({
-      actionType: "CHAT_INPUT",
+      actionType: "ChatInput",
       ...arg
     })
   }
@@ -15,6 +15,7 @@ class SlashCommand extends Interaction {
   isButton() { return false; }
   isUserActionCommand() { return false; }
   isMessageActionCommand() { return false; }
+  isModal() { return false; }
   toJSON() {}
 }
 

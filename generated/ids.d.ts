@@ -1,0 +1,2 @@
+export type InteractionIds = "chat_input_buton-yolla" | "chat_input_matamatik" | "chat_input_eval" | "chat_input_unban" | "chat_input_profil" | "chat_input_reload" | "chat_input_moderasyon_at" | "chat_input_moderasyon_rol" | "chat_input_moderasyon_ses-sustur" | "chat_input_moderasyon_temizle" | "chat_input_moderasyon_yasakla" | "chat_input_interactions_guild_publish" | "chat_input_interactions_guild_clear" | "user_sağtık_üye" | "message_sağtık_mesaj";
+export type EventIds = "";

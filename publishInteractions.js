@@ -20,9 +20,38 @@ globalThis.Underline = {
   SelectMenu: require("./types/SelectMenu"),
   Button: require("./types/Button"),
   Locale: require("./types/Locale"),
+  Modal: require("./types/Modal"),
 };
 
+let ogLangs = ["da", "de", "en-GB", "en-US", "es-ES", "fr", "hr", "it", "lt", "hu", "nl", "no", "pl", "pt-BR", "ro", "fi", "sv-SE", "vi", "tr", "cs", "el", "bg", "ru", "uk", "hi", "th", "zh-CN", "ja", "zh-TW", "ko"];
+
+
+
+let interactionTypes = { "ChatInput": 1, "Message": 2, "User": 3 };
+let optionTypes = { "SubCommand": 1, "SubCommandGroup": 2, "String": 3, "Integer": 4, "Boolean": 5, "User": 6, "Channel": 7, "Role": 8, "Mentionable": 9, "Number": 10, "Attachment": 11 };
+
+async function getLocaleFilePaths() {
+  let localesPath = path.resolve("./locales");
+  await makeSureFolderExists(localesPath);
+  let VLocaleFiles = await readdirRecursive(localesPath);
+  VLocaleFiles = VLocaleFiles.filter(i => {
+    let state = path.basename(i).startsWith("-");
+    return !state;
+  });
+  return VLocaleFiles;
+}
+
+/** @type {[import("./types/Locale").LocaleString, import("./types/Locale").Locale][]} */
+const locales = [];
+
 (async () => {
+
+  await chillout.forEach(await getLocaleFilePaths(), (localeFile) => {
+    let locale = require(localeFile);
+    if (locale._type != "locale") return;
+    locales.push([locale.locale, locale]);
+  })
+
 
   let dcInters = [];
 
@@ -63,10 +92,10 @@ globalThis.Underline = {
       if(uInter?._type != "interaction") return;
       if (!uInter.publishType) uInter.publishType = "all";
       if (!(uInter.publishType == "all" || publishSpecialType == uInter.publishType)) {
-        console.warn(`Interaksiyon "${uInter.actionType == "CHAT_INPUT" ? `/${uInter.name.join(" ")}` : `${uInter.name[0]}`}" dönüştürülme listesine eklenmedi çünkü interaksiyon paylaşılma tipi(${uInter.publishType}) ile paylaşma modu(${publishMode}) uyumsuz!`);
+        console.warn(`Interaksiyon "${uInter.actionType == "ChatInput" ? `/${uInter.name.join(" ")}` : `${uInter.name[0]}`}" dönüştürülme listesine eklenmedi çünkü interaksiyon paylaşılma tipi(${uInter.publishType}) ile paylaşma modu(${publishMode}) uyumsuz!`);
         return;
       }
-      console.info(`Interaksiyon "${uInter.actionType == "CHAT_INPUT" ? `/${uInter.name.join(" ")}` : `${uInter.name[0]}`}" dönüştürülme listesine eklendi!`);
+      console.info(`Interaksiyon "${uInter.actionType == "ChatInput" ? `/${uInter.name.join(" ")}` : `${uInter.name[0]}`}" dönüştürülme listesine eklendi!`);
       uInters.push(uInter);
     });
 
@@ -76,39 +105,49 @@ globalThis.Underline = {
     dcInters = uInters.reduce((all, current) => {
       switch (current.name.length) {
         case 1: {
+          let localeData = findLocales(current.name);
           all.push({
-            type: current.actionType,
+            type: interactionTypes[current.actionType] ?? current.actionType,
             name: current.name[0],
             description: current.description,
             defaultPermission: current.defaultPermission,
-            options: current.options
+            options: current.options,
+            nameLocalizations: localeData.names(0),
+            descriptionLocalizations: localeData.descriptions,
           });
           break;
         }
         case 2: {
           let baseItem = all.find((i) => {
-            return i.name == current.name[0] && i.type == current.actionType
+            return i.name == current.name[0] && (interactionTypes[i.type] ?? i.type) == (interactionTypes[current.actionType] ?? current.actionType)
           });
+          let localeData = findLocales(current.name);
           if (!baseItem) {
             all.push({
-              type: current.actionType,
+              type: interactionTypes[current.actionType] ?? current.actionType,
               name: current.name[0],
-              description: `${current.name[0]} komutları.`,
+              nameLocalizations: localeData.names(0),
+              descriptionLocalizations: localeData.descriptions,
+              description: current.description,
               defaultPermission: current.defaultPermission,
               options: [
                 {
-                  type: "SUB_COMMAND",
+                  type: 1,
                   description: current.description,
                   name: current.name[1],
+                  nameLocalizations: localeData.names(1),
+                  descriptionLocalizations: localeData.descriptions,
                   options: current.options
                 }
               ]
             });
           } else {
             baseItem.options.push({
-              type: "SUB_COMMAND",
+              type: 1,
               description: current.description,
               name: current.name[1],
+              nameLocalizations: localeData.names(1),
+              descriptionLocalizations: localeData.descriptions,
               options: current.options
             })
           }
@@ -116,25 +155,32 @@ globalThis.Underline = {
         }
         case 3: {
           let level1Item = all.find((i) => {
-            return i.name == current.name[0] && i.type == current.actionType
+            return i.name == current.name[0] && (interactionTypes[i.type] ?? i.type) == (interactionTypes[current.actionType] ?? current.actionType)
           });
+          let localeData = findLocales(current.name);
           if (!level1Item) {
             all.push({
-              type: current.actionType,
+              type: interactionTypes[current.actionType] ?? current.actionType,
               name: current.name[0],
-              description: `${current.name[0]} komutları.`,
               defaultPermission: current.defaultPermission,
+              nameLocalizations: localeData.names(0),
+              descriptionLocalizations: localeData.descriptions,
+              description: current.description,
               options: [
                 {
-                  type: "SUB_COMMAND_GROUP",
-                  description: `${current.name[1]} komutları.`,
+                  type: 2,
                   name: current.name[1],
+                  nameLocalizations: localeData.names(1),
+                  descriptionLocalizations: localeData.descriptions,
+                  description: current.description,
                   options: [
                     {
-                      type: "SUB_COMMAND",
+                      type: 1,
                       description: current.description,
                       name: current.name[2],
-                      options: current.options
+                      options: current.options,
+                      nameLocalizations: localeData.names(2),
+                      descriptionLocalizations: localeData.descriptions,
                     }
                   ]
                 }
@@ -142,28 +188,34 @@ globalThis.Underline = {
             });
           } else {
             let level2Item = level1Item.options.find(i => {
-              return i.name == current.name[1] && i.type == "SUB_COMMAND_GROUP"
+              return i.name == current.name[1] && (interactionTypes[i.type] ?? i.type) == 2
             });
             if (!level2Item) {
               level1Item.options.push({
-                type: "SUB_COMMAND_GROUP",
-                description: `${current.name[1]} komutları.`,
+                type: 2,
                 name: current.name[1],
+                nameLocalizations: localeData.names(1),
+                descriptionLocalizations: localeData.descriptions,
+                description: current.description,
                 options: [
                   {
-                    type: "SUB_COMMAND",
+                    type: 1,
                     description: current.description,
                     name: current.name[2],
-                    options: current.options
+                    options: current.options,
+                    nameLocalizations: localeData.names(2),
+                    descriptionLocalizations: localeData.descriptions,
                   }
                 ]
               })
             } else {
               level2Item.options.push({
-                type: "SUB_COMMAND",
+                type: 1,
                 description: current.description,
                 name: current.name[2],
-                options: current.options
+                options: current.options,
+                nameLocalizations: localeData.names(2),
+                descriptionLocalizations: localeData.descriptions,
               })
             }
           }
@@ -173,7 +225,26 @@ globalThis.Underline = {
 
       return all;
     }, []);
+
+    function fixOptions(inter = {}) {
+      console.log("1",inter.type)
+      inter.type = optionTypes[inter.type] ?? inter.type;
+      console.log("2",inter.type)
+      if (inter?.options) {
+        inter.options.map(fixOptions)
+        return inter;
+      };
+      return inter;
+    }
     
+    for (let i = 0; i < dcInters.length; i++) {
+      dcInters[i] = fixOptions(dcInters[i]);
+    }
+
+    console.log(require("util").inspect(dcInters, false, 9999, true));
+
+    // return;
+
     dcInters = dcInters.map(i => Discord.ApplicationCommandManager.transformCommand(i));
   } else {
     console.info("Hiçbir interaksiyon okunmadı, bütün var olanlar temizlenicek...");
@@ -210,3 +281,32 @@ globalThis.Underline = {
 
   console.info(`İnteraksiyonlar paylaşıldı!`);
 })();
+
+
+/**
+ * @param {string[]} commandName 
+ */
+function findLocales(commandName) {
+  let commandNameJoined = commandName.join(" ");
+  let descriptions = {};
+  let names = {};
+  for (let i = 0; i < locales.length; i++) {
+    const [localeString, locale] = locales[i];
+    let commandLocale = locale.commands.find(i => i.originalName.join(" ") == commandNameJoined);
+    if (commandLocale) {
+      let aliases = ogLangs.filter(i => i.startsWith(localeString));
+      for (let j = 0; j < aliases.length; j++) {
+        const alias = aliases[j];
+        descriptions[alias] = commandLocale.description;
+        names[alias] = commandLocale.name;
+      }
+    }
+  }
+  console.log({names, descriptions});
+  return {
+    descriptions,
+    names(idx) {
+      return Object.fromEntries(Object.entries(names).map(i => [i[0], i[1][idx]]));
+    }
+  };
+}

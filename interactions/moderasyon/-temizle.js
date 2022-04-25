@@ -5,7 +5,7 @@ module.exports = new Underline.SlashCommand({
   description: "Belli bir miktar mesaj silemenizi sağlar.",
   options: [
     {
-      type: "INTEGER",
+      type: "Integer",
       name: "miktar",
       description: "Silinecek mesaj miktarı. Maximum 100.",
       required: true

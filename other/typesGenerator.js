@@ -5,36 +5,66 @@ const fs = require("fs");
 const extractZip = require("extract-zip");
 const { makeSureFolderExists } = require("stuffs");
 const path = require("path");
+const readdirRecursive = require("recursive-readdir");
+const config = require("../config");
 
 globalThis.Underline = {
-  Plugin: require("../types/Plugin")
+  Plugin: require("../types/Plugin"),
+  Interaction: require('../types/Interaction'),
+  Event: require('../types/Event'),
+  SlashCommand: require("../types/SlashCommand"),
+  MessageAction: require("../types/MessageAction"),
+  UserAction: require("../types/UserAction"),
+  SelectMenu: require("../types/SelectMenu"),
+  Button: require("../types/Button"),
+  Locale: require("../types/Locale"),
+  config
 };
+
+async function getEventFilePaths() {
+  let eventsPath = path.resolve("./events");
+  await makeSureFolderExists(eventsPath);
+  let VEventFiles = await readdirRecursive(eventsPath);
+  VEventFiles = VEventFiles.filter(i => {
+    let state = path.basename(i).startsWith("-");
+    return !state;
+  });
+  return VEventFiles;
+}
+
+async function getInteractionFilePaths() {
+  let interactionsPath = path.resolve("./interactions");
+  await makeSureFolderExists(interactionsPath);
+  let VInteractionFiles = await readdirRecursive(interactionsPath);
+  VInteractionFiles = VInteractionFiles.filter(i => {
+    let state = path.basename(i).startsWith("-");
+    return !state;
+  });
+  return VInteractionFiles;
+}
 
 (async () => {
   let pluginFiles = await getPluginFilePaths();
+  let eventFiles = await getEventFilePaths();
+  let interactionFiles = await getInteractionFilePaths();
   let pluginTypes = [];
+  let interactionIds = [];
+  let eventIds = [];
   let TEventNames = [];
   let TEvents = [];
   let TInterfaces = [];
   let loadedNamespaces = [];
   await chillout.forEach(pluginFiles, async (pluginFile) => {
-    let rltPath = path.relative(__dirname, pluginFile);
-    console.info(`[BİLGİ] "${rltPath}" konumundaki plugin yükleniyor..`)
     /** @type {import("../types/Plugin")} */
     let plugin = require(pluginFile);
-    console.info("Plugin:", plugin._type, plugin.namespace, plugin);
-    // console.log(plugin)
 
-    if (plugin._type != "plugin")
-      return console.warn(`[UYARI] "${rltPath}" plugin dosyası boş. Atlanıyor..`);
+    if (plugin._type != "plugin") return 
 
-    if (loadedNamespaces.find(x => x == plugin.namespace))
-      return console.warn(`[UYARI] ${plugin.name} plugini zaten yüklenmiş. Atlanıyor..`);
+    if (loadedNamespaces.find(x => x == plugin.namespace)) return
 
     loadedNamespaces.push(plugin.namespace);
 
     let parsedPluginPath = path.parse(pluginFile);
-    // console.log(parsedPluginPath)
 
     let dtsPath = "";
 
@@ -48,7 +78,7 @@ globalThis.Underline = {
         break;
       }
     }
-    console.log(dtsPath);
+
     let isDTS = fs.existsSync(dtsPath);
 
     if (isDTS) {
@@ -76,14 +106,33 @@ globalThis.Underline = {
       }
     }
 
-    console.info(`[BİLGİ] "${plugin.name}" plugini tipi çıkartıldı.`);
+  });
+
+  await chillout.forEach(interactionFiles, (interactionFile) => {
+    /** @type {import("..MessageActions/Interaction")} */
+    let uInter = require(interactionFile);
+
+    if (uInter?._type != "interaction") return;
+
+    if (!uInter.id) return;
+    interactionIds.push(uInter.id);
+
+  });
+
+  await chillout.forEach(eventFiles, (eventFile) => {
+    /** @type {import("../types/Event")} */
+    let uEvent = require(eventFile);
+    if (uEvent?._type != "event") return;
+    if (!uEvent.id) return;
+    eventIds.push(uEvent.id);
   });
 
   await makeSureFolderExists(path.resolve(__dirname, "../generated"));
-  let result = `export class Types {\n${pluginTypes.map(i => `  ${i};`).join("\n")}\n};\n${`export type TEventNames = ${TEventNames.join(" | ").trim() || '""'};`}\n${`export type TEvents = ${TEvents.join(" | ").trim() || "[]"};`}\n${TInterfaces.join("\n")}\n`.trim();
-  console.info(result);
-  await fs.promises.writeFile(path.resolve(__dirname, "../generated/pluginTypes.d.ts"), result);
+  let pluginTypesResult = `export class Types {\n${pluginTypes.map(i => `  ${i};`).join("\n")}\n};\n${`export type TEventNames = ${TEventNames.join(" | ").trim() || '""'};`}\n${`export type TEvents = ${TEvents.join(" | ").trim() || "[]"};`}\n${TInterfaces.join("\n")}\n`.trim();
+  await fs.promises.writeFile(path.resolve(__dirname, "../generated/pluginTypes.d.ts"), pluginTypesResult);
 
+  let idsResult = `export type InteractionIds = ${interactionIds.map(i => `"${i}"`).join(" | ").trim() || '""'};\nexport type EventIds = ${eventIds.map(i => `"${i}"`).join(" | ").trim() || '""'};`;
+  await fs.promises.writeFile(path.resolve(__dirname, "../generated/ids.d.ts"), idsResult);
 
 })();
 
@@ -134,6 +183,6 @@ async function getPluginFilePaths() {
       result.push(path.resolve(folderPath, "index.js"));
     }
   }
-  console.log(result)
+
   return result;
 }

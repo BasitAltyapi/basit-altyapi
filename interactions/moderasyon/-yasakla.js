@@ -3,13 +3,13 @@ module.exports = new Underline.SlashCommand({
   description: "Sunucudan üye yasaklamanızı sağlar.",
   options: [
     {
-      type: "USER",
+      type: "User",
       name: "uye",
       description: "Yasaklanacak üye.",
       required: true
     },
     {
-      type: "STRING",
+      type: "String",
       name: "sebep",
       description: "Yasaklanma sebebi",
       required: false

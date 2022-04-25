@@ -36,7 +36,7 @@ module.exports = new Underline.SlashCommand({
     {
       description: "JavaScript kodu.",
       name: "code",
-      type: "STRING",
+      type: "String",
       required: true
     }
   ]

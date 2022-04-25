@@ -2,6 +2,7 @@ module.exports = new Underline.SlashCommand({
   description: "Bir kullanıcı hakkına bilgilere bakmanızı sağlar.",
   name: ["profil"],
   async onInteraction(interaction, other) {
+    
     /** @type {import("discord.js").GuildMember} */
     const member = interaction.options.getMember("kullanici", true);
     let avatarURL = await getUserBannerURL(member.user.id, Underline.client.token);
@@ -27,7 +28,7 @@ module.exports = new Underline.SlashCommand({
   options: [
     {
       name: "kullanici",
-      type: "USER",
+      type: "User",
       description: "Bilgisini almak istediğiniz kullanıcı.",
       required: true
     }

@@ -3,19 +3,19 @@ module.exports = new Underline.SlashCommand({
   description: "Bir kullanıcıdan rol alamanızı sağlar.",
   options: [
     {
-      type: "USER",
+      type: "User",
       name: "uye",
       description: "Rol alacağanız kişi.",
       required: true
     },
     {
-      type: "ROLE",
+      type: "Role",
       name: "rol",
       description: "Alınacak rol.",
       required: true
     },
     {
-      type: "STRING",
+      type: "String",
       name: "durum",
       description: "Rol verilsinmi alınsınmı?",
       required: true,

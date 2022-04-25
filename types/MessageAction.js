@@ -7,7 +7,7 @@ class MessageAction extends Interaction {
   constructor (arg = { }) {
     super({
       type: "COMMAND",
-      actionType: "MESSAGE",
+      actionType: "Message",
       ...arg
     })
   }

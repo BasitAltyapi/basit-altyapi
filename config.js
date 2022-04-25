@@ -13,7 +13,7 @@ module.exports = new (require("./types/Config"))({
   // Discord.js client ayarları.
   clientOptions: {
     // Okumanızı tavsiye ederim: https://discordjs.guide/popular-topics/intents.html
-    intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_MEMBERS", "GUILD_WEBHOOKS"]
+    intents: ["Guilds"]
   },
   // Botunuzun varsayılan dili.
   defaultLanguage: "tr",
@@ -79,7 +79,7 @@ module.exports = new (require("./types/Config"))({
   // işe yaradığını merak ediyorsanız interactions/ornekInteraksiyon.js'e
   // bakabilirsiniz.
   interactionDefaults: {
-    actionType: "CHAT_INPUT",
+    actionType: "ChatInput",
     description: "...",
     developerOnly: false,
     guildOnly: true,

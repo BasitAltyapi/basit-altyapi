@@ -1,4 +1,3 @@
-const { ContextMenuInteraction } = require("discord.js");
 const Interaction = require("./Interaction");
 
 class MessageAction extends Interaction {
@@ -7,7 +6,7 @@ class MessageAction extends Interaction {
   constructor (arg = { }) {
     super({
       type: "COMMAND",
-      actionType: "USER",
+      actionType: "User",
       ...arg
     })
   }

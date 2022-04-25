@@ -4,12 +4,14 @@ class Locale {
   locale = "tr";
   _data = {};
   data = {};
+  commands = [];
 
   /** @param {{locale:string,data:object}} obj */
   constructor (obj={}) {
     this.locale = obj.locale?.split("-")[0] ?? this.locale;
     this._data = obj.data ?? this._data;
     this.data = convert(this._data);
+    this.commands = obj.commands ?? [];
   }
 }
 

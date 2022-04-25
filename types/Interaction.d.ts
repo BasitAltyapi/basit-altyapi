@@ -12,59 +12,79 @@ import {
   ContextMenuInteraction,
   PermissionString,
   SelectMenuInteraction,
-  MessageSelectOptionData,
+  SelectMenuComponentOptionData,
   ButtonInteraction,
-  MessageSelectMenu,
-  MessageButton,
-  MessageButtonStyleResolvable,
-  EmojiResolvable
+  SelectMenuBuilder,
+  ButtonBuilder,
+  ButtonStyleEnumResolvable,
+  EmojiResolvable,
+  ModalSubmitInteraction,
+  ModalBuilder,
+  TextInputComponentData,
+  ApplicationCommandOptionType,
 } from "discord.js";
 
 interface CustomSelectMenuOptions {
   min?: number;
   max?: number;
-  choices: MessageSelectOptionData[];
+  choices: SelectMenuComponentOptionData[];
   placeholder?: string;
+}
+
+interface CustomModalOptions {
+  title?: string;
+  rows: {type: "TextInput", data: TextInputComponentData}[][]
 }
 
 interface CustomButtonOptions {
   emoji?: EmojiResolvable;
   label?: string;
-  style: MessageButtonStyleResolvable;
+  style: ButtonStyleEnumResolvable;
   url?: string;
 }
 
 export type CustomApplicationCommandOptionData = (
-  ApplicationCommandNonOptionsData
+  | ApplicationCommandNonOptionsData
   | ApplicationCommandChannelOptionData
   | ApplicationCommandChoicesData
-) & { onComplete(interaction: AutocompleteInteraction, value: string | number, other: IOther): ApplicationCommandOptionChoice[] }
+) & {
+  onComplete(
+    interaction: AutocompleteInteraction,
+    value: string | number,
+    other: IOther
+  ): ApplicationCommandOptionChoice[];
+};
 
-type cooldown = {
-  type: cooldownType;
+type Cooldown = {
+  type: CooldownType;
   amount: number;
-}
+};
 
-type UserPermString = (PermissionString | "DEVELOPER" | "GUILD_OWNER");
+type UserPermString = PermissionString | "DEVELOPER" | "GUILD_OWNER";
 
 export class BaseInteraction {
   private _type: string;
   name: string[];
   id?: string;
-  perms?: { bot: PermissionString[], user: UserPermString[] };
-  onInteraction(interaction: CommandInteraction | ContextMenuInteraction, other: IOther): void;
-  toJSON(data: Array<string | number>): MessageButton | MessageSelectMenu | undefined;
+  perms?: { bot: PermissionString[]; user: UserPermString[] };
+  onInteraction(
+    interaction: CommandInteraction | ContextMenuInteraction,
+    other: IOther
+  ): void;
+  toJSON(
+    data: Array<string | number>
+  ): ButtonBuilder | SelectMenuBuilder | ModalBuilder | undefined;
   publishType?: "globalOnly" | "guildOnly" | "all" | string;
   onLoad?(client: Client): void;
   coolDowns: Map<string, number>;
   description!: string;
   disabled?: boolean;
   other?: { [key: string | number]: any };
-  coolDown?: cooldown[] | cooldown | number;
+  coolDown?: Cooldown[] | Cooldown | number;
   guildOnly?: boolean;
   options?: CustomApplicationCommandOptionData[];
   defaultPermission?: boolean;
-  actionType?: ApplicationCommandType | "SELECT_MENU" | "BUTTON";
+  actionType?: ApplicationCommandType | "SelectMenu" | "Button" | "Modal";
   autoDefer?: "off" | "on" | "ephemeral";
   nullError?: boolean;
   calculated?: { [key: string | number]: any };
@@ -76,19 +96,30 @@ export class BaseInteraction {
   constructor(arg: TInteractionConstructor);
 }
 
-export type TOmittedInteraction = Omit<BaseInteraction, "_type" | "coolDowns" | "name" | "onInteraction" | "actionType" | "options" | "toJSON" | "calculated">;
-export type TInteractionConstructor = TOmittedInteraction & ((ActionChatCommand | ActionRightClickCommand | SelectMenu | Button));
-type cooldownType = "user" | "member" | "channel" | "guild" | "message" | "any";
+export type TOmittedInteraction = Omit<
+  BaseInteraction,
+  | "_type"
+  | "coolDowns"
+  | "name"
+  | "onInteraction"
+  | "actionType"
+  | "options"
+  | "toJSON"
+  | "calculated"
+>;
+export type TInteractionConstructor = TOmittedInteraction &
+  (ActionChatCommand | ActionRightClickCommand | SelectMenu | Button);
+type CooldownType = "user" | "member" | "channel" | "guild" | "message" | "any";
 export interface IOther {
-  setCoolDown(durations: number, type: cooldownType): void,
-  locale: import("./Locale").Data,
-  data: (string | number | { [string | number]: any, $unRef(): boolean })[],
-  [key: string | number]: any
+  setCoolDown(durations: number, type: CooldownType): void;
+  locale: import("./Locale").Data;
+  data: (string | number | { [string | number]: any; $unRef(): boolean })[];
+  [key: string | number]: any;
 }
 
 export interface ActionChatCommand {
   name: string[];
-  actionType: "CHAT_INPUT";
+  actionType: "ChatInput";
   onInteraction(interaction: CommandInteraction, other: IOther): void;
   options: CustomApplicationCommandOptionData[];
   toJSON(): undefined;
@@ -96,7 +127,7 @@ export interface ActionChatCommand {
 
 export interface ActionRightClickCommand {
   name: string;
-  actionType: "MESSAGE" | "USER";
+  actionType: "Message" | "User";
   onInteraction(interaction: ContextMenuInteraction, other: IOther): void;
   options: undefined;
   toJSON(): undefined;
@@ -104,19 +135,28 @@ export interface ActionRightClickCommand {
 
 export interface SelectMenu {
   name: string;
-  actionType: "SELECT_MENU";
+  actionType: "SelectMenu";
   onInteraction(interaction: SelectMenuInteraction, other: IOther): void;
   options?: CustomSelectMenuOptions;
-  toJSON(data: Array<string | number>): MessageSelectMenu;
+  toJSON(data: Array<string | number>): SelectMenuBuilder;
   nullError?: Boolean;
 }
 
 export interface Button {
   name: string;
-  actionType: "BUTTON";
+  actionType: "Button";
   onInteraction(interaction: ButtonInteraction, other: IOther): void;
   options?: CustomButtonOptions;
-  toJSON(data: Array<string | number>): MessageButton;
+  toJSON(data: Array<string | number>): ButtonBuilder;
+  nullError?: Boolean;
+}
+
+export interface Modal {
+  name: string;
+  actionType: "Modal";
+  onInteraction(interaction: ModalSubmitInteraction, other: IOther): void;
+  options?: CustomModalOptions;
+  toJSON(data: Array<string | number>): ModalBuilder;
   nullError?: Boolean;
 }
 

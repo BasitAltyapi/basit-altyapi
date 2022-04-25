@@ -69,15 +69,17 @@ makeSureFolderExistsSync("./events");
           "Üye Sağtık",
           "Mesaj Sağtık",
           "Seç Menüsü",
+          "Form",
           "Buton"
         ],
         result(val) {
           let l = {
-            "Slash Komut": "CHAT_INPUT",
-            "Üye Sağtık": "USER",
-            "Mesaj Sağtık": "MESSAGE",
-            "Seç Menüsü": "SELECT_MENU",
-            "Buton": "BUTTON"
+            "Slash Komut": "ChatInput",
+            "Üye Sağtık": "User",
+            "Mesaj Sağtık": "Message",
+            "Seç Menüsü": "SelectMenu",
+            "Form": "Modal",
+            "Buton": "Button"
           };
           return l[val];
         },
@@ -88,7 +90,7 @@ makeSureFolderExistsSync("./events");
       let interName = [];
       let interDesc = "...";
       switch (interActionType) {
-        case "CHAT_INPUT": {
+        case "ChatInput": {
           console.clear();
           interName = (await prompt({
             type: "input",
@@ -111,8 +113,8 @@ makeSureFolderExistsSync("./events");
           })).value;
           break;
         };
-        case "USER":
-        case "MESSAGE": {
+        case "User":
+        case "Message": {
           console.clear();
           interName = (await prompt({
             type: "input",
@@ -122,7 +124,7 @@ makeSureFolderExistsSync("./events");
           })).value;
           break;
         }
-        case "BUTTON": {
+        case "Button": {
           console.clear();
           interName = (await prompt({
             type: "input",
@@ -132,12 +134,22 @@ makeSureFolderExistsSync("./events");
           })).value;
           break;
         }
-        case "SELECT_MENU": {
+        case "SelectMenu": {
           console.clear();
           interName = (await prompt({
             type: "input",
             name: 'value',
             message: "Menünüzün custom id'si ne olsun? (Örn; sec_beni)",
+            required: true
+          })).value;
+          break;
+        }
+        case "Modal": {
+          console.clear();
+          interName = (await prompt({
+            type: "input",
+            name: 'value',
+            message: "Formunuzun custom id'si ne olsun? (Örn; doldur_beni)",
             required: true
           })).value;
           break;
@@ -216,24 +228,17 @@ makeSureFolderExistsSync("./events");
       console.log(`! Dosyanız oluşturuluyor..`);
 
       let filePath = path.resolve("./interactions", `${interFileName}.js`);
-      let transformer = {
-        CHAT_INPUT: "SlashCommand",
-        USER: "UserAction",
-        MESSAGE: "MessageAction",
-        BUTTON: "Button",
-        SELECT_MENU: "SelectMenu"
-      }
       let resultText = `
-module.exports = new Underline.${transformer[interActionType] ?? ""}({
-  ${interActionType == "BUTTON" || interActionType == "SELECT_MENU" ? `id: ${JSON.stringify(interName)},` : ""}
+module.exports = new Underline.${interActionType}({
+  ${interActionType == "Button" || interActionType == "SelectMenu" || interActionType == "Modal" ? `id: ${JSON.stringify(interName)},` : ""}
   name: ${JSON.stringify(interName)},
   ${interDesc ? `description: ${JSON.stringify(interDesc)},` : ""}
   async onInteraction(inter, other) {
     // Kodunuz bruh, kolay gelsin!
   },
-  ${interActionType == "MESSAGE" || interActionType == "USER" ? "" : `options: ${interActionType == "BUTTON" || interActionType == "SELECT_MENU" ? "{}" : "[]"},`}
+  ${interActionType == "Message" || interActionType == "User" ? "" : `options: ${interActionType == "Button" || interActionType == "SelectMenu"|| interActionType == "Modal" ? "{}" : "[]"},`}
   ${interCoolDown ? `coolDown: ${interCoolDown},` : ""}
-  ${interActionType == "MESSAGE" || interActionType == "USER" ? "publishType: \"all\"," : ""}
+  ${interActionType == "Message" || interActionType == "User" ? "publishType: \"all\"," : ""}
   guildOnly: ${interGuildOnly}${interBotPerms.length > 0 || interUserPerms.length > 0 ? `,` : ""}
   ${interBotPerms.length > 0 || interUserPerms.length > 0 ? `perms: {` : ""}
   ${interBotPerms.length > 0 ? `  bot: ${JSON.stringify(interBotPerms)},` : ""}

@@ -22,12 +22,12 @@ module.exports = new Underline.SlashCommand({
   options: [
     {
       name: "number_one",
-      type: "NUMBER",
+      type: "Number",
       description: "Sayı Bir",
       required: true
     }, {
       name: "expression_type",
-      type: "STRING",
+      type: "String",
       description: "İşlem tipi",
       required: true,
       choices: [
@@ -50,7 +50,7 @@ module.exports = new Underline.SlashCommand({
       ]
     }, {
       name: "number_two",
-      type: "NUMBER",
+      type: "Number",
       description: "Sayı İki",
       required: true
     },
