@@ -1,3 +1,4 @@
+// const { Embed, ButtonComponent, SelectMenuComponent } = require("discord.js");
 const { readFileSync, writeFileSync } = require("fs");
 const readdirRecursive = require("recursive-readdir");
 
@@ -14,8 +15,10 @@ readdirRecursive(process.cwd()).then(async (paths) => {
       let newWord = "\"" + upperToCamel(oldWord.match(/[A-Z_]+/)?.shift()) + "\"";
       content = content.replace(oldWord, newWord);
     }
-    content = content.replace(/PermissionResolvable/g, "PermissionResolvable");
-    content = content.replace(/EmbedBuilder/g, "EmbedBuilder");
+    content = content.replace(/PermissionString/g, "PermissionResolvable");
+    content = content.replace(/MessageEmbed|EmbedBuilder/g, "Embed");
+    content = content.replace(/MessageButton|ButtonBuilder/g, "ButtonComponent"); 
+    content = content.replace(/MessageSelectMenu|SelectMenuBuilder/g, "SelectMenuComponent"); 
     writeFileSync(path, content);
     console.log(path.replace(process.cwd(), ""), `${i}/${paths.length}`, fixSize)
   }

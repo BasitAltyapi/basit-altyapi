@@ -1,4 +1,4 @@
-const { ButtonBuilder } = require("discord.js");
+const { ButtonComponent } = require("discord.js");
 const Interaction = require("./Interaction");
 const stuffs = require("stuffs");
 
@@ -15,7 +15,7 @@ class Button extends Interaction {
   isButton() { return true; }
   /**
    * @param {Array<string | number | any>} data
-   * @returns {MessageSelectMenu}
+   * @returns {SelectMenuComponent}
    */
   toJSON(data = []) {
     if (!Array.isArray(data)) throw Error(`SelectMenu#toJSON data type must be an array.`);
@@ -34,7 +34,7 @@ class Button extends Interaction {
     data.unshift(this.id);
     let customId = data.join("—");
     if (customId.length > 100) throw Error(`SelectMenu#toJSON id and data length must be less than 100.`);
-    let button = new ButtonBuilder()
+    let button = new ButtonComponent()
       .setCustomId(customId)
       .setStyle(this.options.style);
     if (this.options.emoji) button.setEmoji(this.options.emoji);

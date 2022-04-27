@@ -6,7 +6,7 @@
     "chalk": "^4.1.1",
     "chillout": "^5.0.0",
     "discord-api-types": "^0.23.1",
-    "discord.js": "^14.0.0-dev.1650672498-3617093",
+    "discord.js": "^14.0.0-dev.1650931749-df64d3e",
     "enquirer": "^2.3.6",
     "extract-zip": "^2.0.1",
     "lodash": "^4.17.21",

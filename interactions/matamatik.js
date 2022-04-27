@@ -1,3 +1,5 @@
+const { ButtonComponent } = require("discord.js");
+
 const expressionMap = {
   "add": "+",
   "subtract": "-",

@@ -14,15 +14,15 @@ import {
   SelectMenuInteraction,
   SelectMenuComponentOptionData,
   ButtonInteraction,
-  SelectMenuBuilder,
-  ButtonBuilder,
+  SelectMenuComponent,
+  ButtonComponent,
   ButtonStyleEnumResolvable,
   EmojiResolvable,
   ModalSubmitInteraction,
   ModalBuilder,
   TextInputComponentData,
   ApplicationCommandOptionType,
-  PermissionResolvable
+  PermissionResolvable,
 } from "discord.js";
 
 interface CustomSelectMenuOptions {
@@ -74,7 +74,7 @@ export class BaseInteraction {
   ): void;
   toJSON(
     data: Array<string | number>
-  ): ButtonBuilder | SelectMenuBuilder | ModalBuilder | undefined;
+  ): ButtonComponent | SelectMenuComponent | ModalBuilder | undefined;
   publishType?: "globalOnly" | "guildOnly" | "all" | string;
   onLoad?(client: Client): void;
   coolDowns: Map<string, number>;
@@ -139,7 +139,7 @@ export interface SelectMenu {
   actionType: "SelectMenu";
   onInteraction(interaction: SelectMenuInteraction, other: IOther): void;
   options?: CustomSelectMenuOptions;
-  toJSON(data: Array<string | number>): SelectMenuBuilder;
+  toJSON(data: Array<string | number>): SelectMenuComponent;
   nullError?: Boolean;
 }
 
@@ -148,7 +148,7 @@ export interface Button {
   actionType: "Button";
   onInteraction(interaction: ButtonInteraction, other: IOther): void;
   options?: CustomButtonOptions;
-  toJSON(data: Array<string | number>): ButtonBuilder;
+  toJSON(data: Array<string | number>): ButtonComponent;
   nullError?: Boolean;
 }
 
