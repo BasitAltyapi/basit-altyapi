@@ -2,7 +2,7 @@ const { readFileSync, writeFileSync } = require("fs");
 const readdirRecursive = require("recursive-readdir");
 
 readdirRecursive(process.cwd()).then(async (paths) => {
-  paths = paths.filter(x => !x.includes("jsconfig") && !x.includes("package") && !x.includes("License") && !x.includes("yarn.lock") && !x.includes("node_modules") && !x.includes(".git"));
+  paths = paths.filter(x => !x.includes("jsconfig") && !x.includes("package") && !x.includes("LICENSE") && !x.includes("v14-") && !x.includes("yarn.lock") && !x.includes("node_modules") && !x.includes(".git"));
   firstLoop: for (let i = 0; i < paths.length; i++) {
     let path = paths[i];
     let content = readFileSync(path).toString();
