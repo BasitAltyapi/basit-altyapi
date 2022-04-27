@@ -1,4 +1,4 @@
-module.exports = new Underline.SlashCommand({
+module.exports = new Underline.ChatInput({
   name: ["moderasyon", "ses-sustur"],
   description: "Bir kullanıcının ses susturmasını açıp kapamanızı sağlar.",
   options: [
@@ -44,7 +44,7 @@ module.exports = new Underline.SlashCommand({
 
   },
   perms: {
-    bot: ["MANAGE_CHANNELS"],
-    user: ["MANAGE_CHANNELS"]
+    bot: ["ManageChannels"],
+    user: ["ManageChannels"]
   }
 })

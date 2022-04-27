@@ -6,7 +6,7 @@ class MessageAction extends Interaction {
   /** @param {Interaction.TOmittedInteraction & {name: string, onInteraction(interaction: ContextMenuInteraction, other: Interaction.IOther)}} arg */
   constructor (arg = { }) {
     super({
-      type: "COMMAND",
+      type: "Command",
       actionType: "Message",
       ...arg
     })

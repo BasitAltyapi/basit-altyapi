@@ -1,4 +1,4 @@
-module.exports = new Underline.SlashCommand({
+module.exports = new Underline.ChatInput({
   name: ["buton-yolla"],
   description: "Buton yollar",
   async onInteraction(inter, other) {
@@ -6,7 +6,7 @@ module.exports = new Underline.SlashCommand({
       content: "Düğme!",
       components: [
         {
-          type: "ACTION_ROW",
+          type: "ActionRow",
           components: [
             Underline.interactions.get("ornek").toJSON([inter.user])
           ]

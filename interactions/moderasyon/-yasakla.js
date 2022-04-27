@@ -1,4 +1,4 @@
-module.exports = new Underline.SlashCommand({
+module.exports = new Underline.ChatInput({
   name: ["moderasyon", "yasakla"],
   description: "Sunucudan üye yasaklamanızı sağlar.",
   options: [
@@ -25,7 +25,7 @@ module.exports = new Underline.SlashCommand({
     interaction.reply(`**${targetMember.user.tag}** sunucudan **${reason ? reason : "Sebep belirtilmemiş."}** sebebi ile **yasaklandı**!`);
   },
   perms: {
-    bot: ["BAN_MEMBERS"],
-    user: ["BAN_MEMBERS"]
+    bot: ["BanMembers"],
+    user: ["BanMembers"]
   }
 })

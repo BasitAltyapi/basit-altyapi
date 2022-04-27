@@ -10,7 +10,7 @@ import {
   Client,
   CommandInteraction,
   ContextMenuInteraction,
-  PermissionString,
+  PermissionResolvable,
   SelectMenuInteraction,
   SelectMenuComponentOptionData,
   ButtonInteraction,
@@ -22,6 +22,7 @@ import {
   ModalBuilder,
   TextInputComponentData,
   ApplicationCommandOptionType,
+  PermissionResolvable
 } from "discord.js";
 
 interface CustomSelectMenuOptions {
@@ -60,13 +61,13 @@ type Cooldown = {
   amount: number;
 };
 
-type UserPermString = PermissionString | "DEVELOPER" | "GUILD_OWNER";
+type UserPermString = PermissionResolvable | "Developer" | "GuildOwner";
 
 export class BaseInteraction {
   private _type: string;
   name: string[];
   id?: string;
-  perms?: { bot: PermissionString[]; user: UserPermString[] };
+  perms?: { bot: PermissionResolvable[]; user: UserPermString[] };
   onInteraction(
     interaction: CommandInteraction | ContextMenuInteraction,
     other: IOther
@@ -90,7 +91,7 @@ export class BaseInteraction {
   calculated?: { [key: string | number]: any };
   isSelectMenu(): this is import("./SelectMenu");
   isButton(): this is import("./Button");
-  isChatActionCommand(): this is import("./SlashCommand");
+  isChatActionCommand(): this is import("./ChatInput");
   isUserActionCommand(): this is import("./UserAction");
   isMessageActionCommand(): this is import("./MessageAction");
   constructor(arg: TInteractionConstructor);

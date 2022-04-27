@@ -1,4 +1,4 @@
-module.exports = new Underline.SlashCommand({
+module.exports = new Underline.ChatInput({
   name: ["reload"],
   description: "Bot yetkilileri için Underline reload komutu.",
   async onInteraction(interaction) {
@@ -11,7 +11,7 @@ module.exports = new Underline.SlashCommand({
     amount: 180000
   },
   perms: {
-    user: ["DEVELOPER"]
+    user: ["Developer"]
   },
   publishType: "guildOnly"
 })

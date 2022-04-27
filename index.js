@@ -39,7 +39,7 @@ globalThis.Underline = {
   _references: new Discord.Collection(),
   Interaction: require('./types/Interaction'),
   Event: require('./types/Event'),
-  SlashCommand: require("./types/SlashCommand"),
+  ChatInput: require("./types/ChatInput"),
   MessageAction: require("./types/MessageAction"),
   UserAction: require("./types/UserAction"),
   SelectMenu: require("./types/SelectMenu"),
@@ -224,7 +224,7 @@ async function load() {
     /** @type {import("./types/Interaction")} */
     let uInter = require(interactionFile);
 
-    if (uInter?._type != "interaction" && uInter?._type != "noDeployInteraction") {
+    if (uInter?._type != "interaction" && uInter?._type != "ComponentInteraction") {
       if (Underline.config.debugLevel >= 1) console.warn(`[UYARI] "${rltPath}" interaksiyon dosyası boş. Atlanıyor..`);
       return;
     }
@@ -261,17 +261,17 @@ async function load() {
 
     if (uInter.developerOnly) {
       uInter.calculated.developerOnly = true;
-      if (Underline.config.debugLevel >= 1) console.warn(`[UYARI] "${uInter.id}" idli interaksiyon'da developerOnly seçeneğini kullanmışsınız, bu seçenek ilerki sürümlerde kaldırılacaktır lütfen bunu yapmak yerine perms.user kısmına "DEVELOPER"'ı koyunuz.`)
+      if (Underline.config.debugLevel >= 1) console.warn(`[UYARI] "${uInter.id}" idli interaksiyon'da developerOnly seçeneğini kullanmışsınız, bu seçenek ilerki sürümlerde kaldırılacaktır lütfen bunu yapmak yerine perms.user kısmına "Developer"'ı koyunuz.`)
     }
 
     {
-      let devOnlyIndex = uInter.perms.user.findIndex(p => p == "DEVELOPER");
+      let devOnlyIndex = uInter.perms.user.findIndex(p => p == "Developer");
       if (devOnlyIndex > -1) {
         uInter.calculated.developerOnly = true;
         uInter.perms.user.splice(devOnlyIndex, 1);
       }
 
-      let gOwnerOnlyIndex = uInter.perms.user.findIndex(p => p == "GUILD_OWNER");
+      let gOwnerOnlyIndex = uInter.perms.user.findIndex(p => p == "GuildOwner");
       if (gOwnerOnlyIndex > -1) {
         uInter.calculated.guildOwnerOnly = true;
         uInter.perms.user.splice(gOwnerOnlyIndex, 1);
@@ -625,7 +625,7 @@ client.on("interactionCreate", async (interaction) => {
 
   let converter = {
     "user": interaction.user.id,
-    "member": interaction.user.id + "_" + interaction.guild?.id,
+    "member": interaction.user.id + "" + interaction.guild?.id,
     "channel": interaction.channelId || interaction.user.id + " _c",
     "guild": interaction.guildId || interaction.user.id + "_g",
     "message": interaction.message?.id || (interaction.channelId + "_m") || (interaction.user.id + "_m"),

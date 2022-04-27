@@ -1,7 +1,7 @@
 const { Util } = require("discord.js");
 const util = require("util");
 
-module.exports = new Underline.SlashCommand({
+module.exports = new Underline.ChatInput({
   name: ["eval"],
   description: "Bot yetkilileri için JavaScript çalıştırma komutu.",
   async onInteraction(interaction) {
@@ -30,7 +30,7 @@ module.exports = new Underline.SlashCommand({
     }
   },
   perms: {
-    user: ["DEVELOPER"],
+    user: ["Developer"],
   },
   options: [
     {

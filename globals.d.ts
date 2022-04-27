@@ -9,7 +9,7 @@ interface Underline {
   utils: typeof import("./other/utils.js");
   client: import("discord.js").Client;
   Interaction: typeof import("./types/Interaction"),
-  SlashCommand: typeof import("./types/SlashCommand"),
+  ChatInput: typeof import("./types/ChatInput"),
   MessageAction: typeof import("./types/MessageAction"),
   UserAction: typeof import("./types/UserAction"),
   Event: typeof import("./types/Event"),

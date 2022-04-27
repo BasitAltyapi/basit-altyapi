@@ -1,4 +1,4 @@
-module.exports = new Underline.SlashCommand({
+module.exports = new Underline.ChatInput({
   name: ["modal","yolla"],
   description: "..",
   async onInteraction(inter, other) {

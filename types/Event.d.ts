@@ -124,7 +124,7 @@ export interface StageInstanceDeleteEvent { eventName: "stageInstanceDelete"; on
 export interface StickerCreateEvent { eventName: "stickerCreate"; onEvent: (sticker: Sticker, other: IOther) => any };
 export interface StickerDeleteEvent { eventName: "stickerDelete"; onEvent: (sticker: Sticker, other: IOther) => any };
 export interface StickerUpdateEvent { eventName: "stickerUpdate"; onEvent: (oldSticker: Sticker, newSticker: Sticker, other: IOther) => any };
-export interface ScheduledEventCreateEvent { eventName: "guildScheduledEventCreate"; onEvent: (event: GuildScheduledEvent<"SCHEDULED" | "ACTIVE" | "COMPLETED" | "CANCELED">, other: IOther) => any };
-export interface ScheduledEventDeleteEvent { eventName: "guildScheduledEventDelete"; onEvent: (event: GuildScheduledEvent<"SCHEDULED" | "ACTIVE" | "COMPLETED" | "CANCELED">, other: IOther) => any };
-export interface ScheduledEventUpdateEvent { eventName: "guildScheduledEventUpdate"; onEvent: (oldEvent: GuildScheduledEvent<"SCHEDULED" | "ACTIVE" | "COMPLETED" | "CANCELED">, newEvent: GuildScheduledEvent<"SCHEDULED" | "ACTIVE" | "COMPLETED" | "CANCELED">, other: IOther) => any };
-export interface ScheduledEventUserAddEvent { eventName: "guildScheduledEventUserAdd"; onEvent: (event: GuildScheduledEvent<"SCHEDULED" | "ACTIVE" | "COMPLETED" | "CANCELED">, user: User, other: IOther) => any };
+export interface ScheduledEventCreateEvent { eventName: "guildScheduledEventCreate"; onEvent: (event: GuildScheduledEvent<"Scheduled" | "Active" | "Completed" | "Canceled">, other: IOther) => any };
+export interface ScheduledEventDeleteEvent { eventName: "guildScheduledEventDelete"; onEvent: (event: GuildScheduledEvent<"Scheduled" | "Active" | "Completed" | "Canceled">, other: IOther) => any };
+export interface ScheduledEventUpdateEvent { eventName: "guildScheduledEventUpdate"; onEvent: (oldEvent: GuildScheduledEvent<"Scheduled" | "Active" | "Completed" | "Canceled">, newEvent: GuildScheduledEvent<"Scheduled" | "Active" | "Completed" | "Canceled">, other: IOther) => any };
+export interface ScheduledEventUserAddEvent { eventName: "guildScheduledEventUserAdd"; onEvent: (event: GuildScheduledEvent<"Scheduled" | "Active" | "Completed" | "Canceled">, user: User, other: IOther) => any };

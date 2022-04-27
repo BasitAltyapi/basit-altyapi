@@ -1,6 +1,6 @@
 const sleep = require('stuffs/lib/sleep');
 
-module.exports = new Underline.SlashCommand({
+module.exports = new Underline.ChatInput({
   name: ["moderasyon", "temizle"],
   description: "Belli bir miktar mesaj silemenizi sağlar.",
   options: [
@@ -26,7 +26,7 @@ module.exports = new Underline.SlashCommand({
     }
   },
   perms: {
-    bot: ["MANAGE_MESSAGES"],
-    user: ["MANAGE_MESSAGES"]
+    bot: ["ManageMessages"],
+    user: ["ManageMessages"]
   }
 })

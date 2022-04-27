@@ -5,7 +5,7 @@ class MessageAction extends Interaction {
   /** @param {Interaction.TOmittedInteraction & Interaction.ActionRightClickCommand} arg */
   constructor (arg = { }) {
     super({
-      type: "COMMAND",
+      type: "Command",
       actionType: "User",
       ...arg
     })

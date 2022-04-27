@@ -6,7 +6,7 @@ class Modal extends Interaction {
   /** @param {Interaction.TOmittedInteraction & Interaction.Modal} arg */
   constructor (arg = { }) {
     super({
-      _type: "noDeployInteraction",
+      _type: "ComponentInteraction",
       actionType: "Modal",
       ...arg
     })
@@ -42,7 +42,7 @@ class Modal extends Interaction {
     console.log("Options",this.options)
     for (let i = 0; i < this.options.rows.length; i++) {
       let components = [];
-      /** @type {{type: "TEXT_INPUT", data: TextInputComponentData}[]} */
+      /** @type {{type: "TextInput", data: TextInputComponentData}[]} */
       let rawComponents = this.options.rows[i];
       console.log({rawComponents});
       for (let j = 0; j < rawComponents.length; j++) {

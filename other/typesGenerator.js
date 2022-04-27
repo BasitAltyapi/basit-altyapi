@@ -12,7 +12,7 @@ globalThis.Underline = {
   Plugin: require("../types/Plugin"),
   Interaction: require('../types/Interaction'),
   Event: require('../types/Event'),
-  SlashCommand: require("../types/SlashCommand"),
+  ChatInput: require("../types/ChatInput"),
   MessageAction: require("../types/MessageAction"),
   UserAction: require("../types/UserAction"),
   SelectMenu: require("../types/SelectMenu"),

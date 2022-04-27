@@ -8,7 +8,7 @@ try {
   process.exit(-1);
 }
 
-const DISCORD_PERMS = ["CREATE_INSTANT_INVITE", "KICK_MEMBERS", "BAN_MEMBERS", "ADMINISTRATOR", "MANAGE_CHANNELS", "MANAGE_GUILD", "ADD_REACTIONS", "VIEW_AUDIT_LOG", "PRIORITY_SPEAKER", "STREAM", "VIEW_CHANNEL", "SEND_MESSAGES", "SEND_TTS_MESSAGES", "MANAGE_MESSAGES", "EMBED_LINKS", "ATTACH_FILES", "READ_MESSAGE_HISTORY", "MENTION_EVERYONE", "USE_EXTERNAL_EMOJIS", "VIEW_GUILD_INSIGHTS", "CONNECT", "SPEAK", "MUTE_MEMBERS", "DEAFEN_MEMBERS", "MOVE_MEMBERS", "USE_VAD", "CHANGE_NICKNAME", "MANAGE_NICKNAMES", "MANAGE_ROLES", "MANAGE_WEBHOOKS", "MANAGE_EMOJIS"];
+const DISCORD_PERMS = ["CreateInstantInvite", "KickMembers", "BanMembers", "Administrator", "ManageChannels", "ManageGuild", "AddReactions", "ViewAuditLog", "PrioritySpeaker", "Stream", "ViewChannel", "SendMessages", "SendTtsMessages", "ManageMessages", "EmbedLinks", "AttachFiles", "ReadMessageHistory", "MentionEveryone", "UseExternalEmojis", "ViewGuildInsights", "Connect", "Speak", "MuteMembers", "DeafenMembers", "MoveMembers", "UseVad", "ChangeNickname", "ManageNicknames", "ManageRoles", "ManageWebhooks", "ManageEmojis"];
 const { prompt, AutoComplete, Toggle, Select } = require("enquirer");
 const fs = require("fs");
 const path = require("path");
@@ -221,8 +221,8 @@ makeSureFolderExistsSync("./events");
           interUserPerms = await permissionPrompt("Bu interaksiyonu kullanabilmek için kullanıcıya gerekli olan yetkileri seç.");
         }
       }
-      if (interDeveloperOnly) interUserPerms.push("DEVELOPER");
-      if (interGuildOwnerOnly) interUserPerms.push("GUILD_OWNER");
+      if (interDeveloperOnly) interUserPerms.push("Developer");
+      if (interGuildOwnerOnly) interUserPerms.push("GuildOwner");
       console.clear();
 
       console.log(`! Dosyanız oluşturuluyor..`);

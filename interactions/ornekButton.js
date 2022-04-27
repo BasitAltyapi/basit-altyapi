@@ -12,11 +12,11 @@ module.exports = new Underline.Button({
     if (user.id == inter.user.id) user.$unRef();
   },
   perms: {
-    bot: ["CREATE_INSTANT_INVITE"],
-    user: ["KICK_MEMBERS", "GUILD_OWNER"]
+    bot: ["CreateInstantInvite"],
+    user: ["KickMembers", "GuildOwner"]
   },
   options: {
-    style: "PRIMARY",
+    style: "Primary",
     label: "sa"
   }
 });

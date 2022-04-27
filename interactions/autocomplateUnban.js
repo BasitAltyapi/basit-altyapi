@@ -1,4 +1,4 @@
-module.exports = new Underline.SlashCommand({
+module.exports = new Underline.ChatInput({
   description: "Banlı bir kullanıcının banını açmanızı sağlar.",
   name: ["unban"],
   async onInteraction(inter, other) {
@@ -38,7 +38,7 @@ module.exports = new Underline.SlashCommand({
     }
   ],
   perms: {
-    bot: ["BAN_MEMBERS"],
-    user: ["BAN_MEMBERS"]
+    bot: ["BanMembers"],
+    user: ["BanMembers"]
   }
 });

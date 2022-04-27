@@ -45,9 +45,9 @@ class Interaction {
     this.name = Array.isArray(arg.name) ? arg.name : [arg.name];
     this.actionType = arg.actionType || Underline.config.interactionDefaults.actionType;
 
-    this.id = arg.id || `${this.actionType}_${this.name.join("_")}`.toLowerCase().replace(/\s+/g, "_");
+    this.id = arg.id || `${this.actionType}_${this.name.join("")}`.toLowerCase().replace(/\s+/g, "");
     this._type = arg._type ?? this._type;
-    this.nullError = (this._type === "noDeployInteraction") ? (arg.nullError ?? false) : false;
+    this.nullError = (this._type === "ComponentInteraction") ? (arg.nullError ?? false) : false;
     this.perms.bot = Array.isArray(arg.perms?.bot) && arg.perms.bot.length != 0 ? arg.perms.bot : Underline.config.interactionDefaults.perms.bot;
     this.perms.user = Array.isArray(arg.perms?.user) && arg.perms.user.length != 0 ? arg.perms.user : Underline.config.interactionDefaults.perms.user;
     this.onInteraction = arg.onInteraction;

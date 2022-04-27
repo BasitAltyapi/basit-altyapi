@@ -106,7 +106,7 @@ module.exports = new (require("./types/Config"))({
   // Bot açıldıktan sonra kullanıma hazır olduktan sonra çalışan fonksiyon. Opsiyonel.
   async onReady(client) {
     console.log("[CONFIG] Discord hesabına giriş yaptıktan sonra çalıştı.");
-    client.user.setActivity(`/help - Basit Altyapı by TheArmagan`, { type: "WATCHING" });
+    client.user.setActivity(`/help - Basit Altyapı by TheArmagan`, { type: "Watching" });
   },
   // interaksiyon üzerinde hiçbir kontrol yapılmadan önce çalışır.
   // Sadece cevap true ise işleme devam eder.

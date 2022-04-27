@@ -1,4 +1,4 @@
-module.exports = new Underline.SlashCommand({
+module.exports = new Underline.ChatInput({
   // Slash komutun kullanıcıya gözüken ismi. Bu isim bir arraydır (liste)
   // Bu liste en fazla 3 uzunlukta olabilir. Örneğin;
   // ["muüzik", "çal"] kullanıcıya /müzik çal olarak gözükecektir.
@@ -43,7 +43,7 @@ module.exports = new Underline.SlashCommand({
   // Opsiyonel. Varsayılan olarak {bot: [], user: []}.
   perms: {
     // interaksiyonun çalışması için bot'a gerekli olan yetkiler.
-    bot: ["SEND_MESSAGES"],
+    bot: ["SendMessages"],
     // interaksiyonun çalışması için kullanıcıya gerekli olan yetkiler.
     user: []
   },

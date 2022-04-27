@@ -1,7 +1,7 @@
 const { CommandInteraction } = require("discord.js");
 const Interaction = require("./Interaction");
 
-class SlashCommand extends Interaction {
+class ChatInput extends Interaction {
 
   /** @param {Interaction.TOmittedInteraction & Interaction.ActionChatCommand} arg */
   constructor (arg = { }) {
@@ -19,4 +19,4 @@ class SlashCommand extends Interaction {
   toJSON() {}
 }
 
-module.exports = SlashCommand;
+module.exports = ChatInput;

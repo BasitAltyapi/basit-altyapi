@@ -1,4 +1,4 @@
-module.exports = new Underline.SlashCommand({
+module.exports = new Underline.ChatInput({
   description: "Bir kullanıcı hakkına bilgilere bakmanızı sağlar.",
   name: ["profil"],
   async onInteraction(interaction, other) {

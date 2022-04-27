@@ -6,7 +6,7 @@ class Button extends Interaction {
   /** @param {Interaction.TOmittedInteraction & Interaction.Button} arg */
   constructor (arg = { }) {
     super({
-      _type: "noDeployInteraction",
+      _type: "ComponentInteraction",
       actionType: "Button",
       ...arg
     })

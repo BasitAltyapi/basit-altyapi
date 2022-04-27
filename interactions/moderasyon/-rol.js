@@ -1,4 +1,4 @@
-module.exports = new Underline.SlashCommand({
+module.exports = new Underline.ChatInput({
   name: ["moderasyon", "rol"],
   description: "Bir kullanıcıdan rol alamanızı sağlar.",
   options: [
@@ -51,7 +51,7 @@ module.exports = new Underline.SlashCommand({
     }
   },
   perms: {
-    bot: ["MANAGE_ROLES"],
-    user: ["MANAGE_ROLES"]
+    bot: ["ManageRoles"],
+    user: ["ManageRoles"]
   }
 })
