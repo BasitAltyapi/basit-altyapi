@@ -1,7 +1,14 @@
 import {
-  ApplicationCommandChannelOptionData,
-  ApplicationCommandChoicesData,
-  ApplicationCommandNonOptionsData,
+  // ApplicationCommandChannelOptionData,
+  // ApplicationCommandChoicesData,
+  // ApplicationCommandNonOptionsData,
+  ChannelTypeEnumResolvable,
+  ChannelType,
+  CommandOptionNonChoiceResolvableType,
+  CommandOptionChannelResolvableType,
+  CommandOptionDataTypeResolvable,
+  CommandOptionChoiceResolvableType,
+  CommandInteractionOption,
   ApplicationCommandOptionChoice,
   ApplicationCommandOptionData,
   ApplicationCommandType,
@@ -14,8 +21,8 @@ import {
   SelectMenuInteraction,
   SelectMenuComponentOptionData,
   ButtonInteraction,
-  SelectMenuComponent,
-  ButtonComponent,
+  SelectMenuBuilder,
+  ButtonBuilder,
   ButtonStyleEnumResolvable,
   EmojiResolvable,
   ModalSubmitInteraction,
@@ -34,7 +41,7 @@ interface CustomSelectMenuOptions {
 
 interface CustomModalOptions {
   title?: string;
-  rows: {type: "TextInput", data: TextInputComponentData}[][]
+  rows: { type: "TextInput", data: TextInputComponentData }[][]
 }
 
 interface CustomButtonOptions {
@@ -44,16 +51,19 @@ interface CustomButtonOptions {
   url?: string;
 }
 
-export type CustomApplicationCommandOptionData = (
-  | ApplicationCommandNonOptionsData
-  | ApplicationCommandChannelOptionData
-  | ApplicationCommandChoicesData
-) & {
+export type CustomApplicationCommandOptionData = {
+  name: string,
+  description: string,
+  choices: { name: string, value: string }[],
+  type: "Number" | "String" | "User" | "Integer" | "Channel" | "Role" | "Boolean" | "Mentionable",
+  autocomplete: boolean,
+  required: boolean,
+  channelTypes: ("GuildText" | "Dm" | "GuildVoice" | "GroupDm" | "GuildCategory" | "GuildNews" | "GuildNewsThread" | "GuildPublicThread" | "GuildPrivateThread" | "GuildStageVoice")[],
   onComplete(
     interaction: AutocompleteInteraction,
     value: string | number,
     other: IOther
-  ): ApplicationCommandOptionChoice[];
+  ): { name: string, value: string }[];
 };
 
 type Cooldown = {
@@ -74,7 +84,7 @@ export class BaseInteraction {
   ): void;
   toJSON(
     data: Array<string | number>
-  ): ButtonComponent | SelectMenuComponent | ModalBuilder | undefined;
+  ): ButtonBuilder | SelectMenuBuilder | ModalBuilder | undefined;
   publishType?: "globalOnly" | "guildOnly" | "all" | string;
   onLoad?(client: Client): void;
   coolDowns: Map<string, number>;
@@ -139,7 +149,7 @@ export interface SelectMenu {
   actionType: "SelectMenu";
   onInteraction(interaction: SelectMenuInteraction, other: IOther): void;
   options?: CustomSelectMenuOptions;
-  toJSON(data: Array<string | number>): SelectMenuComponent;
+  toJSON(data: Array<any>): SelectMenuBuilder;
   nullError?: Boolean;
 }
 
@@ -147,8 +157,13 @@ export interface Button {
   name: string;
   actionType: "Button";
   onInteraction(interaction: ButtonInteraction, other: IOther): void;
-  options?: CustomButtonOptions;
-  toJSON(data: Array<string | number>): ButtonComponent;
+  options?: {
+    emoji?: EmojiResolvable;
+    label?: string;
+    style: "Primary" | "Secondary" | "Success" | "Danger" | "Link";
+    url?: string;
+  };
+  toJSON(data: Array<any>): ButtonBuilder;
   nullError?: Boolean;
 }
 
@@ -157,7 +172,7 @@ export interface Modal {
   actionType: "Modal";
   onInteraction(interaction: ModalSubmitInteraction, other: IOther): void;
   options?: CustomModalOptions;
-  toJSON(data: Array<string | number>): ModalBuilder;
+  toJSON(data: Array<any>): ModalBuilder;
   nullError?: Boolean;
 }
 

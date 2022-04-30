@@ -1,4 +1,4 @@
-const { ButtonComponent } = require("discord.js");
+const { ButtonBuilder } = require("discord.js");
 
 const expressionMap = {
   "add": "+",
@@ -54,7 +54,7 @@ module.exports = new Underline.ChatInput({
       name: "number_two",
       type: "Number",
       description: "Sayı İki",
-      required: true
+      required: true,
     },
   ],
   disabled: false

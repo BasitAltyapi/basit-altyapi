@@ -1,4 +1,4 @@
-const { SelectMenuComponent } = require("discord.js");
+const { SelectMenuBuilder } = require("discord.js");
 const Interaction = require("./Interaction");
 const stuffs = require("stuffs");
 
@@ -19,7 +19,7 @@ class SelectMenu extends Interaction {
   isMessageActionCommand() { return false; }
   /**
    * @param {Array<string | number>} data
-   * @returns {SelectMenuComponent}
+   * @returns {SelectMenuBuilder}
    */
   toJSON(data = []) {
     if (!Array.isArray(data)) throw Error(`SelectMenu#toJSON data type must be an array.`);
@@ -38,7 +38,7 @@ class SelectMenu extends Interaction {
     data.unshift(this.id);
     let customId = data.join("—");
     if (customId.length > 100) throw Error(`SelectMenu#toJSON id and data length must be less than 100.`);
-    let menu = new SelectMenuComponent()
+    let menu = new SelectMenuBuilder()
       .addOptions(this.options?.choices ?? [])
       .setMinValues(this.options.min ?? 1)
       .setMaxValues(this.options.max ?? this.options.choices.length)

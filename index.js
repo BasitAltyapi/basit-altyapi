@@ -702,7 +702,7 @@ client.on("interactionCreate", async (interaction) => {
   config.onReady(client);
   quickForEach(onFunctions.onReady, async (func) => {
     try {
-      func?.catch?.(() => {
+      func?.()?.catch?.(() => {
 
       });
     } catch (err) {

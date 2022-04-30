@@ -16,9 +16,9 @@ readdirRecursive(process.cwd()).then(async (paths) => {
       content = content.replace(oldWord, newWord);
     }
     content = content.replace(/PermissionString/g, "PermissionResolvable");
-    content = content.replace(/MessageEmbed|EmbedBuilder/g, "Embed");
-    content = content.replace(/MessageButton|ButtonBuilder/g, "ButtonComponent"); 
-    content = content.replace(/MessageSelectMenu|SelectMenuBuilder/g, "SelectMenuComponent"); 
+    content = content.replace(/MessageEmbed|EmbedBuilder|Embed/g, "EmbedBuilder");
+    content = content.replace(/MessageButton|ButtonBuilder|ButtonComponent/g, "ButtonBuilder"); 
+    content = content.replace(/MessageSelectMenu|SelectMenuBuilder|SelectMenuComponent/g, "SelectMenuBuilder"); 
     writeFileSync(path, content);
     console.log(path.replace(process.cwd(), ""), `${i}/${paths.length}`, fixSize)
   }
@@ -33,7 +33,7 @@ function upperToCamel(word) {
 
     let char = word[i];
 
-    if (char == "") {
+    if (char == "_") {
       nextUp = true;
     } else if (nextUp) {
       newWord += char.toUpperCase();
