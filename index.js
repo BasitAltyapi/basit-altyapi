@@ -68,7 +68,7 @@ async function getPluginFilePaths() {
       let folderPath = path.resolve(pluginsPath, folderOrZip.name.replace(".up.zip", ".up"));
       let zipPath = path.resolve(pluginsPath, folderOrZip.name);
 
-      await fs.promises.rm(folderPath, {recursive: true}).catch(() => {});
+      await fs.promises.rm(folderPath, { recursive: true }).catch(() => { });
       await makeSureFolderExists(folderPath);
       await extractZip(zipPath, { dir: folderPath });
       fs.promises.unlink(zipPath).catch(() => null);
@@ -165,22 +165,22 @@ async function load() {
 
     pluginCache.push(plugin);
     console.info(`[BİLGİ] "${plugin.name}" plugini yüklenme sırasına alındı. (${Date.now() - start}ms sürdü.)`);
-    
+
   })
 
   pluginCache = pluginCache.sort((plugin, dependency) => plugin?.requires?.plugins?.includes(dependency) ? 1 : 0);
 
-  let pluginSort = utils.sortDependant(pluginCache.map(i=>i.namespace), Object.fromEntries(pluginCache.map(i => [i.namespace, i?.requires?.plugins || []])))
+  let pluginSort = utils.sortDependant(pluginCache.map(i => i.namespace), Object.fromEntries(pluginCache.map(i => [i.namespace, i?.requires?.plugins || []])))
 
   await chillout.forEach(pluginSort, async (pluginNamespace) => {
     let start = Date.now();
 
     const plugin = pluginCache.find(x => x.namespace === pluginNamespace);
-    
+
     const pluginApi = {};
     let isReady = false;
 
-    pluginApi.setPluginReady = async () => { 
+    pluginApi.setPluginReady = async () => {
       if (isReady) throw new Error("Plugin is already ready!")
       isReady = true;
     }
@@ -191,7 +191,7 @@ async function load() {
       Underline.plugins[plugin.namespace][name] = value;
     }
 
-    pluginApi.emit = (name, ...args) => { 
+    pluginApi.emit = (name, ...args) => {
       client.emit(`${plugin.namespace}:${name}`, ...args);
     }
 
@@ -204,13 +204,13 @@ async function load() {
     pluginApi.onBotReady = onFunctions.onReady.push;
 
     pluginApi.client = client;
-    
+
     plugin.onLoad(pluginApi);
-    console.info(`[BİLGİ] "${plugin.name}" pluginin yüklenmesi bekleniyor!`);	
+    console.info(`[BİLGİ] "${plugin.name}" pluginin yüklenmesi bekleniyor!`);
     await chillout.waitUntil(() => {
       if (isReady) return chillout.StopIteration;
     })
-    console.info(`[BİLGİ] "${plugin.name}" plugini yüklendi! (${Date.now() - start}ms sürdü.)`);	
+    console.info(`[BİLGİ] "${plugin.name}" plugini yüklendi! (${Date.now() - start}ms sürdü.)`);
   })
 
 
@@ -457,7 +457,7 @@ client.on("interactionCreate", async (interaction) => {
 
   let data = [];
 
-  if (interaction.isButton() || interaction.isSelectMenu()) {
+  if (interaction.isButton() || interaction.isSelectMenu() || interaction.isModalSubmit()) {
     data = interaction.customId.split("—");
     interaction.customId = data.shift();
     data = data.map(key => {
@@ -474,8 +474,8 @@ client.on("interactionCreate", async (interaction) => {
         (uInter.actionType == "SelectMenu" && interaction.isSelectMenu()) ||
         (uInter.actionType == "Button" && interaction.isButton()) ||
         (uInter.actionType == "Modal" && interaction.isModalSubmit()) ||
-        ((uInter.actionType == "User" || uInter.actionType == "Message") && interaction.isContextMenu())
-      ));
+        ((uInter.actionType == "User" || uInter.actionType == "Message") && interaction.isContextMenuCommand())
+        ));
       case 2: return uInter.name[0] == interaction.commandName && uInter.name[1] == subCommandName && (interaction.isCommand() || interaction.isAutocomplete());
       case 3: return uInter.name[0] == interaction.commandName && uInter.name[1] == subCommandGroupName && uInter.name[2] == subCommandName && (interaction.isCommand() || interaction.isAutocomplete());
     }
@@ -558,61 +558,60 @@ client.on("interactionCreate", async (interaction) => {
   }
 
   if (config.blockedUsers.has(interaction.user.id)) {
-    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(Underline.config.debugLevel >= 2 ? console.error : () => {} )) : null;
+    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(Underline.config.debugLevel >= 2 ? console.error : () => { })) : null;
     config.userErrors.blocked(interaction, uInter, other);
     return;
   }
 
   if (uInter.guildOnly && !interaction.guildId) {
-    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(Underline.config.debugLevel >= 2 ? console.error : () => {} )) : null;
+    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(Underline.config.debugLevel >= 2 ? console.error : () => { })) : null;
     config.userErrors.guildOnly(interaction, uInter, other);
     return;
   }
 
   if (uInter.calculated.developerOnly && !config.developers.has(interaction.user.id)) {
-    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(Underline.config.debugLevel >= 2 ? console.error : () => {} )) : null;
+    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(Underline.config.debugLevel >= 2 ? console.error : () => { })) : null;
     config.userErrors.developerOnly(interaction, uInter, other);
     return;
   }
 
   if (uInter.calculated.guildOwnerOnly && !config.developers.has(interaction.user.id) && interaction.guild.ownerId != interaction.user.id) {
-    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(Underline.config.debugLevel >= 2 ? console.error : () => {} )) : null;
+    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(Underline.config.debugLevel >= 2 ? console.error : () => { })) : null;
     config.userErrors.guildOwnerOnly(interaction, uInter, other);
     return;
   }
 
   if (uInter.guildOnly && uInter.perms.bot.length != 0 && !uInter.perms.bot.every(perm => interaction.guild.me.permissions.has(perm))) {
-    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(Underline.config.debugLevel >= 2 ? console.error : () => {} )) : null;
+    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(Underline.config.debugLevel >= 2 ? console.error : () => { })) : null;
     config.userErrors.botPermsRequired(interaction, uInter, uInter.perms.bot, other);
     return;
   }
 
   if (uInter.guildOnly && (!config.developers.has(interaction.user.id)) && uInter.perms.user.length != 0 && !uInter.perms.user.every(perm => interaction.member.permissions.has(perm))) {
-    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(Underline.config.debugLevel >= 2 ? console.error : () => {} )) : null;
+    if (uInter.nullError) return interaction.update ? (await interaction.update().catch(Underline.config.debugLevel >= 2 ? console.error : () => { })) : null;
     config.userErrors.userPermsRequired(interaction, uInter, uInter.perms.user, other);
     return;
   }
 
-  if (uInter.autoDefer != "off") {
+  if (uInter.autoDefer && uInter.autoDefer !== "off") {
     const newDefer = () => {
       if (Underline.config.debugLevel >= 1) console.warn(`[UYARI] "${uInter.actionType == "ChatInput" ? `/${uInter.name.join(" ")}` : `${uInter.name[0]}`}" adlı interaksiyon için "deferReply" umursanmadı, interaksiyon zaten otomatik olarak bekleme moduna alınmış.`);
     };
     if (
-      interaction.isCommand() || interaction.isApplicationCommand() || interaction.isMessageContextMenu() || interaction.isUserContextMenu()
+      interaction.isCommand() || interaction.isApplicationCommand() || interaction.isContextMenuCommand()
     ) {
       await interaction.deferReply(uInter.autoDefer == "ephemeral" ? { ephemeral: true } : null).catch(Underline.config.debugLevel >= 2 ? console.error : () => { });
       interaction.deferReply = newDefer;
       interaction.reply = interaction.editReply;
+      interaction.update = interaction.editReply;
     } else if (
-      interaction.isButton() || interaction.isSelectMenu()
+      interaction.isButton() || interaction.isSelectMenu() || interaction.isModalSubmit()
     ) {
-      await interaction.update().catch(Underline.config.debugLevel >= 2 ? console.error : () => { });
-      // await utils.nullDefer(interaction);
+      if (uInter.autoDefer == "update") await interaction.deferUpdate().catch(Underline.config.debugLevel >= 2 ? console.error : () => { });
+      else await interaction.deferReply(uInter.autoDefer == "ephemeral" ? { ephemeral: true } : null).catch(Underline.config.debugLevel >= 2 ? console.error : () => { });
       interaction.deferReply = newDefer;
-    let key = converter[k];
-      interaction.reply = interaction.editReply = interaction.followUp = () => {
-        if (Underline.config.debugLevel >= 1) console.warn(`[UYARI] "${uInter.name[0]}" adlı interaksiyon için "reply" umursanmadı, interaksiyona zaten otomatik olarak boş cevap verilmiş.`);
-      };
+      interaction.reply = interaction.editReply;
+      interaction.update = interaction.editReply;
     }
   }
 
@@ -666,7 +665,7 @@ client.on("interactionCreate", async (interaction) => {
   (async () => {
 
     {
-      let shouldRun2 = (await quickMap(onFunctions.onInteraction, async (func) => { try {return await func(uInter, interaction, other);} catch (e) { onfig.debugLevel > 2 ? console.error(e) : null; } })).findIndex(v => v === false);
+      let shouldRun2 = (await quickMap(onFunctions.onInteraction, async (func) => { try { return await func(uInter, interaction, other); } catch (e) { onfig.debugLevel > 2 ? console.error(e) : null; } })).findIndex(v => v === false);
       if (shouldRun2 != -1) return;
     }
 
@@ -708,7 +707,7 @@ client.on("interactionCreate", async (interaction) => {
     } catch (err) {
 
     }
-    
+
   })
 })();
 

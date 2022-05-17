@@ -27,7 +27,7 @@ let ogLangs = ["da", "de", "en-GB", "en-US", "es-ES", "fr", "hr", "it", "lt", "h
 
 
 
-let interactionTypes = { "ChatInput": 1, "Message": 2, "User": 3 };
+let interactionTypes = { "ChatInput": 1, "Message": 3, "User": 2 };
 let optionTypes = { "SubCommand": 1, "SubCommandGroup": 2, "String": 3, "Integer": 4, "Boolean": 5, "User": 6, "Channel": 7, "Role": 8, "Mentionable": 9, "Number": 10, "Attachment": 11 };
 
 async function getLocaleFilePaths() {
