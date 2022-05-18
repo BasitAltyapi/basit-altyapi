@@ -81,24 +81,40 @@ async function getPluginFilePaths() {
 
 async function getEventFilePaths() {
   let eventsPath = path.resolve("./events");
+  let pluginsPath = path.resolve("./plugins");
   await makeSureFolderExists(eventsPath);
+  await makeSureFolderExists(pluginsPath);
   let VEventFiles = await readdirRecursive(eventsPath);
+  let VPluginFiles = await readdirRecursive(eventsPath);
   VEventFiles = VEventFiles.filter(i => {
     let state = path.basename(i).startsWith("-");
     return !state;
   });
-  return VEventFiles;
+  VPluginFiles = VPluginFiles.filter(i => {
+    if (!(i.endsWith("event.js") || i.endsWith("event.up.js"))) return false;
+    let state = path.basename(i).startsWith("-");
+    return !state;
+  });
+  return [...VEventFiles, ...VPluginFiles];
 }
 
 async function getInteractionFilePaths() {
   let interactionsPath = path.resolve("./interactions");
+  let pluginsPath = path.resolve("./plugins");
   await makeSureFolderExists(interactionsPath);
+  await makeSureFolderExists(pluginsPath);
   let VInteractionFiles = await readdirRecursive(interactionsPath);
+  let VPluginFiles = await readdirRecursive(eventsPath);
   VInteractionFiles = VInteractionFiles.filter(i => {
     let state = path.basename(i).startsWith("-");
     return !state;
   });
-  return VInteractionFiles;
+  VPluginFiles = VPluginFiles.filter(i => {
+    if (!(i.endsWith("inter.js") || i.endsWith("inter.up.js") || i.endsWith("interaction.js") || i.endsWith("interaction.up.js"))) return false;
+    let state = path.basename(i).startsWith("-");
+    return !state;
+  });
+  return [...VInteractionFiles, ...VPluginFiles];
 }
 
 async function getLocaleFilePaths() {
