@@ -31,6 +31,7 @@ import {
   ApplicationCommandOptionType,
   PermissionResolvable,
 } from "discord.js";
+import { PluginAPI } from "./Plugin";
 
 interface CustomSelectMenuOptions {
   min?: number;
@@ -77,6 +78,7 @@ export class BaseInteraction {
   private _type: string;
   name: string[];
   id?: string;
+  pluginApi?: PluginAPI;
   perms?: { bot: PermissionResolvable[]; user: UserPermString[] };
   onInteraction(
     interaction: CommandInteraction | ContextMenuInteraction,
@@ -124,6 +126,7 @@ type CooldownType = "user" | "member" | "channel" | "guild" | "message" | "any";
 export interface IOther {
   setCoolDown(durations: number, type: CooldownType): void;
   locale: import("./Locale").Data;
+  pluginApi?: PluginAPI;
   data: (string | number | { [string | number]: any; $unRef(): boolean })[];
   [key: string | number]: any;
 }

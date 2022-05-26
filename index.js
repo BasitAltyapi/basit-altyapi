@@ -504,13 +504,14 @@ async function load() {
 
             let before = (await quickMap(onFunctions.onEvent, async (func) => { return await func(eventName, args, other); })).findIndex(v => v === false);
             if (before != -1) return;
-            args.push(other);
             chillout.forEach(events,
               /** @param {import("./types/Event")} event */
               (event) => {
                 if (!event.disabled) {
                   try {
-                    event.onEvent(...args);
+                    let sOther = { ...other };
+                    sOther.pluginApi = event.pluginApi;
+                    event.onEvent(...args, sOther);
                     quickForEach(onFunctions.onAfterEvent, async (func) => { func(...args); });
                   } catch (err) {
                     if (Underline.config.debugLevel >= 1) {
@@ -627,6 +628,7 @@ client.on("interactionCreate", async (interaction) => {
   let other = {
     data
   };
+  other.pluginApi = uInter.pluginApi;
 
   if (interaction.isAutocomplete()) {
     if (uInter.disabled) {

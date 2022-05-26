@@ -31,8 +31,10 @@ import {
   Typing,
   VoiceState,
 } from "discord.js";
+import { PluginAPI } from "./Plugin";
 
 export interface IOther {
+  pluginApi?: PluginAPI;
   [key: string | number]: any
 }
 
@@ -42,6 +44,7 @@ export class BaseEvent {
   id?: string;
 
   eventName!: string;
+  pluginApi?: PluginAPI;
 
   onLoad?: (client: Client) => void;
 
