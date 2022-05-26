@@ -173,6 +173,21 @@ async function load() {
 
   })
 
+  let neededs = [];
+  pluginCache.forEach(plugin => {
+    plugin?.requires?.plugins?.forEach(dependency => {
+      if (!pluginCache.some(x => x.namespace == dependency)) {
+        neededs.push(`[EKSİK] "${plugin.namespace}" plugini "${dependency}" pluginine ihtiyaç duyuyor lütfen ekleyin.`);
+      }
+    })
+  });
+  if (neededs.length) {
+    for (let i = 0; i < neededs.length; i++) {
+      console.error(neededs[i]);
+    }
+    process.exit(0);
+  }
+
   pluginCache = pluginCache.sort((plugin, dependency) => plugin?.requires?.plugins?.includes(dependency) ? 1 : 0);
 
   let pluginSort = utils.sortDependant(pluginCache.map(i => i.namespace), Object.fromEntries(pluginCache.map(i => [i.namespace, i?.requires?.plugins || []])))
