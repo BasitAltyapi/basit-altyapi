@@ -18,6 +18,8 @@ let interactionFiles;
 let eventFiles;
 let localeFiles;
 let pluginFiles;
+let pluginEvents;
+let pluginInteractions;
 let onFunctions = {
   onInteractionBeforeChecks: [config.onInteractionBeforeChecks],
   onInteraction: [config.onInteraction],
@@ -81,40 +83,24 @@ async function getPluginFilePaths() {
 
 async function getEventFilePaths() {
   let eventsPath = path.resolve("./events");
-  let pluginsPath = path.resolve("./plugins");
   await makeSureFolderExists(eventsPath);
-  await makeSureFolderExists(pluginsPath);
   let VEventFiles = await readdirRecursive(eventsPath);
-  let VPluginFiles = await readdirRecursive(eventsPath);
   VEventFiles = VEventFiles.filter(i => {
     let state = path.basename(i).startsWith("-");
     return !state;
   });
-  VPluginFiles = VPluginFiles.filter(i => {
-    if (!(i.endsWith("event.js") || i.endsWith("event.up.js"))) return false;
-    let state = path.basename(i).startsWith("-");
-    return !state;
-  });
-  return [...VEventFiles, ...VPluginFiles];
+  return VEventFiles;
 }
 
 async function getInteractionFilePaths() {
   let interactionsPath = path.resolve("./interactions");
-  let pluginsPath = path.resolve("./plugins");
   await makeSureFolderExists(interactionsPath);
-  await makeSureFolderExists(pluginsPath);
   let VInteractionFiles = await readdirRecursive(interactionsPath);
-  let VPluginFiles = await readdirRecursive(eventsPath);
   VInteractionFiles = VInteractionFiles.filter(i => {
     let state = path.basename(i).startsWith("-");
     return !state;
   });
-  VPluginFiles = VPluginFiles.filter(i => {
-    if (!(i.endsWith("inter.js") || i.endsWith("inter.up.js") || i.endsWith("interaction.js") || i.endsWith("interaction.up.js"))) return false;
-    let state = path.basename(i).startsWith("-");
-    return !state;
-  });
-  return [...VInteractionFiles, ...VPluginFiles];
+  return VInteractionFiles;
 }
 
 async function getLocaleFilePaths() {
@@ -165,6 +151,8 @@ async function load() {
 
   pluginFiles = await getPluginFilePaths();
   let pluginCache = [];
+  pluginEvents = [];
+  pluginInteractions = [];
   await chillout.forEach(pluginFiles, (pluginFile) => {
     let start = Date.now();
     let rltPath = path.relative(__dirname, pluginFile);
@@ -172,6 +160,7 @@ async function load() {
     /** @type {import("./types/Plugin")} */
     let plugin = require(pluginFile);
     let isReady = false;
+    plugin.path = pluginFile;
 
     if (plugin._type != "plugin")
       return console.warn(`[UYARI] "${rltPath}" plugin dosyası boş. Atlanıyor..`);
@@ -223,6 +212,142 @@ async function load() {
 
     plugin.onLoad(pluginApi);
     console.info(`[BİLGİ] "${plugin.name}" pluginin yüklenmesi bekleniyor!`);
+    console.log(plugin.path, "-path");
+    if (plugin.path?.match(/plugins\\(.|[şçğüiÇŞİĞÜIıöÖ])*\\index\.js$/)) {
+
+      let interPlPath = plugin.path.replace(/\\index\.js$/, "\\interactions")
+      let evntPlPath = plugin.path.replace(/\\index\.js$/, "\\events")
+
+      if (fs.existsSync(interPlPath)) {
+
+        let interactionsPath = path.resolve(interPlPath);
+        let VInteractionFiles = await readdirRecursive(interactionsPath);
+        VInteractionFiles = VInteractionFiles.filter(i => {
+          let state = path.basename(i).startsWith("-");
+          return !state;
+        });
+
+
+        await chillout.forEach(VInteractionFiles, (interactionFile) => {
+          let start = Date.now();
+          let rltPath = path.relative(__dirname, interactionFile);
+          console.info(`[BİLGİ] "${rltPath}" konumundaki interaksiyon yükleniyor..`)
+          /** @type {import("./types/Interaction")} */
+          let uInter = require(interactionFile);
+
+          if (uInter?._type != "interaction" && uInter?._type != "ComponentInteraction") {
+            if (Underline.config.debugLevel >= 1) console.warn(`[UYARI] "${rltPath}" interaksiyon dosyası boş. Atlanıyor..`);
+            return;
+          }
+
+          if (!uInter.id) {
+            if (Underline.config.debugLevel >= 1) console.warn(`[UYARI] "${rltPath}" interaksiyon dosyasının bir idsi bulunmuyor. Atlanıyor..`);
+            return;
+          }
+
+          if (uInter.name.length > 3) {
+            if (Underline.config.debugLevel >= 1) console.warn(`[UYARI] "${rltPath}" interaksiyon dosyasının isim listesi çok uzun. (>3) Atlanıyor..`);
+            return;
+          }
+
+          if (!uInter.name?.length) {
+            if (Underline.config.debugLevel >= 1) console.warn(`[UYARI] "${rltPath}" interaksiyon dosyasının bir ismi bulunmuyor. Atlanıyor..`);
+            return;
+          }
+
+          if (Underline.interactions.has(uInter.id)) {
+            if (Underline.config.debugLevel >= 1) console.warn(`[UYARI] "${uInter.id}" idli bir interaksiyon daha önceden zaten yüklenmiş. Atlanıyor.`)
+            return;
+          }
+
+          if (typeof uInter.onInteraction != "function") {
+            if (Underline.config.debugLevel >= 1) console.error(`[HATA] "${rltPath}" interaksiyon dosyası geçerli bir onInteraction fonksiyonuna sahip değil! Atlanıyor.`);
+            return;
+          };
+
+          uInter.calculated = {
+            developerOnly: false,
+            guildOwnerOnly: false
+          }
+
+          if (uInter.developerOnly) {
+            uInter.calculated.developerOnly = true;
+            if (Underline.config.debugLevel >= 1) console.warn(`[UYARI] "${uInter.id}" idli interaksiyon'da developerOnly seçeneğini kullanmışsınız, bu seçenek ilerki sürümlerde kaldırılacaktır lütfen bunu yapmak yerine perms.user kısmına "Developer"'ı koyunuz.`)
+          }
+
+          {
+            let devOnlyIndex = uInter.perms.user.findIndex(p => p == "Developer");
+            if (devOnlyIndex > -1) {
+              uInter.calculated.developerOnly = true;
+              uInter.perms.user.splice(devOnlyIndex, 1);
+            }
+
+            let gOwnerOnlyIndex = uInter.perms.user.findIndex(p => p == "GuildOwner");
+            if (gOwnerOnlyIndex > -1) {
+              uInter.calculated.guildOwnerOnly = true;
+              uInter.perms.user.splice(gOwnerOnlyIndex, 1);
+            }
+          }
+
+          if (!uInter.guildOnly && (uInter.perms.bot.length != 0 || uInter.perms.user.length != 0)) {
+            if (Underline.config.debugLevel >= 1) console.warn(`[UYARI] "${rltPath}" interaksiyon dosyası sunuculara özel olmamasına rağmen özel perm kullanıyor.`);
+          }
+
+          if (!uInter.guildOnly && uInter.calculated.guildOwnerOnly) {
+            if (Underline.config.debugLevel >= 1) console.error(`[HATA] "${rltPath}" interaksiyon dosyası sunuculara özel olmamasına rağmen sunucu sahibine özel! Atlanıyor.`);
+            return;
+          }
+          uInter.pluginApi = pluginApi;
+          Underline.interactions.set(uInter.id, uInter);
+          uInter.onLoad(client);
+          console.info(`[BİLGİ] "${uInter.actionType == "ChatInput" ? `/${uInter.name.join(" ")}` : `${uInter.name[0]}`}" (${uInter.id}) adlı plugin interaksiyonu yüklendi. (${Date.now() - start}ms sürdü.)`);
+        });
+
+      }
+      if (fs.existsSync(evntPlPath)) {
+
+        let interactionsPath = path.resolve(evntPlPath);
+        let VEventFiles = await readdirRecursive(interactionsPath);
+        VEventFiles = VEventFiles.filter(i => {
+          let state = path.basename(i).startsWith("-");
+          return !state;
+        });
+
+
+        await chillout.forEach(VEventFiles, (eventFile) => {
+          let start = Date.now();
+          let rltPath = path.relative(__dirname, eventFile);
+          console.info(`[BİLGİ] "${rltPath}" event yükleniyor..`);
+
+          /** @type {import("./types/Event")} */
+          let event = require(eventFile);
+
+          if (event?._type != "event") {
+            if (Underline.config.debugLevel >= 1) console.warn(`[UYARI] "${rltPath}" event dosyası boş. Atlanıyor..`);
+            return;
+          }
+
+          if (typeof event.id != "string") event.id = path.basename(eventFile).slice(0, -3).replace(/ /g, "");
+
+          if (Underline.events.has(event.id)) {
+            if (Underline.config.debugLevel >= 1) console.warn(`[UYARI] "${event.id}" adlı bir event daha önceden zaten yüklenmiş. Atlanıyor.`);
+            return;
+          }
+
+          if (typeof event.onEvent != "function") {
+            if (Underline.config.debugLevel >= 1) console.error(`[HATA] "${rltPath}" olay dosyası geçerli bir onEvent fonksiyonuna sahip değil! Atlanıyor.`);
+            return;
+          };
+
+          event.pluginApi = pluginApi;
+          Underline.events.set(event.id, event);
+          event.onLoad(client);
+          console.info(`[BİLGİ] ("${rltPath}") "${event.id}" adlı plugin eventi yüklendi. (${Date.now() - start}ms sürdü.)`);
+        });
+
+      }
+    }
+
     await chillout.waitUntil(() => {
       if (isReady) return chillout.StopIteration;
     })
@@ -305,7 +430,7 @@ async function load() {
 
     Underline.interactions.set(uInter.id, uInter);
     uInter.onLoad(client);
-    console.info(`[BİLGİ] "${uInter.actionType == "ChatInput" ? `/${uInter.name.join(" ")}` : `${uInter.name[0]}`}" (${uInter.id}) adlı interaksiyon yüklendi. (${Date.now() - start}ms sürdü.)`);
+    console.info(`[BİLGİ] "${uInter.actionType == "ChatInput" ? `/${uInter.name.join(" ")}` : `${uInter.name[0]}`}" (${uInter.id}) adlı plugin interaksiyonu yüklendi. (${Date.now() - start}ms sürdü.)`);
   });
 
   if (Underline.interactions.size) {
@@ -491,7 +616,7 @@ client.on("interactionCreate", async (interaction) => {
         (uInter.actionType == "Button" && interaction.isButton()) ||
         (uInter.actionType == "Modal" && interaction.isModalSubmit()) ||
         ((uInter.actionType == "User" || uInter.actionType == "Message") && interaction.isContextMenuCommand())
-        ));
+      ));
       case 2: return uInter.name[0] == interaction.commandName && uInter.name[1] == subCommandName && (interaction.isCommand() || interaction.isAutocomplete());
       case 3: return uInter.name[0] == interaction.commandName && uInter.name[1] == subCommandGroupName && uInter.name[2] == subCommandName && (interaction.isCommand() || interaction.isAutocomplete());
     }
