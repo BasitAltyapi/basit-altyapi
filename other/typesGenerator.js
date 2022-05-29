@@ -7,6 +7,7 @@ const { makeSureFolderExists } = require("stuffs");
 const path = require("path");
 const readdirRecursive = require("recursive-readdir");
 const config = require("../config");
+const { Collection } = require("discord.js");
 
 globalThis.Underline = {
   Plugin: require("../types/Plugin"),
@@ -18,6 +19,7 @@ globalThis.Underline = {
   SelectMenu: require("../types/SelectMenu"),
   Button: require("../types/Button"),
   Locale: require("../types/Locale"),
+  Modal: require("../types/Modal"),
   config
 };
 
@@ -30,6 +32,14 @@ async function getEventFilePaths() {
     return !state;
   });
   return VEventFiles;
+}
+
+async function getLocaleFilePaths() {
+  let localesPath = path.resolve("./locales");
+  await makeSureFolderExists(localesPath);
+  let VLocaleFiles = await readdirRecursive(localesPath);
+
+  return VLocaleFiles;
 }
 
 async function getInteractionFilePaths() {
@@ -54,6 +64,34 @@ async function getInteractionFilePaths() {
   let TEvents = [];
   let TInterfaces = [];
   let loadedNamespaces = [];
+
+  localeFiles = await getLocaleFilePaths();
+
+  const locales = new Collection();
+
+  await chillout.forEach(localeFiles, (localeFile) => {
+    /** @type {import("./types/Locale")} */
+    let locale = require(localeFile);
+    locales.set(locale.locale, locale);
+  });
+
+  let defaultLocale = locales.get(Underline.config.defaultLanguage);
+
+  if (defaultLocale) {
+
+    let localeData = JSON.stringify(defaultLocale._data, null, 2).replace(/("([^"]*[^\\]?)"|`([^`]*[^\\]?)`|'([^']*[^\\]?)')\:/g, "$2$4$3:").replace(/"[^"]*[^\\]?"|`[^`]*[^\\]?`|'[^']*[^\\]?'/g, "(...args) => string");
+
+    let localeOutput = 
+`export default class Locale {
+  locale: import("../types/Locale").LocaleString
+  data: LocaleData
+}
+  
+export type LocaleData = ${localeData};`;
+    await fs.promises.writeFile(path.resolve(__dirname, "../generated/localeTypes.d.ts"), localeOutput);
+  }
+
+
   await chillout.forEach(pluginFiles, async (pluginFile) => {
     /** @type {import("../types/Plugin")} */
     let plugin = require(pluginFile);
@@ -112,7 +150,7 @@ async function getInteractionFilePaths() {
     /** @type {import("..MessageActions/Interaction")} */
     let uInter = require(interactionFile);
 
-    if (uInter?._type != "interaction") return;
+    if (uInter?._type != "interaction" && uInter?._type != "ComponentInteraction") return;
 
     if (!uInter.id) return;
     interactionIds.push(uInter.id);

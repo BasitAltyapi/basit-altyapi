@@ -3,7 +3,7 @@
 interface Underline {
   interactions: import("discord.js").Collection<import("./generated/ids").InteractionIds, import("./types/Interaction")>
   events: import("discord.js").Collection<import("./generated/ids").EventIds, import("./types/Event") >
-  locales: import("discord.js").Collection<import("./types/Locale").LocaleString, import("./types/Locale") >
+  locales: import("discord.js").Collection<import("./types/Locale").LocaleString, import("./generated/localeTypes").default >
   config: import("./types/Config");
   other: { [key: string | number]: any; },
   utils: typeof import("./other/utils.js");

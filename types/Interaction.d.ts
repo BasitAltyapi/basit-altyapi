@@ -125,7 +125,7 @@ export type TInteractionConstructor = TOmittedInteraction &
 type CooldownType = "user" | "member" | "channel" | "guild" | "message" | "any";
 export interface IOther {
   setCoolDown(durations: number, type: CooldownType): void;
-  locale: import("./Locale").Data;
+  locale: import("../generated/localeTypes").LocaleData;
   pluginApi?: PluginAPI;
   data: (string | number | { [string | number]: any; $unRef(): boolean })[];
   [key: string | number]: any;
