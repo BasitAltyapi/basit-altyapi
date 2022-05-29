@@ -5,6 +5,7 @@
     "async-and-quick": "^1.0.1",
     "chalk": "^4.1.1",
     "chillout": "^5.0.0",
+    "chokidar": "^3.5.3",
     "discord-api-types": "^0.23.1",
     "discord.js": "^14.0.0-dev.1650931749-df64d3e",
     "enquirer": "^2.3.6",
@@ -35,7 +36,8 @@
     "interaksiyon": "node ./other/generator.js interaction",
     "olay": "node ./other/generator.js event",
     "baslat": "node index.js",
-    "tipler": "node ./other/typesGenerator.js"
+    "tipler": "node ./other/typesGenerator.js",
+    "dev": "node watchChanges.js"
   },
   "bugs": {
     "url": "https://github.com/TheArmagan/basit-altyapi/issues"
