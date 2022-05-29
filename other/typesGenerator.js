@@ -161,7 +161,7 @@ export type LocaleData = ${localeData};`;
     /** @type {import("../types/Event")} */
     let uEvent = require(eventFile);
     if (uEvent?._type != "event") return;
-    if (!uEvent.id) return;
+    if (typeof uEvent.id != "string") uEvent.id = path.basename(eventFile).slice(0, -3).replace(/ /g, "");
     eventIds.push(uEvent.id);
   });
 
