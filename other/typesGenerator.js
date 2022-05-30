@@ -131,7 +131,9 @@ async function getInteractionFilePaths() {
     if (plugin.locale) {
       locales.forEach((locale) => {
         if (!locale.inConstructor) locale.inConstructor = { locale: locale.locale, data: locale._data, commands: locale.commands };
-        if (!locale.inConstructor.data[plugin.namespace] || JSON.stringify(locale.inConstructor.data[plugin.namespace])?.match(/("([^"]*[^\\]?)"|`([^`]*[^\\]?)`|'([^']*[^\\]?)')\:/g)?.join("|") != JSON.stringify(plugin.locale).match(/("([^"]*[^\\]?)"|`([^`]*[^\\]?)`|'([^']*[^\\]?)')\:/g)?.join("|")) {
+        if (!locale.inConstructor.data[plugin.namespace] 
+          // || JSON.stringify(locale.inConstructor.data[plugin.namespace])?.match(/("([^"]*[^\\]?)"|`([^`]*[^\\]?)`|'([^']*[^\\]?)')\:/g)?.join("|") != JSON.stringify(plugin.locale).match(/("([^"]*[^\\]?)"|`([^`]*[^\\]?)`|'([^']*[^\\]?)')\:/g)?.join("|")
+          ) {
           locale.inConstructor.data[plugin.namespace] = plugin.locale;
           locale.overwrite = true;
         }
