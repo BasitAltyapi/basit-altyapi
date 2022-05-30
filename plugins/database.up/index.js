@@ -43,5 +43,6 @@ module.exports = new Underline.Plugin({
 
     
     api.setPluginReady();
-  }
+  },
+  locale: {}
 })

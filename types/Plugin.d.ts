@@ -5,6 +5,8 @@ class Plugin {
 
   namespace: string;
 
+  locale: Object;
+  
   requires?: {
     modules?: {
       [key: string]: string

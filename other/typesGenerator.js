@@ -72,6 +72,7 @@ async function getInteractionFilePaths() {
   await chillout.forEach(localeFiles, (localeFile) => {
     /** @type {import("./types/Locale")} */
     let locale = require(localeFile);
+    locale.path = localeFile;
     locales.set(locale.locale, locale);
   });
 
@@ -81,8 +82,8 @@ async function getInteractionFilePaths() {
 
     let localeData = JSON.stringify(defaultLocale._data, null, 2).replace(/("([^"]*[^\\]?)"|`([^`]*[^\\]?)`|'([^']*[^\\]?)')\:/g, "$2$4$3:").replace(/"[^"]*[^\\]?"|`[^`]*[^\\]?`|'[^']*[^\\]?'/g, "(...args) => string");
 
-    let localeOutput = 
-`export default class Locale {
+    let localeOutput =
+      `export default class Locale {
   locale: import("../types/Locale").LocaleString
   data: LocaleData
 }
@@ -96,7 +97,7 @@ export type LocaleData = ${localeData};`;
     /** @type {import("../types/Plugin")} */
     let plugin = require(pluginFile);
 
-    if (plugin._type != "plugin") return 
+    if (plugin._type != "plugin") return
 
     if (loadedNamespaces.find(x => x == plugin.namespace)) return
 
@@ -144,6 +145,23 @@ export type LocaleData = ${localeData};`;
       }
     }
 
+    if (plugin.locale) {
+      locales.forEach((locale) => {
+        if (!locale.inConstructor) locale.inConstructor = { locale: locale.locale, data: locale._data, commands: locale.commands };
+        if (!locale.inConstructor.data[plugin.namespace] || JSON.stringify(locale.inConstructor.data[plugin.namespace])?.match(/("([^"]*[^\\]?)"|`([^`]*[^\\]?)`|'([^']*[^\\]?)')\:/g)?.join("|") != JSON.stringify(plugin.locale).match(/("([^"]*[^\\]?)"|`([^`]*[^\\]?)`|'([^']*[^\\]?)')\:/g)?.join("|")) {
+          locale.inConstructor.data[plugin.namespace] = plugin.locale;
+          locale.overwrite = true;
+        }
+      })
+    }
+
+  });
+
+  locales.forEach(locale => {
+    if (locale.overwrite) {
+      locale.inConstructor = JSON.stringify(locale.inConstructor, null, 2).replace(/("([^"]*[^\\]?)"|`([^`]*[^\\]?)`|'([^']*[^\\]?)')\:/g, "$2$4$3:");
+      fs.writeFileSync(locale.path, `module.exports = new Underline.Locale(${locale.inConstructor});`);
+    }
   });
 
   await chillout.forEach(interactionFiles, (interactionFile) => {

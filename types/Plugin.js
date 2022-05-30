@@ -33,6 +33,7 @@ class Plugin {
     }
 
     this.implements = obj.implements;
+    this.locale = obj.locale;
     this.onLoad = obj.onLoad;
   }
 }
