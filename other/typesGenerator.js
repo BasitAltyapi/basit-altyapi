@@ -76,23 +76,6 @@ async function getInteractionFilePaths() {
     locales.set(locale.locale, locale);
   });
 
-  let defaultLocale = locales.get(Underline.config.defaultLanguage);
-
-  if (defaultLocale) {
-
-    let localeData = JSON.stringify(defaultLocale._data, null, 2).replace(/("([^"]*[^\\]?)"|`([^`]*[^\\]?)`|'([^']*[^\\]?)')\:/g, "$2$4$3:").replace(/"[^"]*[^\\]?"|`[^`]*[^\\]?`|'[^']*[^\\]?'/g, "(...args) => string");
-
-    let localeOutput =
-      `export default class Locale {
-  locale: import("../types/Locale").LocaleString
-  data: LocaleData
-}
-  
-export type LocaleData = ${localeData};`;
-    await fs.promises.writeFile(path.resolve(__dirname, "../generated/localeTypes.d.ts"), localeOutput);
-  }
-
-
   await chillout.forEach(pluginFiles, async (pluginFile) => {
     /** @type {import("../types/Plugin")} */
     let plugin = require(pluginFile);
@@ -163,6 +146,22 @@ export type LocaleData = ${localeData};`;
       fs.writeFileSync(locale.path, `module.exports = new Underline.Locale(${locale.inConstructor});`);
     }
   });
+
+  let defaultLocale = locales.get(Underline.config.defaultLanguage);
+
+  if (defaultLocale) {
+
+    let localeData = JSON.stringify(defaultLocale._data, null, 2).replace(/("([^"]*[^\\]?)"|`([^`]*[^\\]?)`|'([^']*[^\\]?)')\:/g, "$2$4$3:").replace(/"[^"]*[^\\]?"|`[^`]*[^\\]?`|'[^']*[^\\]?'/g, "(...args) => string");
+
+    let localeOutput =
+      `export default class Locale {
+  locale: import("../types/Locale").LocaleString
+  data: LocaleData
+}
+  
+export type LocaleData = ${localeData};`;
+    await fs.promises.writeFile(path.resolve(__dirname, "../generated/localeTypes.d.ts"), localeOutput);
+  }
 
   await chillout.forEach(interactionFiles, (interactionFile) => {
     /** @type {import("..MessageActions/Interaction")} */
