@@ -4,6 +4,7 @@ const config = require("./config");
 const utils = require("./other/utils");
 globalThis.Underline = config.globalObjects;
 const Discord = require("discord.js");
+const { ChannelType, MessageType, ComponentType, InteractionType, ActivityType, AuditLogOptionsType, ApplicationCommandOptionType, ButtonStyle, TextInputStyle } = require("discord.js");
 const chillout = require("chillout");
 const path = require("path");
 const fs = require("fs");
@@ -51,6 +52,17 @@ globalThis.Underline = {
   Plugin: require("./types/Plugin"),
 }
 
+globalThis.Enums = {
+  ChannelType,
+  MessageType,
+  ApplicationCommandOptionType,
+  ActivityType,
+  AuditLogOptionsType,
+  InteractionType,
+  ComponentType,
+  ButtonStyle,
+  TextInputStyle
+}
 const extractZip = require("extract-zip");
 
 async function getPluginFilePaths() {

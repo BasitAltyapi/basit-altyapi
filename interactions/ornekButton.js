@@ -16,7 +16,7 @@ module.exports = new Underline.Button({
     user: ["KickMembers", "GuildOwner"]
   },
   options: {
-    style: "Primary",
+    style: Enums.ButtonStyle.Primary,
     label: "sa"
   }
 });

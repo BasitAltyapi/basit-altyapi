@@ -15,7 +15,7 @@ module.exports = new Underline.ChatInput({
   options: [
     {
       name: "id",
-      type: "String",
+      type: Enums.ApplicationCommandOptionType.String,
       description: "...",
       autocomplete: true,
       async onComplete(inter, value) {

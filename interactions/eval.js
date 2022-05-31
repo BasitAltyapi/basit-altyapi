@@ -36,7 +36,7 @@ module.exports = new Underline.ChatInput({
     {
       description: "JavaScript kodu.",
       name: "code",
-      type: "String",
+      type: Enums.ApplicationCommandOptionType.String,
       required: true
     }
   ]

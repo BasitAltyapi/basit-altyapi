@@ -28,7 +28,7 @@ module.exports = new Underline.ChatInput({
   options: [
     {
       name: "kullanici",
-      type: "User",
+      type: Enums.ApplicationCommandOptionType.User,
       description: "Bilgisini almak istediğiniz kullanıcı.",
       required: true
     }

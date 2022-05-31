@@ -3,19 +3,19 @@ module.exports = new Underline.ChatInput({
   description: "Bir kullanıcıdan rol alamanızı sağlar.",
   options: [
     {
-      type: "User",
+      type: Enums.ApplicationCommandOptionType.User,
       name: "uye",
       description: "Rol alacağanız kişi.",
       required: true
     },
     {
-      type: "Role",
+      type: Enums.ApplicationCommandOptionType.Role,
       name: "rol",
       description: "Alınacak rol.",
       required: true
     },
     {
-      type: "String",
+      type: Enums.ApplicationCommandOptionType.String,
       name: "durum",
       description: "Rol verilsinmi alınsınmı?",
       required: true,

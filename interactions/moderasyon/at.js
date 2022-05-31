@@ -3,13 +3,13 @@ module.exports = new Underline.ChatInput({
   description: "Sunucudan üye atmanızı sağlar.",
   options: [
     {
-      type: "User",
+      type: Enums.ApplicationCommandOptionType.User,
       name: "uye",
       description: "Atılacak üye.",
       required: true
     },
     {
-      type: "String",
+      type: Enums.ApplicationCommandOptionType.String,
       name: "sebep",
       description: "Atılma sebebi",
       required: false

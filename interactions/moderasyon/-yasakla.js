@@ -3,13 +3,13 @@ module.exports = new Underline.ChatInput({
   description: "Sunucudan üye yasaklamanızı sağlar.",
   options: [
     {
-      type: "User",
+      type: Enums.ApplicationCommandOptionType.User,
       name: "uye",
       description: "Yasaklanacak üye.",
       required: true
     },
     {
-      type: "String",
+      type: Enums.ApplicationCommandOptionType.String,
       name: "sebep",
       description: "Yasaklanma sebebi",
       required: false

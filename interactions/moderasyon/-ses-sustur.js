@@ -3,13 +3,13 @@ module.exports = new Underline.ChatInput({
   description: "Bir kullanıcının ses susturmasını açıp kapamanızı sağlar.",
   options: [
     {
-      type: "User",
+      type: Enums.ApplicationCommandOptionType.User,
       name: "uye",
       description: "Rol verceğeniz kişi.",
       required: true
     },
     {
-      type: "String",
+      type: Enums.ApplicationCommandOptionType.String,
       name: "durum",
       description: "Susturulma durumu.",
       required: true,

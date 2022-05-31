@@ -5,7 +5,7 @@ module.exports = new Underline.ChatInput({
   description: "Belli bir miktar mesaj silemenizi sağlar.",
   options: [
     {
-      type: "Integer",
+      type: Enums.ApplicationCommandOptionType.Integer,
       name: "miktar",
       description: "Silinecek mesaj miktarı. Maximum 100.",
       required: true

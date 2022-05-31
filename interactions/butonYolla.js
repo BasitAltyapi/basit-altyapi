@@ -6,7 +6,7 @@ module.exports = new Underline.ChatInput({
       content: "Düğme!",
       components: [
         {
-          type: "ActionRow",
+          type: Enums.ComponentType.ActionRow,
           components: [
             Underline.interactions.get("ornek").toJSON([inter.user])
           ]

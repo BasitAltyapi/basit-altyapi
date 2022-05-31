@@ -24,12 +24,12 @@ module.exports = new Underline.ChatInput({
   options: [
     {
       name: "number_one",
-      type: "Number",
+      type: Enums.ApplicationCommandOptionType.Number,
       description: "Sayı Bir",
       required: true
     }, {
       name: "expression_type",
-      type: "String",
+      type: Enums.ApplicationCommandOptionType.String,
       description: "İşlem tipi",
       required: true,
       choices: [
@@ -52,7 +52,7 @@ module.exports = new Underline.ChatInput({
       ]
     }, {
       name: "number_two",
-      type: "Number",
+      type: Enums.ApplicationCommandOptionType.Number,
       description: "Sayı İki",
       required: true,
     },
