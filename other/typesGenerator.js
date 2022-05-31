@@ -184,6 +184,23 @@ async function getInteractionFilePaths() {
 
   });
 
+  let defaultLocale = locales.get(Underline.config.defaultLanguage);
+
+  locales.forEach((locale) => {
+    if (!locale.inConstructor) locale.inConstructor = { locale: locale.locale, data: locale._data, commands: locale.commands };
+
+    function fixO(fixingObj, tempObj) {
+      for (let key in tempObj) {
+        if (!fixingObj[key]) {
+          fixingObj[key] = tempObj[key];
+          locale.overwrite = true;
+        }
+        else if (typeof fixingObj[key] == "object") fixO(fixingObj[key], tempObj[key]);
+      }
+    }
+    fixO(locale.inConstructor.data, defaultLocale._data);
+  });
+
   locales.forEach(locale => {
     if (locale.overwrite) {
       locale.inConstructor = JSON.stringify(locale.inConstructor, null, 2).replace(/("([^"]*[^\\]?)"|`([^`]*[^\\]?)`|'([^']*[^\\]?)')\:/g, "$2$4$3:");
@@ -191,7 +208,7 @@ async function getInteractionFilePaths() {
     }
   });
 
-  let defaultLocale = locales.get(Underline.config.defaultLanguage);
+
 
   if (defaultLocale) {
 
