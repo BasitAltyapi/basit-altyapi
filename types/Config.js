@@ -1,6 +1,5 @@
 const Discord = require("discord.js");
 const Interaction = require("./Interaction");
-
 class Config {
 
   /** @private */
@@ -18,7 +17,7 @@ class Config {
   /** @type {{coolDown(interaction: Discord.CommandInteraction, interaction: Interaction, timeout: number, type: "user" | "member" | "channel" | "guild" | "message" | "any", other: {[key:string|number]: any}): void, disabled(interaction: Discord.CommandInteraction, interaction: Interaction, other: {[key:string|number]: any}): void, blocked(interaction: Discord.CommandInteraction, interaction: Interaction, other: {[key:string|number]: any}): void, botPermsRequired(interaction: Discord.CommandInteraction, interaction: Interaction, perms: string[], other: {setCoolDown(duration:number): void, [key:string|number]: any}): void, userPermsRequired(interaction: Discord.CommandInteraction, interaction: Interaction, perms: string[], other: {setCoolDown(duration:number): void, [key:string|number]: any}): void, developerOnly(interaction: Discord.CommandInteraction, interaction: Interaction, other: {[key:string|number]: any}): void, guildOnly(interaction: Discord.CommandInteraction, interaction: Interaction, other: {[key:string|number]: any}): void, guildOwnerOnly(interaction: Discord.CommandInteraction, interaction: Interaction, other: {[key:string|number]: any}): void}} */
   userErrors = {};
 
-  /** @type {{[key: string|number]: any}} */
+  /** @type {import("../generated/configOther").default} */
   other = {};
 
   /** @type {import("./Interaction").TOmittedInteraction} */

@@ -7,6 +7,10 @@ module.exports = new Underline.Plugin({
   requires: {
     modules: {
       "mongoose": "6.2.6",
+    },
+    config: {
+      connectionURL: "string",
+      compressors: "('none'| 'snappy' | 'zlib')[]"
     }
   },
   implements: {
@@ -41,7 +45,18 @@ module.exports = new Underline.Plugin({
     });
     api.define("Schema", Schema);
 
-    
+    if (Underline.config.other.plugins.mongooseDatabase.connectionURL) {
+      if (Underline.config.other.plugins.mongooseDatabase.compressors) connect(Underline.config.other.plugins.mongooseDatabase.connectionURL, {compressors: Underline.config.other.plugins.mongooseDatabase.compressors}).then(() => {
+        api.emit("onConnect", true);
+      }).catch(() => {
+        api.emit("onConnect", false);
+      });
+      else connect(Underline.config.other.plugins.mongooseDatabase.connectionURL).then(() => {
+        api.emit("onConnect", true);
+      }).catch(() => {
+        api.emit("onConnect", false);
+      });
+    }
     api.setPluginReady();
   },
   locale: {}

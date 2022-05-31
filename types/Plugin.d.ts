@@ -11,7 +11,8 @@ class Plugin {
     modules?: {
       [key: string]: string
     },
-    plugins?: string[]
+    plugins?: string[],
+    config?: { [key: string]: any },
   }
 
   implements?: {

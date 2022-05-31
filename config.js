@@ -20,7 +20,11 @@ module.exports = new (require("./types/Config"))({
   // Diğer ayarlar. Bunun içine ne isterseniz koyabilirsiniz.
   // Ulaşmak için "Underline.config.other" ve/veya "Underline.other" objesini kullanabilirsiniz.
   other: {
-
+    plugins: {
+      mongooseDatabase: {
+        connectionURL: "mongodb://localhost:27017/basit-altyapi"
+      }
+    }
   },
   // Otomatik olarak "Underline" objesinin içine eklenen değerler.
   // Eklediğiniz değerler "Underline.<anahtar>" şeklinde ulaşabilirsiniz.

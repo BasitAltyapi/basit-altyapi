@@ -24,5 +24,6 @@ export type LocaleData = {
   example: {
     success: (...args) => string,
     error: (...args) => string
-  }
+  },
+  mongooseDatabase: {}
 };

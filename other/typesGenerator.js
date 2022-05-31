@@ -58,6 +58,7 @@ async function getInteractionFilePaths() {
   let eventFiles = await getEventFilePaths();
   let interactionFiles = await getInteractionFilePaths();
   let pluginTypes = [];
+  let pluginConfigTypes = [];
   let interactionIds = [];
   let eventIds = [];
   let TEventNames = [];
@@ -75,6 +76,27 @@ async function getInteractionFilePaths() {
     locale.path = localeFile;
     locales.set(locale.locale, locale);
   });
+
+  {
+    let configOtherType = {};
+    delete Underline.config.other.plugins;
+    function fixConfigIn(fixingObj, tempObj) {
+      for (let key in fixingObj) {
+        if (typeof fixingObj[key] != "object") {
+          tempObj[key] = typeof fixingObj[key];
+          configEdit = true;
+        }
+        else if (typeof fixingObj[key] == "object") {
+          tempObj[key] = {};
+          fixConfigIn(fixingObj[key], tempObj[key]);
+        }
+      }
+    }
+    fixConfigIn(Underline.config.other, configOtherType);
+    configOtherType["plugins"] = "import('./pluginTypes').config";
+    fs.writeFileSync(path.resolve(__dirname, "../generated/configOther.d.ts"), `export default class Other ${JSON.stringify(configOtherType, null, 2).replace(/("([^"]*[^\\]?)")/g, "$2").replace(/,$/mg, ";")
+      }`);
+  };
 
   await chillout.forEach(pluginFiles, async (pluginFile) => {
     /** @type {import("../types/Plugin")} */
@@ -131,13 +153,33 @@ async function getInteractionFilePaths() {
     if (plugin.locale) {
       locales.forEach((locale) => {
         if (!locale.inConstructor) locale.inConstructor = { locale: locale.locale, data: locale._data, commands: locale.commands };
-        if (!locale.inConstructor.data[plugin.namespace] 
-          // || JSON.stringify(locale.inConstructor.data[plugin.namespace])?.match(/("([^"]*[^\\]?)"|`([^`]*[^\\]?)`|'([^']*[^\\]?)')\:/g)?.join("|") != JSON.stringify(plugin.locale).match(/("([^"]*[^\\]?)"|`([^`]*[^\\]?)`|'([^']*[^\\]?)')\:/g)?.join("|")
-          ) {
+        if (!locale.inConstructor.data[plugin.namespace]) {
           locale.inConstructor.data[plugin.namespace] = plugin.locale;
           locale.overwrite = true;
+        } else {
+          function fixO(fixingObj, tempObj) {
+            for (let key in tempObj) {
+              if (!fixingObj[key]) {
+                fixingObj[key] = tempObj[key];
+                locale.overwrite = true;
+              }
+              else if (typeof fixingObj[key] == "object") fixO(fixingObj[key], tempObj[key]);
+            }
+          }
+          fixO(locale.inConstructor.data[plugin.namespace], plugin.locale);
         }
       })
+    }
+
+    if (plugin.requires.config) {
+      let result = []
+      for (let property in plugin.requires.config) {
+        let returns = plugin.requires.config[property];
+        let returnsString = generateReturn(returns);
+        result.push(`${property}: ${returnsString}`)
+      }
+      result = `{ ${result.join(", ")} }`;
+      pluginConfigTypes.push(`["${plugin.namespace}"]: ${result}`);
     }
 
   });
@@ -169,7 +211,7 @@ export type LocaleData = ${localeData};`;
     /** @type {import("..MessageActions/Interaction")} */
     let uInter = require(interactionFile);
 
-    if (uInter?._type != "interaction" && uInter?._type != "ComponentInteraction") return;
+    if (!uInter?._type?.toLowerCase().includes("interaction")) return;
 
     if (!uInter.id) return;
     interactionIds.push(uInter.id);
@@ -185,7 +227,7 @@ export type LocaleData = ${localeData};`;
   });
 
   await makeSureFolderExists(path.resolve(__dirname, "../generated"));
-  let pluginTypesResult = `export class Types {\n${pluginTypes.map(i => `  ${i};`).join("\n")}\n};\n${`export type TEventNames = ${TEventNames.join(" | ").trim() || '""'};`}\n${`export type TEvents = ${TEvents.join(" | ").trim() || "[]"};`}\n${TInterfaces.join("\n")}\n`.trim();
+  let pluginTypesResult = `export class config {\n${pluginConfigTypes.map(i => `  ${i};`).join("\n")}\n}\n\nexport class Types {\n${pluginTypes.map(i => `  ${i};`).join("\n")}\n};\n${`export type TEventNames = ${TEventNames.join(" | ").trim() || '""'};`}\n${`export type TEvents = ${TEvents.join(" | ").trim() || "[]"};`}\n${TInterfaces.join("\n")}\n`.trim();
   await fs.promises.writeFile(path.resolve(__dirname, "../generated/pluginTypes.d.ts"), pluginTypesResult);
 
   let idsResult = `export type InteractionIds = ${interactionIds.map(i => `"${i}"`).join(" | ").trim() || '""'};\nexport type EventIds = ${eventIds.map(i => `"${i}"`).join(" | ").trim() || '""'};`;
