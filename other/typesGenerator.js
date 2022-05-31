@@ -7,7 +7,7 @@ const { makeSureFolderExists } = require("stuffs");
 const path = require("path");
 const readdirRecursive = require("recursive-readdir");
 const config = require("../config");
-const { Collection } = require("discord.js");
+const { Collection, ChannelType, MessageType, ComponentType, InteractionType, ActivityType, AuditLogOptionsType, ApplicationCommandOptionType, ButtonStyle, TextInputStyle } = require("discord.js");
 
 globalThis.Underline = {
   Plugin: require("../types/Plugin"),
@@ -22,6 +22,18 @@ globalThis.Underline = {
   Modal: require("../types/Modal"),
   config
 };
+
+globalThis.Enums = {
+  ChannelType,
+  MessageType,
+  ApplicationCommandOptionType,
+  ActivityType,
+  AuditLogOptionsType,
+  InteractionType,
+  ComponentType,
+  ButtonStyle,
+  TextInputStyle
+}
 
 async function getEventFilePaths() {
   let eventsPath = path.resolve("./events");
@@ -94,8 +106,7 @@ async function getInteractionFilePaths() {
     }
     fixConfigIn(Underline.config.other, configOtherType);
     configOtherType["plugins"] = "import('./pluginTypes').config";
-    fs.writeFileSync(path.resolve(__dirname, "../generated/configOther.d.ts"), `export default class Other ${JSON.stringify(configOtherType, null, 2).replace(/("([^"]*[^\\]?)")/g, "$2").replace(/,$/mg, ";")
-      }`);
+    fs.writeFileSync(path.resolve(__dirname, "../generated/configOther.d.ts"), `export default class Other ${JSON.stringify(configOtherType, null, 2).replace(/("([^"]*[^\\]?)")/g, "$2").replace(/,$/mg, ";")}`);
   };
 
   await chillout.forEach(pluginFiles, async (pluginFile) => {
@@ -128,7 +139,6 @@ async function getInteractionFilePaths() {
     if (isDTS) {
       pluginTypes.push(`["${plugin.namespace}"]: import("${path.relative(process.cwd(), dtsPath).replace(".d.ts", "").replaceAll(path.sep, "/")}").Plugin`);
     } else {
-      // let implements = Object.entries(plugin.implements.properties);
       if (!plugin?.implements?.properties) return;
       let result = []
       for (let property in plugin.implements.properties) {
@@ -189,21 +199,69 @@ async function getInteractionFilePaths() {
   locales.forEach((locale) => {
     if (!locale.inConstructor) locale.inConstructor = { locale: locale.locale, data: locale._data, commands: locale.commands };
 
-    function fixO(fixingObj, tempObj) {
+    // function commentThemAll(fixingObj, tempObj) {
+    //   for (let key in tempObj) {
+    //     if (!fixingObj[key]) {
+    //       if (typeof tempObj[key] == "string") {
+    //         fixingObj[key] = "";
+    //         if (!locale.comments) locale.comments = {};
+    //         locale.comments[key] = tempObj[key]
+    //       }
+
+    //       locale.overwrite = true;
+    //     }
+    //     else if (typeof fixingObj[key] == "object") fillDataWithDefault(fixingObj[key], tempObj[key]);
+    //   }
+    // }
+    let lastTriggers = [];
+
+    function fillDataWithDefaultWithComment(fixingObj, tempObj) {
       for (let key in tempObj) {
         if (!fixingObj[key]) {
-          fixingObj[key] = tempObj[key];
+          if (typeof tempObj[key] == "string") {
+            fixingObj[key] = "";
+            if (!locale.comments) locale.comments = {};
+            locale.comments[key] = tempObj[key]
+          } else if (typeof tempObj[key] == "object") {
+            if (!locale.comments) locale.comments = {};
+            fixingObj[key] = tempObj[key];
+            fillDataWithDefaultWithComment(fixingObj[key], tempObj[key]);
+          }
           locale.overwrite = true;
+        } else if (typeof fixingObj[key] == "object") fillDataWithDefaultWithComment(fixingObj[key], tempObj[key]);
+        else if (typeof fixingObj[key] == "string") {
+          locale.comments[key] = tempObj[key]
+          fixingObj[key] = "";
         }
-        else if (typeof fixingObj[key] == "object") fixO(fixingObj[key], tempObj[key]);
       }
     }
-    fixO(locale.inConstructor.data, defaultLocale._data);
+
+    function fillDataWithDefault(fixingObj, tempObj) {
+      for (let key in tempObj) {
+        if (!fixingObj[key] && fixingObj[key] !== "") {
+          if (typeof tempObj[key] == "string") {
+            fixingObj[key] = "";
+            if (!locale.comments) locale.comments = {};
+            locale.comments[key] = tempObj[key]
+          } else if (typeof tempObj[key] == "object") {
+            if (!locale.comments) locale.comments = {};
+            fixingObj[key] = tempObj[key];
+            lastTriggers.push({ f: fillDataWithDefaultWithComment, args: [fixingObj[key], tempObj[key]]});
+          }
+          locale.overwrite = true;
+        } else if (typeof fixingObj[key] == "object") fillDataWithDefault(fixingObj[key], tempObj[key]);
+      }
+    }
+    fillDataWithDefault(locale.inConstructor.data, defaultLocale._data);
+    lastTriggers.forEach((obj) => obj.f(...obj.args));
   });
 
   locales.forEach(locale => {
     if (locale.overwrite) {
       locale.inConstructor = JSON.stringify(locale.inConstructor, null, 2).replace(/("([^"]*[^\\]?)"|`([^`]*[^\\]?)`|'([^']*[^\\]?)')\:/g, "$2$4$3:");
+      if (locale.comments) for (let key in locale.comments) {
+        locale.inConstructor = locale.inConstructor.replace(new RegExp(`( *)(${key}: ")`), `$1// ${locale.comments[key]}\n$1$2`)
+      }
       fs.writeFileSync(locale.path, `module.exports = new Underline.Locale(${locale.inConstructor});`);
     }
   });

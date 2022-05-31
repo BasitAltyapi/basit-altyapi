@@ -25,5 +25,8 @@ export type LocaleData = {
     success: (...args) => string,
     error: (...args) => string
   },
+  test: {
+    bö: (...args) => string
+  },
   mongooseDatabase: {}
 };
