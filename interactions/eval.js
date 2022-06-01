@@ -1,4 +1,4 @@
-const { Util } = require("discord.js");
+const { Util, ApplicationCommandOptionType } = require("discord.js");
 const util = require("util");
 
 module.exports = new Underline.ChatInput({
@@ -36,7 +36,7 @@ module.exports = new Underline.ChatInput({
     {
       description: "JavaScript kodu.",
       name: "code",
-      type: Enums.ApplicationCommandOptionType.String,
+      type: ApplicationCommandOptionType.String,
       required: true
     }
   ]

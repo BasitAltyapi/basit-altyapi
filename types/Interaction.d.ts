@@ -2,6 +2,7 @@ import {
   // ApplicationCommandChannelOptionData,
   // ApplicationCommandChoicesData,
   // ApplicationCommandNonOptionsData,
+  ApplicationCommandChannelOptionData,
   ChannelTypeEnumResolvable,
   ChannelType,
   CommandOptionNonChoiceResolvableType,
@@ -30,9 +31,9 @@ import {
   TextInputComponentData,
   ApplicationCommandOptionType,
   PermissionResolvable,
+  ButtonStyle,
 } from "discord.js";
 import { PluginAPI } from "./Plugin";
-
 interface CustomSelectMenuOptions {
   min?: number;
   max?: number;
@@ -56,10 +57,10 @@ export type CustomApplicationCommandOptionData = {
   name: string,
   description: string,
   choices: { name: string, value: string }[],
-  type: "Number" | "String" | "User" | "Integer" | "Channel" | "Role" | "Boolean" | "Mentionable",
+  type: ApplicationCommandOptionType,
   autocomplete: boolean,
   required: boolean,
-  channelTypes: ("GuildText" | "Dm" | "GuildVoice" | "GroupDm" | "GuildCategory" | "GuildNews" | "GuildNewsThread" | "GuildPublicThread" | "GuildPrivateThread" | "GuildStageVoice")[],
+  channelTypes: (ChannelType)[],
   onComplete(
     interaction: AutocompleteInteraction,
     value: string | number,
@@ -163,7 +164,7 @@ export interface Button {
   options?: {
     emoji?: EmojiResolvable;
     label?: string;
-    style: "Primary" | "Secondary" | "Success" | "Danger" | "Link";
+    style: ButtonStyle;
     url?: string;
   };
   toJSON(data: Array<any>): ButtonBuilder;

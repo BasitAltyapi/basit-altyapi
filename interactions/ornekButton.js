@@ -1,3 +1,5 @@
+const { ButtonStyle } = require("discord.js");
+
 module.exports = new Underline.Button({
   name: "ornek",
   id: "ornek",
@@ -16,7 +18,7 @@ module.exports = new Underline.Button({
     user: ["KickMembers", "GuildOwner"]
   },
   options: {
-    style: Enums.ButtonStyle.Primary,
+    style: ButtonStyle.Primary,
     label: "sa"
   }
 });
