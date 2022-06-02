@@ -154,6 +154,7 @@ async function getInteractionFilePaths() {
       for (let eventName in plugin.implements.events) {
         let args = plugin.implements.events[eventName].split(/ *, */).map(x => x.includes(":") ? (x.split(":")[0] + ":" + generateReturn(x.split(":")[1])) : generateReturn(x));
         TEventNames.push(`"${plugin.namespace}:${eventName}"`);
+        args.push("other: IOther");
         TInterfaces.push(`export interface ${plugin.namespace}_${eventName.replace(/ |-/, "")} { eventName: "${plugin.namespace}:${eventName}", onEvent: (${!args?.[0] ? "" : args.map((v, i) => v.includes(":") ? v : `arg${i}: ${v}`).join(", ")}) => void }`);
         TEvents.push(`${plugin.namespace}_${eventName.replace(/ |-/, "")}`);
 
@@ -302,7 +303,7 @@ export type LocaleData = ${localeData};`;
   });
 
   await makeSureFolderExists(path.resolve(__dirname, "../generated"));
-  let pluginTypesResult = `export class config {\n${pluginConfigTypes.map(i => `  ${i};`).join("\n")}\n}\n\nexport class Types {\n${pluginTypes.map(i => `  ${i};`).join("\n")}\n};\n${`export type TEventNames = ${TEventNames.join(" | ").trim() || '""'};`}\n${`export type TEvents = ${TEvents.join(" | ").trim() || "[]"};`}\n${TInterfaces.join("\n")}\n`.trim();
+  let pluginTypesResult = `import { IOther } from "../types/Event";\n\nexport class config {\n${pluginConfigTypes.map(i => `  ${i};`).join("\n")}\n}\n\nexport class Types {\n${pluginTypes.map(i => `  ${i};`).join("\n")}\n};\n${`export type TEventNames = ${TEventNames.join(" | ").trim() || '""'};`}\n${`export type TEvents = ${TEvents.join(" | ").trim() || "[]"};`}\n${TInterfaces.join("\n")}\n`.trim();
   await fs.promises.writeFile(path.resolve(__dirname, "../generated/pluginTypes.d.ts"), pluginTypesResult);
 
   let idsResult = `export type InteractionIds = ${interactionIds.map(i => `"${i}"`).join(" | ").trim() || '""'};\nexport type EventIds = ${eventIds.map(i => `"${i}"`).join(" | ").trim() || '""'};`;
