@@ -226,10 +226,10 @@ makeSureFolderExistsSync("./events");
       console.clear();
 
       console.log(`! Dosyanız oluşturuluyor..`);
-
+      let transformer = { "User": "UserAction", "Message": "MessageAction" }
       let filePath = path.resolve("./interactions", `${interFileName}.js`);
       let resultText = `
-module.exports = new Underline.${interActionType}({
+module.exports = new Underline.${transformer[interActionType] || interActionType || ""}({
   ${interActionType == "Button" || interActionType == "SelectMenu" || interActionType == "Modal" ? `id: ${JSON.stringify(interName)},` : ""}
   name: ${JSON.stringify(interName)},
   ${interDesc ? `description: ${JSON.stringify(interDesc)},` : ""}
