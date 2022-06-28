@@ -31,10 +31,12 @@ import {
   Typing,
   VoiceState,
 } from "discord.js";
+import { LocaleData } from "../generated/localeTypes";
 import { PluginAPI } from "./Plugin";
 
 export interface IOther {
   pluginApi?: PluginAPI;
+  guildLocale: LocaleData;
   [key: string | number]: any
 }
 

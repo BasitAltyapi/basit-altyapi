@@ -529,6 +529,9 @@ async function load() {
 
             let other = {};
 
+            let guild_locale_id = (args[0].guild || args[0])?.preferredLocale?.split("-")[0];
+            other.guildLocale = (Underline.locales.get(guild_locale_id) || Underline.locales.get(Underline.config.defaultLanguage)).data;
+            
             let before = (await quickMap(onFunctions.onEvent, async (func) => { return await func(eventName, args, other); })).findIndex(v => v === false);
             if (before != -1) return;
             chillout.forEach(events,
@@ -712,8 +715,11 @@ client.on("interactionCreate", async (interaction) => {
   }
 
   {
-    let locale_id = (interaction.user.locale || interaction.locale)?.split("-")[0];
+    const locale_id = (interaction.user.locale || interaction.locale)?.split("-")[0];
+    const guild_locale_id = interaction.guild?.preferredLocale?.split("-")[0];
     other.locale = (Underline.locales.get(locale_id) || Underline.locales.get(Underline.config.defaultLanguage)).data;
+    if (!guild_locale_id) other.guildLocale = other.locale;
+    else other.guildLocale = (Underline.locales.get(guild_locale_id) || Underline.locales.get(Underline.config.defaultLanguage)).data;
   }
 
   {

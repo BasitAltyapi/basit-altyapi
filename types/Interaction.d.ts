@@ -33,6 +33,7 @@ import {
   PermissionResolvable,
   ButtonStyle,
 } from "discord.js";
+import { LocaleData } from "../generated/localeTypes";
 import { PluginAPI } from "./Plugin";
 interface CustomSelectMenuOptions {
   min?: number;
@@ -126,7 +127,8 @@ export type TInteractionConstructor = TOmittedInteraction &
 type CooldownType = "user" | "member" | "channel" | "guild" | "message" | "any";
 export interface IOther {
   setCoolDown(durations: number, type: CooldownType): void;
-  locale: import("../generated/localeTypes").LocaleData;
+  locale: LocaleData;
+  guildLocale: LocaleData;
   pluginApi?: PluginAPI;
   data: (string | number | { [string | number]: any; $unRef(): boolean })[];
   [key: string | number]: any;
