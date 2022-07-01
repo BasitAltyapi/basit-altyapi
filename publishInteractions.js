@@ -313,7 +313,6 @@ function findLocales(commandName) {
       }
     }
   }
-  console.log({names, descriptions});
   return {
     descriptions,
     names(idx) {

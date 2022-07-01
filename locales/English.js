@@ -26,13 +26,44 @@ module.exports = new Underline.Locale({
   },
   commands: [
     {
-      originalName: [
-        "profil"
-      ],
-      name: [
-        "profile"
-      ],
+      originalName: ["profil"],
+      name: ["profile"],
       description: "Shows the profile of the user."
+    },
+    {
+      originalName: ["unban"],
+      name: ["unban"],
+      description: "Banlı bir kullanıcının banını açmanızı sağlar."
+    },
+    {
+      originalName: ["buton-yolla"],
+      name: ["buton-yolla"],
+      description: "Buton yollar"
+    },
+    {
+      originalName: ["eval"],
+      name: ["eval"],
+      description: "Bot yetkilileri için JavaScript çalıştırma komutu."
+    },
+    {
+      originalName: ["matamatik"],
+      name: ["matamatik"],
+      description: "Basit 4 işlem sorularını yapmanızı sağlar."
+    },
+    {
+      originalName: ["modal","yolla"],
+      name: ["modal","yolla"],
+      description: ".."
+    },
+    {
+      originalName: ["reload"],
+      name: ["reload"],
+      description: "Bot yetkilileri için Underline reload komutu."
+    },
+    {
+      originalName: ["moderasyon","at"],
+      name: ["moderasyon","at"],
+      description: "Sunucudan üye atmanızı sağlar."
     }
   ]
 });

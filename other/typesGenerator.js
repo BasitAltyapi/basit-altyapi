@@ -78,9 +78,22 @@ async function getInteractionFilePaths() {
   let TInterfaces = [];
   let loadedNamespaces = [];
 
+
+  let inters = [];
   localeFiles = await getLocaleFilePaths();
 
   const locales = new Collection();
+
+  await chillout.forEach(interactionFiles, (interactionFile) => {
+    /** @type {import("..MessageActions/Interaction")} */
+    let uInter = require(interactionFile);
+
+    if (!uInter?._type?.toLowerCase().includes("interaction")) return;
+
+    if (!uInter.id) return;
+    interactionIds.push(uInter.id);
+    inters.push(uInter);
+  });
 
   await chillout.forEach(localeFiles, (localeFile) => {
     /** @type {import("./types/Locale")} */
@@ -247,7 +260,7 @@ async function getInteractionFilePaths() {
           } else if (typeof tempObj[key] == "object") {
             if (!locale.comments) locale.comments = {};
             fixingObj[key] = tempObj[key];
-            lastTriggers.push({ f: fillDataWithDefaultWithComment, args: [fixingObj[key], tempObj[key]]});
+            lastTriggers.push({ f: fillDataWithDefaultWithComment, args: [fixingObj[key], tempObj[key]] });
           }
           locale.overwrite = true;
         } else if (typeof fixingObj[key] == "object") fillDataWithDefault(fixingObj[key], tempObj[key]);
@@ -255,11 +268,31 @@ async function getInteractionFilePaths() {
     }
     fillDataWithDefault(locale.inConstructor.data, defaultLocale._data);
     lastTriggers.forEach((obj) => obj.f(...obj.args));
+
+    inters.forEach(inter => {
+      if (inter.actionType != "ChatInput") return;
+      if (!Array.isArray(locale.inConstructor.commands)) locale.inConstructor.commands = [];
+      let exists = locale.inConstructor.commands.some(lInter => lInter.originalName[0] == inter.name[0] && lInter.originalName[1] == inter.name[1] && lInter.originalName[2] == inter.name[2]);
+      if (!exists) {
+        locale.overwrite = true;
+        locale.inConstructor.commands.push({
+          originalName: inter.name,
+          name: inter.name,
+          description: inter.description
+        })
+      }
+    })
+
   });
 
   locales.forEach(locale => {
     if (locale.overwrite) {
-      locale.inConstructor = JSON.stringify(locale.inConstructor, null, 2).replace(/("([^"]*[^\\]?)"|`([^`]*[^\\]?)`|'([^']*[^\\]?)')\:/g, "$2$4$3:");
+      locale.inConstructor = JSON.stringify(locale.inConstructor, (key, value) => {
+        if (key == "commands") return value;
+        if (Array.isArray(value)) return JSON.stringify(value, null , 0);
+        else return value;
+      }, 2).replace(/("([^"]*[^\\]?)"|`([^`]*[^\\]?)`|'([^']*[^\\]?)')\:/g, "$2$4$3:")
+      .replace(/"\[\\(")([a-z-]+)\\(")((,)\\(")([a-z-]+)\\("))?((,)\\(")([a-z-]+)\\("))?\]"/g, '[$1$2$3$5$6$7$8$10$11$12$13]')
       if (locale.comments) for (let key in locale.comments) {
         locale.inConstructor = locale.inConstructor.replace(new RegExp(`( *)(${key}: ")`), `$1// ${locale.comments[key]}\n$1$2`)
       }
@@ -283,16 +316,7 @@ export type LocaleData = ${localeData};`;
     await fs.promises.writeFile(path.resolve(__dirname, "../generated/localeTypes.d.ts"), localeOutput);
   }
 
-  await chillout.forEach(interactionFiles, (interactionFile) => {
-    /** @type {import("..MessageActions/Interaction")} */
-    let uInter = require(interactionFile);
 
-    if (!uInter?._type?.toLowerCase().includes("interaction")) return;
-
-    if (!uInter.id) return;
-    interactionIds.push(uInter.id);
-
-  });
 
   await chillout.forEach(eventFiles, (eventFile) => {
     /** @type {import("../types/Event")} */
