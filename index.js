@@ -240,10 +240,10 @@ async function load() {
     plugin.onLoad(pluginApi);
     console.info(`[BİLGİ] "${plugin.name}" pluginin yüklenmesi bekleniyor!`);
     console.log(plugin.path, "-path");
-    if (plugin.path?.match(/plugins\\(.|[şçğüiÇŞİĞÜIıöÖ])*\\index\.js$/)) {
+    if (plugin.path?.match(new RegExp(`plugins\\${path.sep}(.|[şçğüiÇŞİĞÜIıöÖ])*\\${path.sep}index\\.js$`))) {
 
-      let interPlPath = plugin.path.replace(/\\index\.js$/, "\\interactions")
-      let evntPlPath = plugin.path.replace(/\\index\.js$/, "\\events")
+      let interPlPath = plugin.path.replace(new RegExp(`\\${path.sep}index\\.js$`), path.sep + "interactions")
+      let evntPlPath = plugin.path.replace(new RegExp(`\\${path.sep}index\\.js$`),  path.sep + "events")
 
       if (fs.existsSync(interPlPath)) {
 
@@ -627,6 +627,9 @@ client.on("interactionCreate", async (interaction) => {
   let subCommandGroupName = "";
   try { subCommandGroupName = interaction.options.getSubcommandGroup(); } catch { };
 
+  interaction.isModalSubmit = () => interaction.type == InteractionType.ModalSubmit;
+  interaction.isAutocomplete = () => interaction.type == InteractionType.ApplicationCommandAutocomplete;
+
   let data = [];
 
   if (interaction.isButton() || interaction.isSelectMenu() || interaction.isModalSubmit()) {
@@ -642,7 +645,7 @@ client.on("interactionCreate", async (interaction) => {
   let uInter = Underline.interactions.find(uInter => {
     switch (uInter.name.length) {
       case 1: return (uInter.name[0] == interaction.commandName) || ((uInter.id == interaction.customId) && (
-        (uInter.actionType == "ChatInput" && (interaction.isCommand() || interaction.isAutocomplete())) ||
+        (uInter.actionType == "ChatInput" && (interaction.isChatInputCommand() || interaction.isAutocomplete())) ||
         (uInter.actionType == "SelectMenu" && interaction.isSelectMenu()) ||
         (uInter.actionType == "Button" && interaction.isButton()) ||
         (uInter.actionType == "Modal" && interaction.isModalSubmit()) ||
