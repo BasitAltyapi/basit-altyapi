@@ -27,7 +27,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TheArmagan/basit-altyapi.git"
+    "url": "git+https://github.com/BasitAltyapi/basit-altyapi/tree/v14.git"
   },
   "author": "Kıraç Armağan Önal",
   "license": "GPL-v3-or-later",
@@ -40,9 +40,9 @@
     "dev": "node watchChanges.js"
   },
   "bugs": {
-    "url": "https://github.com/TheArmagan/basit-altyapi/issues"
+    "url": "https://github.com/BasitAltyapi/basit-altyapi/tree/v14/issues"
   },
-  "homepage": "https://github.com/TheArmagan/basit-altyapi#readme",
+  "homepage": "https://github.com/BasitAltyapi/basit-altyapi/tree/v14#readme",
   "keywords": [],
   "engines": {
     "node": "^18.0.0"

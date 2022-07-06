@@ -65,6 +65,7 @@ globalThis.Enums = {
   TextInputStyle
 }
 const extractZip = require("extract-zip");
+const { copyFile } = require("fs/promises");
 
 async function getPluginFilePaths() {
   let pluginsPath = path.resolve("./plugins");
@@ -79,13 +80,20 @@ async function getPluginFilePaths() {
     } else if (folderOrZip.name.endsWith(".up.js")) {
       if (folderOrZip.name.startsWith("-")) continue;
       result.push(path.resolve(pluginsPath, folderOrZip.name));
-    } else if (folderOrZip.name.endsWith(".up.zip")) {
-      let folderPath = path.resolve(pluginsPath, folderOrZip.name.replace(".up.zip", ".up"));
+    } else if (folderOrZip.name.endsWith(".up.zip") || folderOrZip.name.endsWith(".up")) {
+      let rawName = folderOrZip.name.replace(".up.zip", ".up");
+      let folderPath = path.resolve(pluginsPath, rawName);
       let zipPath = path.resolve(pluginsPath, folderOrZip.name);
+
+      if (!folderOrZip.name.endsWith(".zip")) {
+        await copyFile(zipPath, zipPath + ".zip").catch(() => null);
+        await fs.promises.unlink(zipPath).catch(() => null);
+        zipPath = zipPath + ".zip";
+      }
 
       await fs.promises.rm(folderPath, { recursive: true }).catch(() => { });
       await makeSureFolderExists(folderPath);
-      await extractZip(zipPath, { dir: folderPath });
+      await extractZip(zipPath, { dir: folderPath, defaultFileMode: 0 });
       fs.promises.unlink(zipPath).catch(() => null);
       if (folderOrZip.name.startsWith("-")) continue;
       result.push(path.resolve(folderPath, "index.js"));
