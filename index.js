@@ -5,6 +5,7 @@ const utils = require("./other/utils");
 globalThis.Underline = config.globalObjects;
 const Discord = require("discord.js");
 const { ChannelType, MessageType, ComponentType, InteractionType, ActivityType, AuditLogOptionsType, ApplicationCommandOptionType, ButtonStyle, TextInputStyle } = require("discord.js");
+
 const chillout = require("chillout");
 const path = require("path");
 const fs = require("fs");
@@ -627,12 +628,9 @@ client.on("interactionCreate", async (interaction) => {
   let subCommandGroupName = "";
   try { subCommandGroupName = interaction.options.getSubcommandGroup(); } catch { };
 
-  interaction.isModalSubmit = () => interaction.type == InteractionType.ModalSubmit;
-  interaction.isAutocomplete = () => interaction.type == InteractionType.ApplicationCommandAutocomplete;
-
   let data = [];
 
-  if (interaction.isButton() || interaction.isSelectMenu() || interaction.isModalSubmit()) {
+  if (interaction.isButton() || interaction.isSelectMenu() || interaction.type == InteractionType.ModalSubmit) {
     data = interaction.customId.split("—");
     interaction.customId = data.shift();
     data = data.map(key => {
@@ -645,14 +643,14 @@ client.on("interactionCreate", async (interaction) => {
   let uInter = Underline.interactions.find(uInter => {
     switch (uInter.name.length) {
       case 1: return (uInter.name[0] == interaction.commandName) || ((uInter.id == interaction.customId) && (
-        (uInter.actionType == "ChatInput" && (interaction.isChatInputCommand() || interaction.isAutocomplete())) ||
+        (uInter.actionType == "ChatInput" && (interaction.isChatInputCommand() || interaction.type == InteractionType.ApplicationCommandAutocomplete)) ||
         (uInter.actionType == "SelectMenu" && interaction.isSelectMenu()) ||
         (uInter.actionType == "Button" && interaction.isButton()) ||
-        (uInter.actionType == "Modal" && interaction.isModalSubmit()) ||
+        (uInter.actionType == "Modal" && interaction.type == InteractionType.ModalSubmit) ||
         ((uInter.actionType == "User" || uInter.actionType == "Message") && interaction.isContextMenuCommand())
       ));
-      case 2: return uInter.name[0] == interaction.commandName && uInter.name[1] == subCommandName && (interaction.isCommand() || interaction.isAutocomplete());
-      case 3: return uInter.name[0] == interaction.commandName && uInter.name[1] == subCommandGroupName && uInter.name[2] == subCommandName && (interaction.isCommand() || interaction.isAutocomplete());
+      case 2: return uInter.name[0] == interaction.commandName && uInter.name[1] == subCommandName && (interaction.isCommand() || interaction.type == InteractionType.ApplicationCommandAutocomplete);
+      case 3: return uInter.name[0] == interaction.commandName && uInter.name[1] == subCommandGroupName && uInter.name[2] == subCommandName && (interaction.isCommand() || interaction.type == InteractionType.ApplicationCommandAutocomplete);
     }
   });
 
@@ -663,7 +661,7 @@ client.on("interactionCreate", async (interaction) => {
   };
   other.pluginApi = uInter.pluginApi;
 
-  if (interaction.isAutocomplete()) {
+  if (interaction.type == InteractionType.ApplicationCommandAutocomplete) {
     if (uInter.disabled) {
       let r = await config.userErrors.disabled(interaction, uInter, other);
       interaction.respond(r).catch(Underline.config.debugLevel >= 2 ? console.error : () => { })
@@ -784,7 +782,7 @@ client.on("interactionCreate", async (interaction) => {
       interaction.reply = interaction.editReply;
       interaction.update = interaction.editReply;
     } else if (
-      interaction.isButton() || interaction.isSelectMenu() || interaction.isModalSubmit()
+      interaction.isButton() || interaction.isSelectMenu() || interaction.type == InteractionType.ModalSubmit
     ) {
       if (uInter.autoDefer == "update") await interaction.deferUpdate().catch(Underline.config.debugLevel >= 2 ? console.error : () => { });
       else await interaction.deferReply(uInter.autoDefer == "ephemeral" ? { ephemeral: true } : null).catch(Underline.config.debugLevel >= 2 ? console.error : () => { });
