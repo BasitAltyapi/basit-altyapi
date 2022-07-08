@@ -86,11 +86,11 @@ const locales = [];
       return !state;
     });
 
-    let plFilePaths = await readdirRecursive("./plugins");
+    let plFilePaths = await readdirRecursive(path.resolve("./plugins"));
 
     let plInteractionsPaths = plFilePaths.filter(i => {
-      if (!i.match(/plugins\\(.|[şçğüiÇŞİĞÜIıöÖ])*\\interactions/)?.length) return false;
-      if (i.match(/plugins\\-(.|[şçğüiÇŞİĞÜIıöÖ])*\\interactions/)?.length) return false;
+      if (!i.match(new RegExp(`plugins\\${path.sep}(.|[şçğüiÇŞİĞÜIıöÖ])*\\${path.sep}interactions`))?.length) return false;
+      if (i.match(new RegExp(`plugins\\${path.sep}-(.|[şçğüiÇŞİĞÜIıöÖ])*\\${path.sep}interactions`))?.length) return false;
       let state = path.basename(i).startsWith("-");
       return !state;
     });

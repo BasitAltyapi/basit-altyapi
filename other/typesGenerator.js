@@ -84,6 +84,19 @@ async function getInteractionFilePaths() {
 
   const locales = new Collection();
 
+  {
+    let plFilePaths = await readdirRecursive(path.resolve("./plugins"));
+
+    let plInteractionsPaths = plFilePaths.filter(i => {
+      if (!i.match(new RegExp(`plugins\\${path.sep}(.|[şçğüiÇŞİĞÜIıöÖ])*\\${path.sep}interactions`))?.length) return false;
+      if (i.match(new RegExp(`plugins\\${path.sep}-(.|[şçğüiÇŞİĞÜIıöÖ])*\\${path.sep}interactions`))?.length) return false;
+      let state = path.basename(i).startsWith("-");
+      return !state;
+    });
+
+    interactionFiles = [...interactionFiles, ...plInteractionsPaths];
+  }
+
   await chillout.forEach(interactionFiles, (interactionFile) => {
     /** @type {import("..MessageActions/Interaction")} */
     let uInter = require(interactionFile);
@@ -150,7 +163,7 @@ async function getInteractionFilePaths() {
     let isDTS = fs.existsSync(dtsPath);
 
     if (isDTS) {
-      pluginTypes.push(`["${plugin.namespace}"]: import("${path.relative(process.cwd(), dtsPath).replace(".d.ts", "").replaceAll(path.sep, "/")}").Plugin`);
+      pluginTypes.push(`["${plugin.namespace}"]: import("../${path.relative(process.cwd(), dtsPath).replace(".d.ts", "").replaceAll(path.sep, "/")}").Plugin`);
     } else {
       if (!plugin?.implements?.properties) return;
       let result = []
