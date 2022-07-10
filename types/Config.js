@@ -14,10 +14,13 @@ class Config {
   /** @type {Discord.ClientOptions} */
   clientOptions = {};
 
+  /** @type {"memory"|"redis"} */
+  variables = "memory";
+
   /** @type {{coolDown(interaction: Discord.CommandInteraction, interaction: Interaction, timeout: number, type: "user" | "member" | "channel" | "guild" | "message" | "any", other: {[key:string|number]: any}): void, disabled(interaction: Discord.CommandInteraction, interaction: Interaction, other: {[key:string|number]: any}): void, blocked(interaction: Discord.CommandInteraction, interaction: Interaction, other: {[key:string|number]: any}): void, botPermsRequired(interaction: Discord.CommandInteraction, interaction: Interaction, perms: string[], other: {setCoolDown(duration:number): void, [key:string|number]: any}): void, userPermsRequired(interaction: Discord.CommandInteraction, interaction: Interaction, perms: string[], other: {setCoolDown(duration:number): void, [key:string|number]: any}): void, developerOnly(interaction: Discord.CommandInteraction, interaction: Interaction, other: {[key:string|number]: any}): void, guildOnly(interaction: Discord.CommandInteraction, interaction: Interaction, other: {[key:string|number]: any}): void, guildOwnerOnly(interaction: Discord.CommandInteraction, interaction: Interaction, other: {[key:string|number]: any}): void}} */
   userErrors = {};
 
-  /** @type {import("../generated/configOther").default} */
+  /** @type {import("../generated/configOther").default & { redisURL?: string }} */
   other = {};
 
   /** @type {import("./Interaction").TOmittedInteraction} */
@@ -72,6 +75,8 @@ class Config {
 
     this.clientToken = arg.clientToken;
     this.clientOptions = typeof arg.clientOptions == "object" ? arg.clientOptions : {};
+
+    this.variables = arg.variables || "memory";
 
     let messageTypes = [
       "coolDown",

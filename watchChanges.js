@@ -1,8 +1,8 @@
+{ require("./other/patchConsoleLog"); require("./config");  };
+
 const chokidar = require('chokidar');
 const { resolve } = require('path');
 const { makeSureFolderExists, execAsync } = require('stuffs');
-
-{ require("./config"); require("./other/patchConsoleLog"); };
 
 class FunctionQueue {
   /**

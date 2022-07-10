@@ -16,6 +16,7 @@ const interactions = new Discord.Collection();
 const events = new Discord.Collection();
 const locales = new Discord.Collection();
 const { quickMap, quickForEach } = require("async-and-quick");
+
 let interactionFiles;
 let eventFiles;
 let localeFiles;
@@ -40,6 +41,7 @@ globalThis.Underline = {
   locales,
   utils,
   plugins: {},
+  variables: null,
   _references: new Discord.Collection(),
   Interaction: require('./types/Interaction'),
   Event: require('./types/Event'),
@@ -53,6 +55,8 @@ globalThis.Underline = {
   Plugin: require("./types/Plugin"),
 }
 
+Underline.variables = config.variables == "redis" ? new RedisVariables() : new MemoryVariables();
+
 globalThis.Enums = {
   ChannelType,
   MessageType,
@@ -64,8 +68,11 @@ globalThis.Enums = {
   ButtonStyle,
   TextInputStyle
 }
+
 const extractZip = require("extract-zip");
 const { copyFile } = require("fs/promises");
+const RedisVariables = require("./types/RedisVariables");
+const MemoryVariables = require("./types/MemoryVariables");
 
 async function getPluginFilePaths() {
   let pluginsPath = path.resolve("./plugins");
@@ -885,13 +892,10 @@ client.on("interactionCreate", async (interaction) => {
 
   quickForEach(onFunctions.onReady, async (func) => {
     try {
-      func?.()?.catch?.(() => {
-
-      });
+      func?.()?.catch?.(() => {});
     } catch (err) {
 
     }
-
   })
 })();
 

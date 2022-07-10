@@ -8,6 +8,7 @@ module.exports = new (require("./types/Config"))({
     "707309693449535599",
     "319862027571036161"
   ]),
+  variables: "redis", // "memory" / "redis"
   // 0: No Debug, 1: Minimal Debug 2: Maximum Debug
   debugLevel: 2,
   // Discord.js client ayarları.
@@ -24,7 +25,8 @@ module.exports = new (require("./types/Config"))({
       mongooseDatabase: {
         connectionURL: "mongodb://localhost:27017/basit-altyapi"
       }
-    }
+    },
+    redisURL: "redis://default:redispw@localhost:49153"
   },
   // Otomatik olarak "Underline" objesinin içine eklenen değerler.
   // Eklediğiniz değerler "Underline.<anahtar>" şeklinde ulaşabilirsiniz.
