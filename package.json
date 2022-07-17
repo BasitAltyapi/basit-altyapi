@@ -42,8 +42,8 @@
     "start": "node --expose-gc ./bootstrap.js",
     "tipler": "node ./other/typesGenerator.js",
     "types": "node ./other/typesGenerator.js",
-    "gelistirici": "node watchChanges.js",
-    "dev": "node watchChanges.js"
+    "gelistirici": "node ./watchChanges.js",
+    "dev": "node ./watchChanges.js"
   },
   "bugs": {
     "url": "https://github.com/BasitAltyapi/basit-altyapi/tree/v14/issues"
