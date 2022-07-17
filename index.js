@@ -825,7 +825,7 @@ client.on("interactionCreate", async (interaction) => {
 
   let now = Date.now();
 
-  for (let k in converter) {
+  for (let k of converter) {
     let keyCooldown = uInter.coolDowns.get(k);
     if (now < keyCooldown) {
       config.userErrors.coolDown(interaction, uInter, keyCooldown - now, k, other);
@@ -833,12 +833,26 @@ client.on("interactionCreate", async (interaction) => {
     }
   }
 
-  function setCoolDown(duration = 0, type = "user") {
+  {
+    let shouldReturn = false;
+    await quickForEach(Object.entries(converter), async ([key, value]) => {
+      if (shouldReturn) return;
+      let keyCooldown = await Underline.variables.get(`_.cooldowns["${value}"]`);
+      if (now < keyCooldown) {
+        config.userErrors.coolDown(interaction, uInter, keyCooldown - now, key, other);
+        shouldReturn = true;
+        return;
+      }
+    });
+    if (shouldReturn) return;
+  }
+
+  async function setCoolDown(duration = 0, type = "user") {
     let ckey = converter[type] || interaction.user.id;
     if (typeof duration == "number" && duration > 0) {
-      return uInter.coolDowns.set(ckey, Date.now() + duration);
+      return await Underline.variables.set(`_.cooldowns["${ckey}"]`, Date.now() + duration);      
     } else {
-      return uInter.coolDowns.delete(ckey);
+      return await Underline.variables.unset(`_.cooldowns["${ckey}"]`);
     }
   }
 
@@ -882,13 +896,12 @@ client.on("interactionCreate", async (interaction) => {
   return;
 });
 
-
 (async () => {
+  await client.login(!config.sharding.enabled ? config.clientToken : undefined);
+
   await config.onBeforeLoad(client);
   await load();
   await config.onAfterLoad(client);
-
-  await client.login(config.clientToken);
 
   quickForEach(onFunctions.onReady, async (func) => {
     try {

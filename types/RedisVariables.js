@@ -4,28 +4,34 @@ const { createClient } = require("redis");
 class RedisVariables {
   constructor () {
     this.redis = createClient({
-      url: Underline.config.other.redisURL
+      url: Underline.config.other.redis.url
     });
     this.redis.connect();
+    this.key = Underline.config.other.redis.key;
   }
 
   get type() { return "redis"; }
 
   async get(path, defVal) {
-    let data = await this.redis.json.get("underline", `$.${path}`);
-    if (!data) {
-      data = defVal;
-      await this.redis.json.set("underline", `$.${path}`, defVal);
+    let data = JSON.parse(await this.redis.get(this.key));
+    let value = _.get(data, path)
+    if (!value) {
+      value = defVal;
+      await this.set(path, defVal);
     }
-    return data;
+    return value;
   }
 
   async set(path, val) {
-    return await this.redis.json.set("underline", `$.${path}`, val);
+    let data = JSON.parse(await this.redis.get(this.key));
+    _.set(data, path, val);
+    return await this.redis.set(this.key, JSON.stringify(data));
   }
 
   async unset(path) {
-    return await this.redis.json.del("underline", `$.${path}`);
+    let data = JSON.parse(await this.redis.get(this.key));
+    _.unset(data, path);
+    return await this.redis.set(this.key, JSON.stringify(data));
   }
 }
 

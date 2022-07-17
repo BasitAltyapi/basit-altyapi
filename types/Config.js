@@ -20,8 +20,11 @@ class Config {
   /** @type {{coolDown(interaction: Discord.CommandInteraction, interaction: Interaction, timeout: number, type: "user" | "member" | "channel" | "guild" | "message" | "any", other: {[key:string|number]: any}): void, disabled(interaction: Discord.CommandInteraction, interaction: Interaction, other: {[key:string|number]: any}): void, blocked(interaction: Discord.CommandInteraction, interaction: Interaction, other: {[key:string|number]: any}): void, botPermsRequired(interaction: Discord.CommandInteraction, interaction: Interaction, perms: string[], other: {setCoolDown(duration:number): void, [key:string|number]: any}): void, userPermsRequired(interaction: Discord.CommandInteraction, interaction: Interaction, perms: string[], other: {setCoolDown(duration:number): void, [key:string|number]: any}): void, developerOnly(interaction: Discord.CommandInteraction, interaction: Interaction, other: {[key:string|number]: any}): void, guildOnly(interaction: Discord.CommandInteraction, interaction: Interaction, other: {[key:string|number]: any}): void, guildOwnerOnly(interaction: Discord.CommandInteraction, interaction: Interaction, other: {[key:string|number]: any}): void}} */
   userErrors = {};
 
-  /** @type {import("../generated/configOther").default & { redisURL?: string }} */
+  /** @type {import("../generated/configOther").default & { redis?: {url: string, key: string} }} */
   other = {};
+
+  /** @type {{enabled: boolean, count: "auto" | number, onManager: (manager: import("discord.js").ShardingManager) => null}} */
+  sharding = { enabled: false, count: "auto", onManager: () => null };
 
   /** @type {import("./Interaction").TOmittedInteraction} */
   interactionDefaults = {};
@@ -77,6 +80,8 @@ class Config {
     this.clientOptions = typeof arg.clientOptions == "object" ? arg.clientOptions : {};
 
     this.variables = arg.variables || "memory";
+
+    this.sharding = typeof arg.sharding == "object" ? arg.sharding : { enabled: false, count: "auto" };
 
     let messageTypes = [
       "coolDown",

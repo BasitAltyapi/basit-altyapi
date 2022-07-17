@@ -1,6 +1,16 @@
 module.exports = new (require("./types/Config"))({
   // E tabi, bot tokeni buraya.
   clientToken: "",
+  // Sharding özellikleri
+  sharding: {
+    enabled: false,
+    count: 4,
+    onManager(manager) {
+      manager.on("shardCreate", (shard) => {
+        console.info(`[BILGI] ${shard.id} idli shard doğruldu.`);
+      });
+    }
+  },
   // Yasaklı kullanıcıların idleri.
   blockedUsers: new Set([]),
   // Geliştiricilerin idleri.
@@ -26,7 +36,10 @@ module.exports = new (require("./types/Config"))({
         connectionURL: "mongodb://localhost:27017/basit-altyapi"
       }
     },
-    redisURL: "redis://default:redispw@localhost:49153"
+    redis: {
+      url: "redis://localhost:6379",
+      key: "Underline:Variables:0"
+    }
   },
   // Otomatik olarak "Underline" objesinin içine eklenen değerler.
   // Eklediğiniz değerler "Underline.<anahtar>" şeklinde ulaşabilirsiniz.
