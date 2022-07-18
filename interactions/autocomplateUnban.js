@@ -1,3 +1,5 @@
+const { ApplicationCommandOptionType } = require("discord.js");
+
 module.exports = new Underline.ChatInput({
   description: "Banlı bir kullanıcının banını açmanızı sağlar.",
   name: ["unban"],
@@ -15,12 +17,12 @@ module.exports = new Underline.ChatInput({
   options: [
     {
       name: "id",
-      type: Enums.ApplicationCommandOptionType.String,
+      type: ApplicationCommandOptionType.String,
       description: "...",
       autocomplete: true,
       async onComplete(inter, value) {
         let bans = await inter.guild.bans.fetch({ cache: false });
-        return [...bans.values()]
+        return [...bans.values()].slice(0, 19)
           .map(i => ({ name: i.user.tag, value: i.user.id }));
       },
       required: true

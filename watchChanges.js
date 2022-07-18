@@ -1,8 +1,8 @@
+{ require("./other/patchConsoleLog"); require("./config");  };
+
 const chokidar = require('chokidar');
 const { resolve } = require('path');
 const { makeSureFolderExists, execAsync } = require('stuffs');
-
-{ require("./config"); require("./other/patchConsoleLog"); };
 
 class FunctionQueue {
   /**
@@ -38,8 +38,8 @@ class FunctionQueue {
   }
 };
 let TypeQueue = new FunctionQueue(15000, async () => {
-  execAsync("yarn tipler", process.cwd()).catch(() => { });
-  console.info("Tipler yüklendi.");
+  let { stderr, stdout } = await execAsync("yarn tipler", process.cwd());
+  console.log(stdout.toLowerCase().includes("[hata]") ? stdout : "Tipler yüklendi.");
 });
 let wait = (s) => new Promise((resolve => setTimeout(() => resolve(true), s)));
 (async () => {

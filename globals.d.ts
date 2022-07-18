@@ -19,12 +19,25 @@ interface Underline {
   Locale: typeof import("./types/Locale"),
   plugins: import("./generated/pluginTypes").Types,
   Plugin: typeof import("./types/Plugin"),
+  variables: (import("./types/MemoryVariables") | import("./types/RedisVariables")) & {type: "memory"|"redis"},
 
   reload(): Promise<any>;
 
   [key: string | number]: any
 }
 
+interface Enums {
+  ChannelType: typeof import("discord.js").ChannelType,
+  MessageType: typeof import("discord.js").MessageType,
+  ApplicationCommandOptionType: typeof import("discord.js").ApplicationCommandOptionType,
+  ActivityType: typeof import("discord.js").ActivityType,
+  AuditLogOptionsType: typeof import("discord.js").AuditLogOptionsType,
+  InteractionType: typeof import("discord.js").InteractionType,
+  ComponentType: typeof import("discord.js").ComponentType,
+  ButtonStyle: typeof import("discord.js").ButtonStyle,
+  TextInputStyle: typeof import("discord.js").TextInputStyle,
+}
 
 
 declare var Underline: Underline;
+declare var Enums: Enums;

@@ -1,6 +1,16 @@
 module.exports = new (require("./types/Config"))({
   // E tabi, bot tokeni buraya.
   clientToken: "",
+  // Sharding özellikleri
+  sharding: {
+    enabled: false,
+    count: 4,
+    onManager(manager) {
+      manager.on("shardCreate", (shard) => {
+        console.info(`[BILGI] ${shard.id} idli shard doğruldu.`);
+      });
+    }
+  },
   // Yasaklı kullanıcıların idleri.
   blockedUsers: new Set([]),
   // Geliştiricilerin idleri.
@@ -8,6 +18,7 @@ module.exports = new (require("./types/Config"))({
     "707309693449535599",
     "319862027571036161"
   ]),
+  variables: "redis", // "memory" / "redis"
   // 0: No Debug, 1: Minimal Debug 2: Maximum Debug
   debugLevel: 2,
   // Discord.js client ayarları.
@@ -24,6 +35,10 @@ module.exports = new (require("./types/Config"))({
       mongooseDatabase: {
         connectionURL: "mongodb://localhost:27017/basit-altyapi"
       }
+    },
+    redis: {
+      url: "redis://localhost:6379",
+      key: "Underline:Variables:0"
     }
   },
   // Otomatik olarak "Underline" objesinin içine eklenen değerler.

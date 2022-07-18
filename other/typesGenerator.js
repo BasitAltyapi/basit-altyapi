@@ -320,7 +320,7 @@ async function getInteractionFilePaths() {
     let localeData = JSON.stringify(defaultLocale._data, null, 2).replace(/("([^"]*[^\\]?)"|`([^`]*[^\\]?)`|'([^']*[^\\]?)')\:/g, "$2$4$3:").replace(/"[^"]*[^\\]?"|`[^`]*[^\\]?`|'[^']*[^\\]?'/g, "(...args) => string");
 
     let localeOutput =
-      `export default class Locale {
+`export default class Locale {
   locale: import("../types/Locale").LocaleString
   data: LocaleData
 }
