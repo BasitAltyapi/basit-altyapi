@@ -19,8 +19,28 @@ module.exports = new Underline.Modal({
             customId: "test",
             label: "Mesajınız",
             style: 2,
-            type: 4,
             placeholder: "Chate düşücek mesajı giriniz",
+          }
+        }
+      ],
+      [
+        {
+          type: "SelectMenu",
+          data: {
+            customId: "gender",
+            minValues: 1,
+            maxValues: 1,
+            placeholder: "Cinsiyet seçiniz",
+            options: [
+              {
+                label: "Erkek",
+                value: "male"
+              },
+              {
+                label: "Kadın",
+                value: "female"
+              }
+            ]
           }
         }
       ]

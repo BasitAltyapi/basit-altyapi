@@ -32,6 +32,7 @@ import {
   ApplicationCommandOptionType,
   PermissionResolvable,
   ButtonStyle,
+  SelectMenuComponentData,
 } from "discord.js";
 import { LocaleData } from "../generated/localeTypes";
 import { PluginAPI } from "./Plugin";
@@ -44,7 +45,10 @@ interface CustomSelectMenuOptions {
 
 interface CustomModalOptions {
   title?: string;
-  rows: { type: "TextInput", data: TextInputComponentData }[][]
+  rows: (
+    { type: "TextInput", data: TextInputComponentData } | 
+    { type: "SelectMenu", data: SelectMenuComponentData }
+  )[][]
 }
 
 interface CustomButtonOptions {

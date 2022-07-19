@@ -1,10 +1,10 @@
-const { ModalBuilder,ActionRowBuilder,TextInputBuilder } = require("discord.js");
+const { ModalBuilder, ActionRowBuilder, TextInputBuilder, SelectMenuBuilder } = require("discord.js");
 const Interaction = require("./Interaction");
 const stuffs = require("stuffs");
 
 class Modal extends Interaction {
   /** @param {Interaction.TOmittedInteraction & Interaction.Modal} arg */
-  constructor (arg = { }) {
+  constructor(arg = {}) {
     super({
       _type: "ComponentInteraction",
       actionType: "Modal",
@@ -20,7 +20,7 @@ class Modal extends Interaction {
   toJSON(data = []) {
     if (!Array.isArray(data)) throw Error(`Modal#toJSON data type must be an array.`);
     data = data.map((key) => {
-      if (typeof key === "string") return key;  
+      if (typeof key === "string") return key;
       if (typeof key === "number") return `π${key}`;
       let referenceId = stuffs.randomString(16);
       if (key.$key) return key.$key;
@@ -36,8 +36,8 @@ class Modal extends Interaction {
     if (customId.length > 100) throw Error(`Modal#toJSON id and data length must be less than 100.`);
     let modal = new ModalBuilder()
       .setCustomId(customId)
-      .setTitle(this.options.title || this.id.slice(0,32))
-      
+      .setTitle(this.options.title || this.id.slice(0, 32))
+
     let rows = [];
 
     for (let i = 0; i < this.options.rows.length; i++) {
@@ -49,7 +49,12 @@ class Modal extends Interaction {
         let uComponent = rawComponents[j];
         switch (uComponent.type) {
           case "TextInput": {
-            let input = new TextInputBuilder({...uComponent.data, type: 4});
+            let input = new TextInputBuilder({ ...uComponent.data, type: 4 });
+            components.push(input);
+            break;
+          }
+          case "SelectMenu": {
+            let input = new SelectMenuBuilder({ ...uComponent.data, type: 3 });
             components.push(input);
             break;
           }
@@ -61,7 +66,7 @@ class Modal extends Interaction {
     };
 
     modal.addComponents(rows);
-    
+
     return modal;
   }
   isSelectMenu() { return false; }
