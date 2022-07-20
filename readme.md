@@ -1,4 +1,1 @@
-# Basit Altyapı (Versiyon 3.0.0) (v14.x)
-
-Aktif geliştirme içerisindedir.
-
+`v3.0.0` Very Soon™️

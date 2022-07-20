@@ -13,7 +13,9 @@ class RedisVariables {
   get type() { return "redis"; }
 
   async get(path, defVal) {
-    let data = JSON.parse(await this.redis.get(this.key));
+    let firstKey = Object.keys(_.set({}, path, 1))[0];
+    let redisKey = `${this.key}:${firstKey}`;
+    let data = JSON.parse(await this.redis.get(redisKey));
     let value = _.get(data, path)
     if (!value) {
       value = defVal;
@@ -23,15 +25,23 @@ class RedisVariables {
   }
 
   async set(path, val) {
-    let data = JSON.parse(await this.redis.get(this.key));
-    _.set(data, path, val);
-    return await this.redis.set(this.key, JSON.stringify(data));
+    let firstKey = Object.keys(_.set({}, path, 1))[0];
+    let redisKey = `${this.key}:${firstKey}`;
+    let data = JSON.parse(await this.redis.get(redisKey));
+    data = _.set(data, path, val);
+    return await this.redis.set(redisKey, JSON.stringify(data));
   }
 
   async unset(path) {
-    let data = JSON.parse(await this.redis.get(this.key));
+    let firstKey = Object.keys(_.set({}, path, 1))[0];
+    let redisKey = `${this.key}:${firstKey}`;
+    let data = JSON.parse(await this.redis.get(redisKey));
     _.unset(data, path);
-    return await this.redis.set(this.key, JSON.stringify(data));
+    if (typeof data[firstKey] == "undefined") {
+      return await this.redis.del(redisKey);
+    } else {
+      return await this.redis.set(redisKey, JSON.stringify(data));
+    }
   }
 }
 

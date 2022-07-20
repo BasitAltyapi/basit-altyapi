@@ -12,11 +12,11 @@ class MemoryVariables {
   }
 
   async set(path, val) {
-    return _.set(object, path, val);
+    return this.data = _.set(this.data, path, val);
   }
 
   async unset(path) {
-    return _.unset(object, path);
+    return _.unset(this.data, path);
   }
 
 }

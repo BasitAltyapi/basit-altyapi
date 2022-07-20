@@ -23,7 +23,7 @@
     "@types/recursive-readdir": "^2.2.0"
   },
   "name": "armagan-basit-altyapi",
-  "version": "2.0.3",
+  "version": "3.0.0",
   "description": "Kullanımı basit ancak bir yandanda içinde birçek özellik barındıran discord bot altyapısı.",
   "main": "index.js",
   "repository": {
