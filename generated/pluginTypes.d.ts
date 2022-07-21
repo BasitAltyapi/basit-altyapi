@@ -5,7 +5,8 @@ export class config {
 }
 
 export class Types {
-  ["mongooseDatabase"]: import("../plugins/mongose.up/index").Plugin;
+  ["mongooseDatabase"]: import("../plugins/mongoose.up/index").Plugin;
+  ["vault"]: import("../plugins/vault.up/index").Plugin;
 };
 export type TEventNames = "mongooseDatabase:onConnect";
 export type TEvents = mongooseDatabase_onConnect;
