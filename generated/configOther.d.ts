@@ -1,4 +1,7 @@
 export default class Other {
-  variables: string
+  redis: {
+    url: string;
+    key: string
+  };
   plugins: import('./pluginTypes').config
 }
