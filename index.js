@@ -5,6 +5,8 @@ const utils = require("./other/utils");
 globalThis.Underline = config.globalObjects;
 const Discord = require("discord.js");
 const { ChannelType, MessageType, ComponentType, InteractionType, ActivityType, AuditLogOptionsType, ApplicationCommandOptionType, ButtonStyle, TextInputStyle } = require("discord.js");
+const RedisVariables = require("./types/RedisVariables");
+const MemoryVariables = require("./types/MemoryVariables");
 
 const chillout = require("chillout");
 const path = require("path");
@@ -86,8 +88,7 @@ globalThis.Enums = {
 
 const extractZip = require("extract-zip");
 const { copyFile } = require("fs/promises");
-const RedisVariables = require("./types/RedisVariables");
-const MemoryVariables = require("./types/MemoryVariables");
+
 
 async function getPluginFilePaths() {
   let pluginsPath = path.resolve("./plugins");
