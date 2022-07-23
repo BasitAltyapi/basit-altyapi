@@ -23,7 +23,7 @@ class Config {
   /** @type {import("../generated/configOther").default & { redis?: {url: string, key: string} }} */
   other = {};
 
-  /** @type {{enabled: boolean, count: "auto" | number, onManager: (manager: import("discord.js").ShardingManager) => null}} */
+  /** @type {{enabled: boolean, count: [number | "auto", number], onManager: (manager: import("discord-hybrid-sharding").Manager) => null}} */
   sharding = { enabled: false, count: "auto", onManager: () => null };
 
   /** @type {import("./Interaction").TOmittedInteraction} */

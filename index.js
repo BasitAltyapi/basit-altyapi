@@ -11,7 +11,22 @@ const path = require("path");
 const fs = require("fs");
 const readdirRecursive = require("recursive-readdir");
 const { makeSureFolderExists } = require("stuffs");
-const client = new Discord.Client(config.clientOptions);
+const Cluster = require('discord-hybrid-sharding');
+const client = new Discord.Client(
+  Object.assign(
+    {},
+    config.clientOptions,
+    config.sharding.enabled ? {
+      shards: Cluster.data.SHARD_LIST,
+      shardCount: Cluster.data.TOTAL_SHARDS
+    } : {}
+  )
+);
+
+if (config.sharding.enabled) {
+  client.cluster = new Cluster.Client(client);
+}
+
 const interactions = new Discord.Collection();
 const events = new Discord.Collection();
 const locales = new Discord.Collection();

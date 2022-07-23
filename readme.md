@@ -38,7 +38,7 @@ Profesyoneller tarafından geliştirilen ve "*Yeryüzünde her zaman ücretsiz v
 - ✅ Düğme ve Seç menülerde değer/referans taşıyabilme.
 - ✅ Other objesi ile her işlemden önce değer belirtebilme.
 - ✅ Full otomatik dil desteği. (Komutu kullanan kişinin dilini otomatik belirleme.)
-- ✅ Redis kullanarak 100% Sharding desteği.
+- ✅ Redis ve clustering kullanarak 100% sharding desteği. Normal bir altyapıya kıyasla %80 daha az ram kullanımı!
 - ✅ Modal desteği.
 - ✅ Geliştrici modu desteği. (Bütün tip dosyaları otomatik olarak güncellenecektir.)
 

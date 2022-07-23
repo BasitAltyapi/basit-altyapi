@@ -7,6 +7,7 @@
     "chillout": "^5.0.0",
     "chokidar": "^3.5.3",
     "discord-api-types": "^0.23.1",
+    "discord-hybrid-sharding": "^1.6.8",
     "discord.js": "14",
     "enquirer": "^2.3.6",
     "extract-zip": "^2.0.1",

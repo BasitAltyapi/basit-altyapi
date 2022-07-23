@@ -4,11 +4,13 @@ module.exports = new (require("./types/Config"))({
   // Sharding özellikleri
   sharding: {
     enabled: false,
-    count: 4,
+    // [clusterCount, shardCountPerCluster]
+    count: [4, 4],
     onManager(manager) {
-      manager.on("shardCreate", (shard) => {
-        console.info(`[BILGI] ${shard.id} idli shard doğruldu.`);
+      manager.on("clusterCreate", (cluster) => {
+        console.info(`[BILGI] ${cluster.id} idli cluster doğruldu.`);
       });
+      manager.spawn({ timeout: -1 });
     }
   },
   // Yasaklı kullanıcıların idleri.
@@ -18,6 +20,8 @@ module.exports = new (require("./types/Config"))({
     "707309693449535599",
     "319862027571036161"
   ]),
+  // Değişkenlerin nerede tutulacağı.
+  // Eğer sharding yapıyorsanız redis yapmanız önemli.
   variables: "redis", // "memory" / "redis"
   // 0: No Debug, 1: Minimal Debug 2: Maximum Debug
   debugLevel: 2,
