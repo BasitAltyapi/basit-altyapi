@@ -124,7 +124,7 @@ Developed by professionals with the philosophy "*There will always be something 
 # Installation Diagram
 
 # Download
-- The latest version of the infrastructure [download here](https://github.com/TheArmagan/basit-altyapi/releases/latest)
+- The latest version of the infrastructure [download here](https://github.com/TheArmagan/basit-altyapi/releases/latest).
 
 # What's needed
 - Node.js; `v18.x`.
