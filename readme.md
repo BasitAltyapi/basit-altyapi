@@ -117,14 +117,14 @@ Developed by professionals with the philosophy "*There will always be something 
 - ✅ Ability to move value/reference in Button and Select menus.
 - ✅ Ability to specify value before each operation with Other object.
 - ✅ Fully automatic language support (automatic determination of the language of the person using the command).
-- ✅ 100% Sharding support using Redis.
+- ✅ 100% sharding support using Redis and Clustering. 80% less ram usage compared to a normal infrastructure!
 - ✅ Modal support.
 - ✅ Developer mode support. (All type files will be updated automatically.)
 
 # Installation Diagram
 
 # Download
-- The latest version of the infrastructure [download here](https://github.com/TheArmagan/basit-altyapi/releases/latest)
+- The latest version of the infrastructure [download here](https://github.com/TheArmagan/basit-altyapi/releases/latest).
 
 # What's needed
 - Node.js; `v18.x`.
