@@ -1,7 +1,14 @@
 require("./other/patchConsoleLog");
-
 const Cluster = require('discord-hybrid-sharding');
 const config = require("./config");
+
+const { plsParseArgs } = require('plsargs');
+const argv = plsParseArgs(process.argv.slice(2));
+let customToken = argv.get("clientToken");
+if (customToken) config.clientToken = customToken;
+
+if (argv.has("shardingOn")) config.sharding?.enabled = true;
+if (argv.has("shardingOff")) config.sharding?.enabled = false;
 
 if (config.sharding.enabled) {
   const manager = new Cluster.Manager(`${__dirname}/index.js`, {
