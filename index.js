@@ -680,8 +680,8 @@ client.on("interactionCreate", async (interaction) => {
         (uInter.actionType == "Modal" && interaction.type == InteractionType.ModalSubmit) ||
         ((uInter.actionType == "User" || uInter.actionType == "Message") && interaction.isContextMenuCommand())
       ));
-      case 2: return uInter.name[0] == interaction.commandName && uInter.name[1] == subCommandName && (interaction.type === InteractionType.ApplicationCommand || interaction.type == InteractionType.ApplicationCommandAutocomplete);
-      case 3: return uInter.name[0] == interaction.commandName && uInter.name[1] == subCommandGroupName && uInter.name[2] == subCommandName && (interaction.type === InteractionType.ApplicationCommand || interaction.type == InteractionType.ApplicationCommandAutocomplete);
+      case 2: return uInter.name[0] == interaction.commandName && uInter.name[1] == subCommandName && (interaction.isChatInputCommand() || interaction.type == InteractionType.ApplicationCommandAutocomplete);
+      case 3: return uInter.name[0] == interaction.commandName && uInter.name[1] == subCommandGroupName && uInter.name[2] == subCommandName && (interaction.isChatInputCommand() || interaction.type == InteractionType.ApplicationCommandAutocomplete);
     }
   });
 
@@ -841,7 +841,7 @@ client.on("interactionCreate", async (interaction) => {
 
   let now = Date.now();
 
-  for (let k of converter) {
+  for (let k in converter) {
     let keyCooldown = uInter.coolDowns.get(k);
     if (now < keyCooldown) {
       config.userErrors.coolDown(interaction, uInter, keyCooldown - now, k, other);
