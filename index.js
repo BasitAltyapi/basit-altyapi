@@ -806,7 +806,7 @@ client.on("interactionCreate", async (interaction) => {
       if (Underline.config.debugLevel >= 1) console.warn(`[UYARI] "${uInter.actionType == "ChatInput" ? `/${uInter.name.join(" ")}` : `${uInter.name[0]}`}" adlı interaksiyon için "deferReply" umursanmadı, interaksiyon zaten otomatik olarak bekleme moduna alınmış.`);
     };
     if (
-      interaction.isCommand() || interaction.isApplicationCommand() || interaction.isContextMenuCommand()
+      interaction.type == InteractionType.ApplicationCommand || interaction.isContextMenuCommand()
     ) {
       await interaction.deferReply(uInter.autoDefer == "ephemeral" ? { ephemeral: true } : null).catch(Underline.config.debugLevel >= 2 ? console.error : () => { });
       interaction.deferReply = newDefer;
