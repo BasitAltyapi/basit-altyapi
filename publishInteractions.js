@@ -23,6 +23,18 @@ globalThis.Underline = {
   Modal: require("./types/Modal"),
 };
 
+globalThis.Enums = {
+  ChannelType: Discord.ChannelType,
+  MessageType: Discord.MessageType,
+  ApplicationCommandOptionType: Discord.ApplicationCommandOptionType,
+  ActivityType: Discord.ActivityType,
+  AuditLogOptionsType: Discord.AuditLogOptionsType,
+  InteractionType: Discord.InteractionType,
+  ComponentType: Discord.ComponentType,
+  ButtonStyle: Discord.ButtonStyle,
+  TextInputStyle: Discord.TextInputStyle
+}
+
 let ogLangs = ["da", "de", "en-GB", "en-US", "es-ES", "fr", "hr", "it", "lt", "hu", "nl", "no", "pl", "pt-BR", "ro", "fi", "sv-SE", "vi", "tr", "cs", "el", "bg", "ru", "uk", "hi", "th", "zh-CN", "ja", "zh-TW", "ko"];
 
 
