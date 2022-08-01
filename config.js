@@ -1,3 +1,5 @@
+const Discord = require("discord.js");
+
 module.exports = new (require("./types/Config"))({
   // E tabi, bot tokeni buraya.
   clientToken: "",
@@ -26,7 +28,7 @@ module.exports = new (require("./types/Config"))({
   // Discord.js client ayarları.
   clientOptions: {
     // Okumanızı tavsiye ederim: https://discordjs.guide/popular-topics/intents.html
-    intents: ["Guilds"]
+    intents: [Discord.IntentsBitField.Flags.Guilds]
   },
   // Botunuzun varsayılan dili.
   defaultLanguage: "tr",
