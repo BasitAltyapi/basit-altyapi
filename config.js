@@ -64,37 +64,37 @@ module.exports = new (require("./types/Config"))({
     },
     // interaksiyon kapalı olduğunda
     disabled(interaction, uInteraction, other) {
-      if (interaction.isAutocomplete()) return [];
+      if (interaction.type == Discord.InteractionType.ApplicationCommandAutocomplete) return [];
       interaction.reply({ ephemeral: true, content: other.locale.userErrors.disabled() });
     },
     // Kullanıcı bottan yasaklı olduğunda.
     blocked(interaction, uInteraction, other) {
-      if (interaction.isAutocomplete()) return [];
+      if (interaction.type == Discord.InteractionType.ApplicationCommandAutocomplete) return [];
       interaction.reply({ ephemeral: true, content: other.locale.userErrors.blocked() });
     },
     // interaksiyon sadece geliştiricilere özel olduğunda.
     developerOnly(interaction, uInteraction, other) {
-      if (interaction.isAutocomplete()) return [];
+      if (interaction.type == Discord.InteractionType.ApplicationCommandAutocomplete) return [];
       interaction.reply({ ephemeral: true, content: other.locale.userErrors.developerOnly() });
     },
     // interaksiyon sadece sunucu sahiplerine özel olduğunda.
     guildOwnerOnly(interaction, uInteraction, other) {
-      if (interaction.isAutocomplete()) return [];
+      if (interaction.type == Discord.InteractionType.ApplicationCommandAutocomplete) return [];
       interaction.reply({ ephemeral: true, content: other.locale.userErrors.guildOwnerOnly() });
     },
     // interaksiyon sadece sunuculara özel olduğunda.
     guildOnly(interaction, uInteraction, other) {
-      if (interaction.isAutocomplete()) return [];
+      if (interaction.type == Discord.InteractionType.ApplicationCommandAutocomplete) return [];
       interaction.reply({ ephemeral: true, content: other.locale.userErrors.guildOnly() });
     },
     // Botun çalışmak için x yertkilerine ihtiyacı olduğunda.
     botPermsRequired(interaction, uInteraction, perms, other) {
-      if (interaction.isAutocomplete()) return [];
+      if (interaction.type == Discord.InteractionType.ApplicationCommandAutocomplete) return [];
       interaction.reply({ ephemeral: true, content: other.locale.userErrors.botPermsRequired(perms.join(", ")) });
     },
     // Kullanıcının interaksiyonu kullanabilmek için x yetkilerine ihtiyacı olduğunda.
     userPermsRequired(interaction, uInteraction, perms, other) {
-      if (interaction.isAutocomplete()) return [];
+      if (interaction.type == Discord.InteractionType.ApplicationCommandAutocomplete) return [];
       interaction.reply({ ephemeral: true, content: other.locale.userErrors.userPermsRequired(perms.join(", ")) });
     },
   },
