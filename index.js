@@ -680,8 +680,8 @@ client.on("interactionCreate", async (interaction) => {
         (uInter.actionType == "Modal" && interaction.type == InteractionType.ModalSubmit) ||
         ((uInter.actionType == "User" || uInter.actionType == "Message") && interaction.isContextMenuCommand())
       ));
-      case 2: return uInter.name[0] == interaction.commandName && uInter.name[1] == subCommandName && (interaction.isChatInputCommand() || interaction.type == InteractionType.ApplicationCommandAutocomplete);
-      case 3: return uInter.name[0] == interaction.commandName && uInter.name[1] == subCommandGroupName && uInter.name[2] == subCommandName && (interaction.isChatInputCommand() || interaction.type == InteractionType.ApplicationCommandAutocomplete);
+      case 2: return uInter.name[0] == interaction.commandName && uInter.name[1] == subCommandName && (interaction.type == InteractionType.ApplicationCommand || interaction.type == InteractionType.ApplicationCommandAutocomplete);
+      case 3: return uInter.name[0] == interaction.commandName && uInter.name[1] == subCommandGroupName && uInter.name[2] == subCommandName && (interaction.type == InteractionType.ApplicationCommand || interaction.type == InteractionType.ApplicationCommandAutocomplete);
     }
   });
 
@@ -789,7 +789,7 @@ client.on("interactionCreate", async (interaction) => {
     return;
   }
 
-  if (uInter.guildOnly && uInter.perms.bot.length != 0 && !uInter.perms.bot.every(perm => interaction.guild.me.permissions.has(perm))) {
+  if (uInter.guildOnly && uInter.perms.bot.length != 0 && !uInter.perms.bot.every(perm => interaction.guild.members.me.permissions.has(perm))) {
     if (uInter.nullError) return interaction.update ? (await interaction.update().catch(Underline.config.debugLevel >= 2 ? console.error : () => { })) : null;
     config.userErrors.botPermsRequired(interaction, uInter, uInter.perms.bot, other);
     return;
