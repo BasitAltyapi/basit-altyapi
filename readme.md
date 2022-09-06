@@ -1,3 +1,8 @@
+# ⚠️ BU ALTYAPI ARTIK GELİŞTİRİLMİYOR - VE YARDIMCI OLMUYORUM YENİ ALT YAPIYI İZLEMEDE KALIN [MostFeatured/DiscordBotInfrastructure](https://github.com/MostFeatured/DiscordBotInfrastructure)
+
+---
+
+
 # Basit Altyapı (Versiyon 3.0) (v14.x) #
 
 Profesyoneller tarafından geliştirilen ve "*Yeryüzünde her zaman ücretsiz ve değerli bir şeyler olacaktır.*" felsefesiyle hazırlanan açık kaynaklı, güncel, stabil ve gelişmiş Discord bot altyapısı. 
