@@ -73,7 +73,7 @@ const locales = [];
 
   let publishSpecialType = publishMode == "guild" ? (isClearMode ? "guildOnly" : (argv.get(2) || "guildOnly")) : "globalOnly";
 
-
+  console.log(publishSpecialType)
 
   if (!publishMode) {
     console.error(`Geçersiz paylaşım modu! Geçerli modlar: guild, global`);
@@ -112,9 +112,9 @@ const locales = [];
     await chillout.forEach(interactionFilePaths, (interactionFilePath) => {
       /** @type {import("./types/Interaction")} */
       let uInter = require(interactionFilePath);
-      if(uInter?._type != "interaction") return;
-      if (!uInter.publishType) uInter.publishType = "all";
-      if (!(uInter.publishType == "all" || publishSpecialType == uInter.publishType)) {
+      if (uInter?._type != "interaction") return;
+      if (!uInter.publishType) uInter.publishType = "globalOnly";
+      if (!((uInter.publishType == "all" && ["guildOnly", "globalOnly"].includes(publishSpecialType)) || publishSpecialType == uInter.publishType)) {
         console.warn(`Interaksiyon "${uInter.actionType == "ChatInput" ? `/${uInter.name.join(" ")}` : `${uInter.name[0]}`}" dönüştürülme listesine eklenmedi çünkü interaksiyon paylaşılma tipi(${uInter.publishType}) ile paylaşma modu(${publishMode}) uyumsuz!`);
         return;
       }
@@ -133,7 +133,8 @@ const locales = [];
             type: interactionTypes[current.actionType] ?? current.actionType,
             name: current.name[0],
             description: current.description,
-            defaultPermission: current.defaultPermission,
+            defaultMemberPermissions: current.defaultPermission ? null : ["Administrator"],
+            dmPermission: !current.guildOnly,
             options: current.options,
             nameLocalizations: localeData.names(0),
             descriptionLocalizations: localeData.descriptions,
@@ -152,7 +153,8 @@ const locales = [];
               nameLocalizations: localeData.names(0),
               descriptionLocalizations: localeData.descriptions,
               description: current.description,
-              defaultPermission: current.defaultPermission,
+              defaultMemberPermissions: current.defaultPermission ? null : ["Administrator"],
+              dmPermission: !current.guildOnly,
               options: [
                 {
                   type: 1,
@@ -185,7 +187,8 @@ const locales = [];
             all.push({
               type: interactionTypes[current.actionType] ?? current.actionType,
               name: current.name[0],
-              defaultPermission: current.defaultPermission,
+              defaultMemberPermissions: current.defaultPermission ? null : ["Administrator"],
+              dmPermission: !current.guildOnly,
               nameLocalizations: localeData.names(0),
               descriptionLocalizations: localeData.descriptions,
               description: current.description,
@@ -250,21 +253,19 @@ const locales = [];
     }, []);
 
     function fixOptions(inter = {}) {
-      console.log("1",inter.type)
       inter.type = optionTypes[inter.type] ?? inter.type;
-      console.log("2",inter.type)
       if (inter?.options) {
         inter.options.map(fixOptions)
         return inter;
       };
       return inter;
     }
-    
+
     for (let i = 0; i < dcInters.length; i++) {
       dcInters[i] = fixOptions(dcInters[i]);
     }
 
-    console.log(require("util").inspect(dcInters, false, 9999, true));
+    require("util").inspect(dcInters, false, 9999, true)
 
     // return;
 
