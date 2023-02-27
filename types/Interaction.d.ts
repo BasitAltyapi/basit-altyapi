@@ -66,6 +66,8 @@ export type CustomApplicationCommandOptionData = {
   autocomplete: boolean,
   required: boolean,
   channelTypes: (ChannelType)[],
+  min_length: number,
+  max_length: number,
   onComplete(
     interaction: AutocompleteInteraction,
     value: string | number,
